@@ -1,17 +1,21 @@
 import asyncio
 import json
-from telethon import TelegramClient, errors
+import datetime
+import os
+import qrcode
+from telethon import TelegramClient, errors, events
+from telethon.tl.types import Channel
 
 class IncidentKeywords:
     def __init__(self):
-        # أنواع الحوادث والكلمات المفتاحية
+        # Your existing keywords dictionary (unchanged)
         self.incident_keywords = {
             'fire': {
                 'ar': ['حريق', 'احتراق', 'نار', 'اشتعال', 'حرق', 'الدفاع المدني', 'إطفاء', 'حراق', 'نيران', 'حريق غابة', 'احتراق منزل', 'حريق مصنع', 'حريق سوق', 'حرائق الغابات', 'الدفاع المدني اللبناني', 'فرق الإطفاء'],
                 'en': ['fire', 'burning', 'flames', 'burn', 'blaze', 'ignite', 'combustion', 'firefighter', 'wildfire', 'house fire', 'factory fire', 'market fire', 'forest fire', 'civil defense', 'fire brigade']
             },
             'accident': {
-                'ar': ['حادث', 'حادث سير', 'حادث مرور', 'تصادم', 'انقلاب', 'اصطدام', 'سير', 'طريق', 'إسعاف', 'مرور', 'دهس', 'حادث دراجة نارية', 'حوادث قطار', 'حادث عمل', 'حادث شاحنة', 'حادث طيران'],
+                'ar': ['حادثة','حادث', 'حادث سير', 'حادث مرور', 'تصادم', 'انقلاب', 'اصطدام', 'سير', 'طريق', 'إسعاف', 'مرور', 'دهس', 'حادث دراجة نارية', 'حوادث قطار', 'حادث عمل', 'حادث شاحنة', 'حادث طيران'],
                 'en': ['accident', 'car accident', 'traffic accident', 'crash', 'collision', 'wreck', 'road', 'vehicle', 'ambulance', 'hit and run', 'motorcycle accident', 'train accident', 'workplace accident', 'truck accident', 'aviation accident']
             },
             'earthquake': {
@@ -52,7 +56,6 @@ class IncidentKeywords:
             }
         }
 
-        # كلمات الإصابات والضحايا
         self.casualty_keywords = {
             'killed': {
                 'ar': ['قتيل', 'قتلى', 'شهيد', 'شهداء', 'موت', 'وفاة', 'متوفى', 'مات', 'قضى', 'هلك', 'فارق الحياة'],
@@ -69,7 +72,6 @@ class IncidentKeywords:
         }
 
     def all_keywords(self):
-        # flatten all keywords (incident + casualty) into a single set (lowercase)
         kws = []
         for cat in self.incident_keywords.values():
             for lang_list in cat.values():
@@ -80,62 +82,103 @@ class IncidentKeywords:
         return set(kws)
 
 
-# Replace with your actual API ID and hash
+# Your API credentials here
 api_id = 20976159
 api_hash = '41bca65c99c9f4fb21ed627cc8f19ad8'
 
-channels_to_scrape = [
-    'MTVLebanoNews',
-    'MTVLebanonNews',
-    'lebanondebate',
-    'ALJADEED_NEWS',
-    'lebanonnews2',
-    'lebanonNewsNow',
-    'LBCI_NEWS',
-    'AljadeedNewsTV',
-    'LebUpdate',
-    'Aljadeedtelegram'
-]
-
 output_file = 'matched_incidents.json'
 
+async def qr_login(client):
+    if not await client.is_user_authorized():
+        print("Not authorized. Please scan the QR code to log in:")
+
+        qr_login = await client.qr_login()
+        qr_url = qr_login.url
+
+        qr = qrcode.QRCode()
+        qr.add_data(qr_url)
+        qr.make()
+        qr.print_ascii(invert=True)
+
+        print("Scan this QR code from Telegram app: Settings > Devices > Link Desktop Device")
+        await qr_login.wait()
+        print("Logged in successfully!")
+    else:
+        print("Already authorized!")
+
+async def get_my_channels(client):
+    channels = []
+    async for dialog in client.iter_dialogs():
+        if isinstance(dialog.entity, Channel):
+            # Join all channels (public/private)
+            channels.append(dialog.entity)
+    return channels
 
 async def main():
     client = TelegramClient('session', api_id, api_hash)
-    await client.start()
-    print("Connected to Telegram!")
+    await client.connect()
+
+    await qr_login(client)
 
     keywords = IncidentKeywords()
     keywords_set = keywords.all_keywords()
 
-    matched_messages = []
+    channels = await get_my_channels(client)
+    print(f"Monitoring {len(channels)} channels...")
 
-    for channel in channels_to_scrape:
-        print(f"Fetching messages from {channel}...")
+    # Create file if not exists, else load it
+    if not os.path.exists(output_file):
+        matched_messages = []
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(matched_messages, f, ensure_ascii=False, indent=2)
+    else:
         try:
-            async for message in client.iter_messages(channel, limit=100):
-                if message.text:
-                    text_lower = message.text.lower()
-                    # Check if any keyword is in the message text
-                    if any(keyword in text_lower for keyword in keywords_set):
-                        matched_messages.append({
-                            'channel': channel,
-                            'message_id': message.id,
-                            'date': str(message.date),
-                            'text': message.text
-                        })
-        except errors.ChannelInvalidError:
-            print(f"Channel {channel} is invalid or private.")
-        except Exception as e:
-            print(f"Error fetching from {channel}: {e}")
+            with open(output_file, 'r', encoding='utf-8') as f:
+                matched_messages = json.load(f)
+        except (json.JSONDecodeError, FileNotFoundError):
+            matched_messages = []
 
-    with open(output_file, 'w', encoding='utf-8') as f:
-        json.dump(matched_messages, f, ensure_ascii=False, indent=2)
+    # Helper to avoid duplicate entries
+    existing_ids = {(msg['channel'], msg['message_id']) for msg in matched_messages}
 
-    print(f"Saved {len(matched_messages)} matched messages to {output_file}")
+    @client.on(events.NewMessage(chats=channels))
+    async def handler(event):
+        text_lower = event.raw_text.lower()
+        if any(kw in text_lower for kw in keywords_set):
+            channel_name = event.chat.username if event.chat else str(event.chat_id)
+            msg_id = event.id
 
-    await client.disconnect()
+            if (channel_name, msg_id) not in existing_ids:
+                msg_data = {
+                    'channel': channel_name,
+                    'message_id': msg_id,
+                    'date': str(event.date),
+                    'text': event.raw_text
+                }
+                matched_messages.append(msg_data)
+                existing_ids.add((channel_name, msg_id))
 
+                # Save updated list
+                with open(output_file, 'w', encoding='utf-8') as f:
+                    json.dump(matched_messages, f, ensure_ascii=False, indent=2)
 
-if __name__ == '__main__':
+                print(f"[MATCH] {msg_data['channel']}: {msg_data['text'][:80]}")
+
+    print("Started monitoring. Waiting for new messages...")
+
+    try:
+        while True:
+            now = datetime.datetime.now()
+            if now.hour == 0 and now.minute == 0:
+                print("Midnight reached, stopping.")
+                break
+            await asyncio.sleep(1)
+
+    finally:
+        await client.disconnect()
+
+if __name__ == "__main__":
+    import asyncio
+    import datetime
+    import os
     asyncio.run(main())
