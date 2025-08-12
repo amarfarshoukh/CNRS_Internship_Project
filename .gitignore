@@ -1,0 +1,10 @@
+# Ignore Python virtual environment folder
+venv/
+
+# Ignore __pycache__ folders and Python bytecode files
+__pycache__/
+*.pyc
+
+# Ignore other big folders or files you don’t want in GitHub
+*.log
+.DS_Store

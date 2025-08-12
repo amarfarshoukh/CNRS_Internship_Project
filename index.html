@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Incident Monitor - Prototype</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-sA+e2Yk8bKxjvYvGgYwG9kFQY5tZbVx3s2f3o7r2k2A=" crossorigin=""/>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; margin:0; padding:0; }
+    #map {
+  height: 400px;
+  width: 100%;
+  margin-bottom: 12px;
+  overflow: hidden; /* Prevent showing tiles outside the div */
+}
+
+
+    .container { padding: 12px; max-width:1200px; margin:0 auto; }
+    .flex { display:flex; gap:12px; }
+    .panel { background:#fff; padding:12px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.08); }
+    .feed { max-height: 300px; overflow:auto; }
+    label { display:block; margin-top:8px; font-weight:600; }
+    input, select, textarea { width:100%; padding:8px; margin-top:6px; box-sizing:border-box; }
+    button { margin-top:10px; padding:10px 14px; cursor:pointer; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Incident Monitor — Prototype</h1>
+
+  <div id="map" class="panel" style="height: 400px;"></div>
+
+  <!-- Zoom and Select Location controls -->
+  <div id="zoom-controls" style="margin-bottom: 12px; text-align: right;">
+    <button id="zoom-in" style="padding:6px 12px; margin-right:6px;">+</button>
+    <button id="zoom-out" style="padding:6px 12px; margin-right:12px;">−</button>
+    <button id="select-location" style="padding:6px 12px;">Select Location</button>
+  </div>
+
+  <div class="flex" style="margin-top:12px;">
+    <div style="flex:1;" class="panel">
+      <h3>Check Incident at Location</h3>
+      <p style="color: #555;">
+        Click "Select Location" then click on the map to pick a location.<br/>
+        Then press "Check Incident Here" to see if an incident has been reported nearby.
+      </p>
+
+      <label>Latitude</label>
+      <input id="latitude" placeholder="Latitude" readonly required>
+
+      <label>Longitude</label>
+      <input id="longitude" placeholder="Longitude" readonly required>
+
+      <button id="checkIncidentBtn" style="margin-top:12px;">Check Incident Here</button>
+
+      <div id="checkResult" style="margin-top:12px; font-weight: bold;"></div>
+    </div>
+
+    <div style="width:350px;" class="panel">
+      <h3>Recent Incidents</h3>
+      <div class="feed" id="feed"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Libraries -->
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+  const apiBase = "http://localhost:5000";
+
+  // Initialize map
+  const lebanonBounds = [
+    [33.0, 34.5],
+    [34.7, 36.6]
+  ];
+
+  const map = L.map('map', {
+    center: [33.9, 35.5],
+    zoom: 8,
+    maxBounds: lebanonBounds,
+    maxBoundsViscosity: 0.8,
+    scrollWheelZoom: false
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19
+  }).addTo(map);
+
+  document.getElementById('zoom-in').addEventListener('click', () => map.zoomIn());
+  document.getElementById('zoom-out').addEventListener('click', () => map.zoomOut());
+
+  let selectLocationActive = false;
+  let selectedMarker = null;
+
+  const selectLocationBtn = document.getElementById('select-location');
+  selectLocationBtn.addEventListener('click', () => {
+    selectLocationActive = !selectLocationActive;
+
+    if (selectLocationActive) {
+      selectLocationBtn.style.backgroundColor = '#007bff';
+      selectLocationBtn.style.color = '#fff';
+      selectLocationBtn.innerText = 'Click on Map to Select Location';
+    } else {
+      selectLocationBtn.style.backgroundColor = '';
+      selectLocationBtn.style.color = '';
+      selectLocationBtn.innerText = 'Select Location';
+
+      if (selectedMarker) {
+        map.removeLayer(selectedMarker);
+        selectedMarker = null;
+        document.getElementById('latitude').value = '';
+        document.getElementById('longitude').value = '';
+        document.getElementById('checkResult').innerText = '';
+      }
+    }
+  });
+
+  map.on('click', e => {
+    if (!selectLocationActive) return;
+
+    const { lat, lng } = e.latlng;
+
+    if (selectedMarker) {
+      map.removeLayer(selectedMarker);
+    }
+
+    selectedMarker = L.marker([lat, lng]).addTo(map);
+
+    document.getElementById('latitude').value = lat.toFixed(6);
+    document.getElementById('longitude').value = lng.toFixed(6);
+    document.getElementById('checkResult').innerText = '';
+  });
+
+  // Fetch and display recent incidents
+  let markers = [];
+  async function fetchIncidents() {
+    try {
+      const res = await axios.get(apiBase + "/incidents");
+      const data = res.data;
+
+      markers.forEach(m => map.removeLayer(m));
+      markers = [];
+
+      const feed = document.getElementById("feed");
+      feed.innerHTML = "";
+
+      data.forEach(it => {
+        if (it.latitude && it.longitude) {
+          const m = L.marker([it.latitude, it.longitude]).addTo(map);
+          m.bindPopup(`<strong>${it.type}</strong><br/>${it.description || ''}`);
+          markers.push(m);
+        }
+        const el = document.createElement("div");
+        el.style.padding = "8px";
+        el.style.borderBottom = "1px solid #eee";
+        el.innerHTML = `<strong>${it.type}</strong> <small style="color:#666">(${it.reported_at})</small><br/><div style="color:#333;margin-top:6px">${it.description || ''}</div>`;
+        feed.appendChild(el);
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  fetchIncidents();
+  setInterval(fetchIncidents, 10000);
+
+  // Check Incident button logic
+  document.getElementById('checkIncidentBtn').addEventListener('click', async () => {
+    const lat = parseFloat(document.getElementById('latitude').value);
+    const lng = parseFloat(document.getElementById('longitude').value);
+
+    if (isNaN(lat) || isNaN(lng)) {
+      alert("Please select a location on the map first.");
+      return;
+    }
+
+    try {
+      const res = await axios.get(`${apiBase}/incidents/near`, {
+        params: {
+          lat,
+          lng,
+          radius: 1 // radius in kilometers, adjust as needed
+        }
+      });
+
+      const incidents = res.data; // array of incidents
+
+      const resultDiv = document.getElementById('checkResult');
+
+      if (incidents.length === 0) {
+        resultDiv.style.color = 'green';
+        resultDiv.innerText = "No incident reported near this location.";
+      } else {
+        resultDiv.style.color = 'red';
+        let html = `Incidents found near this location:<br>`;
+        incidents.forEach((inc) => {
+          html += `<strong>${inc.type}</strong>: ${inc.description || 'No description'}<br>`;
+        });
+        resultDiv.innerHTML = html;
+      }
+    } catch (err) {
+      console.error(err);
+      const resultDiv = document.getElementById('checkResult');
+      resultDiv.style.color = 'red';
+      resultDiv.innerText = "Error checking incidents. See console.";
+    }
+  });
+</script>
+</body>
+</html>
