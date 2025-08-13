@@ -66,19 +66,21 @@ class IncidentKeywords:
         return "unknown"
 
 # =============================
-# LEBANON LOCATIONS HIERARCHY (from DB)
+# LEBANON LOCATIONS HIERARCHY
 # =============================
-conn = sqlite3.connect(r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\lebanon_locations.db")
+
+db_path = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\lebanon_locations.db"
+conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
-# Adjust table name if different
-cursor.execute("SELECT NAME_0, NAME_1, NAME_2, NAME_3 FROM lebanon_locations") 
+
+cursor.execute("SELECT NAME_0, NAME_1, NAME_2, NAME_3 FROM locations")  # use the correct table name
 LEBANON_LOCATIONS = {}
-for country, governorate, district, neighborhood in cursor.fetchall():
-    if not governorate or not neighborhood:
-        continue
-    if governorate not in LEBANON_LOCATIONS:
-        LEBANON_LOCATIONS[governorate] = []
-    LEBANON_LOCATIONS[governorate].append(neighborhood)
+for name_0, name_1, name_2, name_3 in cursor.fetchall():
+    if name_1 not in LEBANON_LOCATIONS:
+        LEBANON_LOCATIONS[name_1] = []
+    if name_3:  # only add neighborhood if it exists
+        LEBANON_LOCATIONS[name_1].append(name_3)
+
 conn.close()
 
 # =============================
@@ -87,14 +89,11 @@ conn.close()
 def extract_location(text):
     if not text:
         return "غير محدد"
-    text_lower = text.lower()
     for city, neighborhoods in LEBANON_LOCATIONS.items():
-        if not city:
-            continue
         for nb in neighborhoods:
-            if nb and nb.lower() in text_lower:
+            if nb in text:
                 return f"{city}, {nb}"
-        if city.lower() in text_lower:
+        if city in text:
             return city
     return "غير محدد"
 
