@@ -523,5 +523,74 @@
       "casualties": [],
       "summary": "المفوض العام للأونروا: أكثر من 40000 طفل قتلوا أو أصيبوا جراء القصف والضربات الجوية في غزة\n https://twitter.com/LBCI_NEW..."
     }
+  },
+  {
+    "incident_type": "accident",
+    "location": null,
+    "channel": null,
+    "message_id": 23,
+    "date": "2025-08-13 12:20:23+00:00",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "حادث"
+    }
+  },
+  {
+    "incident_type": "fire",
+    "location": null,
+    "channel": null,
+    "message_id": 24,
+    "date": "2025-08-13 12:20:25+00:00",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "حريق"
+    }
+  },
+  {
+    "incident_type": "accident",
+    "location": "بيروت",
+    "channel": null,
+    "message_id": 25,
+    "date": "2025-08-13 12:20:30+00:00",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "حادث في بيروت"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": null,
+    "channel": "MTVLebanoNews",
+    "message_id": 37932,
+    "date": "2025-08-13 12:20:43+00:00",
+    "details": {
+      "numbers_found": [
+        "7"
+      ],
+      "casualties": [],
+      "summary": "‌‏هاشم لـmtv: ورقة توم برّاك اسقطت على الحكومة في جلسة 7 آب بدل البحث في الورقة اللبنانية وهل الأولوية هي لسحب السلاح في..."
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": null,
+    "channel": "MTVLebanonNews",
+    "message_id": 277939,
+    "date": "2025-08-13 12:22:19+00:00",
+    "details": {
+      "numbers_found": [
+        "7",
+        "1955605263358046361",
+        "13",
+        "2025",
+        "03",
+        "20"
+      ],
+      "casualties": [],
+      "summary": "هاشم لـmtv: ورقة توم برّاك اسقطت على الحكومة في جلسة 7 آب بدل البحث في الورقة اللبنانية وهل الأولوية هي لسحب السلاح فيما..."
+    }
   }
 ]
