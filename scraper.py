@@ -9,35 +9,42 @@ from telethon import TelegramClient, events
 from telethon.tl.types import Channel
 
 # =============================
-# ARABIC DIGIT NORMALIZATION
-# =============================
-ARABIC_DIGITS_MAP = str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789")
-def normalize_digits(text: str) -> str:
-    return text.translate(ARABIC_DIGITS_MAP)
-
-# =============================
 # INCIDENT KEYWORDS
 # =============================
 class IncidentKeywords:
     def __init__(self):
         self.incident_keywords = {
-            'fire': {'ar': ['حريق','احتراق','نار','اشتعال','حرق','الدفاع المدني','إطفاء','حراق','نيران'],
-                     'en': ['fire','burning','flames','burn','blaze','ignite','combustion']},
-            'accident': {'ar': ['حادثة','حادث','حادث سير','حادث مرور','تصادم','انقلاب','اصطدام'],
-                         'en': ['accident','car accident','traffic accident','crash','collision','wreck']},
-            'earthquake': {'ar': ['زلزال','هزة','أرضية','زلازل'],
-                           'en': ['earthquake','seismic','tremor','quake']},
-            'explosion': {'ar': ['انفجار','تفجير','عبوة ناسفة'],
-                          'en': ['explosion','detonation','blast']},
+            'fire': {'ar': ['حريق','احتراق','نار','اشتعال','حرق','الدفاع المدني','إطفاء','حراق','نيران','حريق غابة','احتراق منزل','حريق مصنع','حريق سوق','حرائق الغابات','الدفاع المدني اللبناني','فرق الإطفاء'],
+                     'en': ['fire','burning','flames','burn','blaze','ignite','combustion','firefighter','wildfire','house fire','factory fire','market fire','forest fire','civil defense','fire brigade']},
+            'accident': {'ar': ['حادثة','حادث','حادث سير','حادث مرور','تصادم','انقلاب','اصطدام','سير','طريق','إسعاف','مرور','دهس','حادث دراجة نارية','حوادث قطار','حادث عمل','حادث شاحنة','حادث طيران'],
+                         'en': ['accident','car accident','traffic accident','crash','collision','wreck','road','vehicle','ambulance','hit and run','motorcycle accident','train accident','workplace accident','truck accident','aviation accident']},
+            'earthquake': {'ar': ['زلزال','هزة','أرضية','زلازل','اهتزاز','تصدع','هزة أرضية','نشاط زلزالي'],
+                           'en': ['earthquake','seismic','tremor','quake','shake','magnitude','seismic activity']},
+            'airstrike': {'ar': ['غارة جوية','قصف','طائرة','صاروخ','قنبلة','انفجار','عدوان','طيران حربي','هجوم جوي','قصف جوي'],
+                          'en': ['airstrike','bombing','missile','rocket','bomb','explosion','aircraft','raid','air attack']},
+            'flood': {'ar': ['فيضان','سيول','أمطار','غرق','مياه','فيض','طوفان','فيضانات','ارتفاع منسوب المياه'],
+                      'en': ['flood','flooding','overflow','deluge','inundation','water','rain','high water level']},
+            'shooting': {'ar': ['إطلاق نار','رصاص','إطلاق','مسلح','رمي','نار','هجوم مسلح','اشتباك مسلح'],
+                         'en': ['shooting','gunfire','shots','gunman','bullets','armed','armed attack','armed clash']},
+            'explosion': {'ar': ['انفجار','تفجير','عبوة ناسفة','انفجار أنبوب غاز','انفجار سيارة مفخخة','تفجير انتحاري'],
+                          'en': ['explosion','detonation','blast','gas explosion','car bomb','suicide bombing','improvised explosive device']},
+            'collapse': {'ar': ['انهيار','انهيار مبنى','انهيار جسر','انهيار أرضي','سقوط رافعة','انهيار سقف','انهيار منجم'],
+                         'en': ['collapse','building collapse','bridge collapse','landslide','crane collapse','roof collapse','mine collapse']},
+            'pollution': {'ar': ['تلوث','تلوث مياه','تلوث هواء','تسرب نفطي','تسرب مواد كيميائية','انسكاب كيميائي'],
+                          'en': ['pollution','water contamination','air pollution','oil spill','chemical spill','hazardous leak']},
+            'epidemic': {'ar': ['وباء','انتشار مرض','حجر صحي','إصابات جماعية','تفشي'],
+                         'en': ['epidemic','disease outbreak','quarantine','mass infection','pandemic','virus spread']},
+            'medical': {'ar': ['الصليب الأحمر','إسعاف','إنعاش','إسعاف أولي','نجدة','مستشفى','طوارئ','إسعاف الدفاع المدني'],
+                        'en': ['red crescent','ambulance','resuscitation','first aid','emergency','hospital','paramedics','civil defense ambulance']}
         }
 
         self.casualty_keywords = {
-            'killed': {'ar': ['قتيل','قتلى','شهيد','شهداء','وفاة','مات'],
-                       'en': ['killed','dead','death','fatality']},
-            'injured': {'ar': ['جريح','جرحى','مصاب','إصابة','كسر','رضوض'],
-                        'en': ['injured','wounded','hurt','casualty']},
-            'missing': {'ar': ['مفقود','مفقودين','اختفى'],
-                        'en': ['missing','lost','disappeared']},
+            'killed': {'ar': ['قتيل','قتلى','شهيد','شهداء','موت','وفاة','متوفى','مات','قضى','هلك','فارق الحياة'],
+                       'en': ['killed','dead','death','fatality','died','deceased','martyred','perished','passed away']},
+            'injured': {'ar': ['جريح','جرحى','مصاب','مصابين','إصابة','جراح','كسر','رضوض','حروق','نقل للمستشفى','إسعاف'],
+                        'en': ['injured','wounded','hurt','casualty','victim','hospitalized','trauma','burns','fracture','bruises']},
+            'missing': {'ar': ['مفقود','مفقودين','اختفى','اختفاء','ضائع'],
+                        'en': ['missing','lost','disappeared','gone']}
         }
 
     def all_keywords(self):
@@ -59,12 +66,12 @@ class IncidentKeywords:
         return "unknown"
 
 # =============================
-# LEBANON LOCATIONS HIERARCHY
+# LEBANON LOCATIONS HIERARCHY (from SQLite)
 # =============================
 db_path = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\lebanon_locations.db"
 
-LEBANON_LOCATIONS = {}
-ALL_LOCATIONS = set()
+LEBANON_LOCATIONS = {}   # { governorate: [neighborhoods] }
+ALL_LOCATIONS = set()    # flat list of all Lebanese places
 
 try:
     conn = sqlite3.connect(db_path)
@@ -90,7 +97,12 @@ try:
         if nb:
             temp[gov].add(nb)
 
-        ALL_LOCATIONS.update(filter(None, {gov, name_2, name_3}))
+        # Add to global set
+        ALL_LOCATIONS.add(gov)
+        if name_2:
+            ALL_LOCATIONS.add(name_2.strip())
+        if name_3:
+            ALL_LOCATIONS.add(name_3.strip())
 
     for gov, nbs in temp.items():
         LEBANON_LOCATIONS[gov] = sorted(nbs)
@@ -105,22 +117,21 @@ finally:
 # LOCATION EXTRACTION
 # =============================
 def extract_location(text):
-    if not text:
-        return None
+    if not text or "غير محدد" in text or "undefined" in text.lower():
+        return "Unknown / Outside Lebanon"
 
-    if "غير محدد" in text or "undefined" in text.lower():
-        return None
-
+    # Check if any Lebanon location is in text
     for loc in ALL_LOCATIONS:
         if loc and loc in text:
             return loc
-    return None
+
+    # Not found in DB → mark as outside
+    return "Unknown / Outside Lebanon"
 
 # =============================
 # DETAILS EXTRACTION
 # =============================
 def extract_important_details(text):
-    text = normalize_digits(text)  # normalize Arabic numerals
     numbers = re.findall(r"\d+", text)
     casualties = []
     ik = IncidentKeywords()
@@ -192,7 +203,6 @@ async def main():
     async def handler(event):
         if not event.raw_text:
             return
-
         text_lower = event.raw_text.lower()
         if any(kw in text_lower for kw in keywords_set):
             incident_type = keywords.get_incident_type(text_lower)
@@ -205,7 +215,7 @@ async def main():
             if (channel_name, msg_id) not in existing_ids:
                 msg_data = {
                     'incident_type': incident_type,
-                    'location': location if location else "Unknown / Outside Lebanon",
+                    'location': location,
                     'channel': channel_name,
                     'message_id': msg_id,
                     'date': str(event.date),
@@ -217,7 +227,7 @@ async def main():
                 with open(output_file, 'w', encoding='utf-8') as f:
                     json.dump(matched_messages, f, ensure_ascii=False, indent=2)
 
-                print(f"[MATCH] {incident_type} @ {msg_data['location']} from {channel_name}")
+                print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
 
     print("Started monitoring. Waiting for new messages...")
 
@@ -229,3 +239,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
