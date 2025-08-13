@@ -115,29 +115,28 @@ finally:
 # =============================
 # LOCATION EXTRACTION (safe + robust)
 # =============================
-def extract_location(text: str) -> str:
-    # Handle None or empty quickly
-    if not text:
-        return "غير محدد"
+def extract_location(text):
+    if not text:  # Safety check if the message is empty or None
+        return None
 
-    text_lower = text.lower()
+    # Skip if location is explicitly undefined
+    if "غير محدد" in text or "undefined" in text.lower():
+        return None
 
-    # 1) Try to match neighborhoods first (more specific)
-    for gov, neighborhoods in LEBANON_LOCATIONS.items():
-        if not gov:
-            continue
-        for nb in neighborhoods:
-            if not nb:
-                continue
-            if nb.lower() in text_lower:
-                return f"{gov}, {nb}"
+    # Skip if location outside Lebanon (optional if we can detect this)
+    # This assumes you have a list of Lebanon's locations in `all_locations`
+    for city, district, governorate, region in all_locations:
+        if city and city in text:
+            return city
+        if district and district in text:
+            return district
+        if governorate and governorate in text:
+            return governorate
+        if region and region in text:
+            return region
 
-    # 2) Then try to match the governorate name
-    for gov in LEBANON_LOCATIONS.keys():
-        if gov and gov.lower() in text_lower:
-            return gov
+    return None  # No match found
 
-    return "غير محدد"
 # =============================
 # DETAILS EXTRACTION
 # =============================
