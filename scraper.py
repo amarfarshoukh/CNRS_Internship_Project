@@ -14,65 +14,37 @@ import sqlite3
 class IncidentKeywords:
     def __init__(self):
         self.incident_keywords = {
-            'fire': {
-                'ar': ['حريق','احتراق','نار','اشتعال','حرق','الدفاع المدني','إطفاء','حراق','نيران','حريق غابة','احتراق منزل','حريق مصنع','حريق سوق','حرائق الغابات','الدفاع المدني اللبناني','فرق الإطفاء'],
-                'en': ['fire','burning','flames','burn','blaze','ignite','combustion','firefighter','wildfire','house fire','factory fire','market fire','forest fire','civil defense','fire brigade']
-            },
-            'accident': {
-                'ar': ['حادثة','حادث','حادث سير','حادث مرور','تصادم','انقلاب','اصطدام','سير','طريق','إسعاف','مرور','دهس','حادث دراجة نارية','حوادث قطار','حادث عمل','حادث شاحنة','حادث طيران'],
-                'en': ['accident','car accident','traffic accident','crash','collision','wreck','road','vehicle','ambulance','hit and run','motorcycle accident','train accident','workplace accident','truck accident','aviation accident']
-            },
-            'earthquake': {
-                'ar': ['زلزال','هزة','أرضية','زلازل','اهتزاز','تصدع','هزة أرضية','نشاط زلزالي'],
-                'en': ['earthquake','seismic','tremor','quake','shake','magnitude','seismic activity']
-            },
-            'airstrike': {
-                'ar': ['غارة جوية','قصف','طائرة','صاروخ','قنبلة','انفجار','عدوان','طيران حربي','هجوم جوي','قصف جوي'],
-                'en': ['airstrike','bombing','missile','rocket','bomb','explosion','aircraft','raid','air attack']
-            },
-            'flood': {
-                'ar': ['فيضان','سيول','أمطار','غرق','مياه','فيض','طوفان','فيضانات','ارتفاع منسوب المياه'],
-                'en': ['flood','flooding','overflow','deluge','inundation','water','rain','high water level']
-            },
-            'shooting': {
-                'ar': ['إطلاق نار','رصاص','إطلاق','مسلح','رمي','نار','هجوم مسلح','اشتباك مسلح'],
-                'en': ['shooting','gunfire','shots','gunman','bullets','armed','armed attack','armed clash']
-            },
-            'explosion': {
-                'ar': ['انفجار','تفجير','عبوة ناسفة','انفجار أنبوب غاز','انفجار سيارة مفخخة','تفجير انتحاري'],
-                'en': ['explosion','detonation','blast','gas explosion','car bomb','suicide bombing','improvised explosive device']
-            },
-            'collapse': {
-                'ar': ['انهيار','انهيار مبنى','انهيار جسر','انهيار أرضي','سقوط رافعة','انهيار سقف','انهيار منجم'],
-                'en': ['collapse','building collapse','bridge collapse','landslide','crane collapse','roof collapse','mine collapse']
-            },
-            'pollution': {
-                'ar': ['تلوث','تلوث مياه','تلوث هواء','تسرب نفطي','تسرب مواد كيميائية','انسكاب كيميائي'],
-                'en': ['pollution','water contamination','air pollution','oil spill','chemical spill','hazardous leak']
-            },
-            'epidemic': {
-                'ar': ['وباء','انتشار مرض','حجر صحي','إصابات جماعية','تفشي'],
-                'en': ['epidemic','disease outbreak','quarantine','mass infection','pandemic','virus spread']
-            },
-            'medical': {
-                'ar': ['الصليب الأحمر','إسعاف','إنعاش','إسعاف أولي','نجدة','مستشفى','طوارئ','إسعاف الدفاع المدني'],
-                'en': ['red crescent','ambulance','resuscitation','first aid','emergency','hospital','paramedics','civil defense ambulance']
-            }
+            'fire': {'ar': ['حريق','احتراق','نار','اشتعال','حرق','الدفاع المدني','إطفاء','حراق','نيران','حريق غابة','احتراق منزل','حريق مصنع','حريق سوق','حرائق الغابات','الدفاع المدني اللبناني','فرق الإطفاء'],
+                     'en': ['fire','burning','flames','burn','blaze','ignite','combustion','firefighter','wildfire','house fire','factory fire','market fire','forest fire','civil defense','fire brigade']},
+            'accident': {'ar': ['حادثة','حادث','حادث سير','حادث مرور','تصادم','انقلاب','اصطدام','سير','طريق','إسعاف','مرور','دهس','حادث دراجة نارية','حوادث قطار','حادث عمل','حادث شاحنة','حادث طيران'],
+                         'en': ['accident','car accident','traffic accident','crash','collision','wreck','road','vehicle','ambulance','hit and run','motorcycle accident','train accident','workplace accident','truck accident','aviation accident']},
+            'earthquake': {'ar': ['زلزال','هزة','أرضية','زلازل','اهتزاز','تصدع','هزة أرضية','نشاط زلزالي'],
+                           'en': ['earthquake','seismic','tremor','quake','shake','magnitude','seismic activity']},
+            'airstrike': {'ar': ['غارة جوية','قصف','طائرة','صاروخ','قنبلة','انفجار','عدوان','طيران حربي','هجوم جوي','قصف جوي'],
+                          'en': ['airstrike','bombing','missile','rocket','bomb','explosion','aircraft','raid','air attack']},
+            'flood': {'ar': ['فيضان','سيول','أمطار','غرق','مياه','فيض','طوفان','فيضانات','ارتفاع منسوب المياه'],
+                      'en': ['flood','flooding','overflow','deluge','inundation','water','rain','high water level']},
+            'shooting': {'ar': ['إطلاق نار','رصاص','إطلاق','مسلح','رمي','نار','هجوم مسلح','اشتباك مسلح'],
+                         'en': ['shooting','gunfire','shots','gunman','bullets','armed','armed attack','armed clash']},
+            'explosion': {'ar': ['انفجار','تفجير','عبوة ناسفة','انفجار أنبوب غاز','انفجار سيارة مفخخة','تفجير انتحاري'],
+                          'en': ['explosion','detonation','blast','gas explosion','car bomb','suicide bombing','improvised explosive device']},
+            'collapse': {'ar': ['انهيار','انهيار مبنى','انهيار جسر','انهيار أرضي','سقوط رافعة','انهيار سقف','انهيار منجم'],
+                         'en': ['collapse','building collapse','bridge collapse','landslide','crane collapse','roof collapse','mine collapse']},
+            'pollution': {'ar': ['تلوث','تلوث مياه','تلوث هواء','تسرب نفطي','تسرب مواد كيميائية','انسكاب كيميائي'],
+                          'en': ['pollution','water contamination','air pollution','oil spill','chemical spill','hazardous leak']},
+            'epidemic': {'ar': ['وباء','انتشار مرض','حجر صحي','إصابات جماعية','تفشي'],
+                         'en': ['epidemic','disease outbreak','quarantine','mass infection','pandemic','virus spread']},
+            'medical': {'ar': ['الصليب الأحمر','إسعاف','إنعاش','إسعاف أولي','نجدة','مستشفى','طوارئ','إسعاف الدفاع المدني'],
+                        'en': ['red crescent','ambulance','resuscitation','first aid','emergency','hospital','paramedics','civil defense ambulance']}
         }
 
         self.casualty_keywords = {
-            'killed': {
-                'ar': ['قتيل','قتلى','شهيد','شهداء','موت','وفاة','متوفى','مات','قضى','هلك','فارق الحياة'],
-                'en': ['killed','dead','death','fatality','died','deceased','martyred','perished','passed away']
-            },
-            'injured': {
-                'ar': ['جريح','جرحى','مصاب','مصابين','إصابة','جراح','كسر','رضوض','حروق','نقل للمستشفى','إسعاف'],
-                'en': ['injured','wounded','hurt','casualty','victim','hospitalized','trauma','burns','fracture','bruises']
-            },
-            'missing': {
-                'ar': ['مفقود','مفقودين','اختفى','اختفاء','ضائع'],
-                'en': ['missing','lost','disappeared','gone']
-            }
+            'killed': {'ar': ['قتيل','قتلى','شهيد','شهداء','موت','وفاة','متوفى','مات','قضى','هلك','فارق الحياة'],
+                       'en': ['killed','dead','death','fatality','died','deceased','martyred','perished','passed away']},
+            'injured': {'ar': ['جريح','جرحى','مصاب','مصابين','إصابة','جراح','كسر','رضوض','حروق','نقل للمستشفى','إسعاف'],
+                        'en': ['injured','wounded','hurt','casualty','victim','hospitalized','trauma','burns','fracture','bruises']},
+            'missing': {'ar': ['مفقود','مفقودين','اختفى','اختفاء','ضائع'],
+                        'en': ['missing','lost','disappeared','gone']}
         }
 
     def all_keywords(self):
@@ -94,22 +66,16 @@ class IncidentKeywords:
         return "unknown"
 
 # =============================
-# LEBANON LOCATIONS HIERARCHY (FROM DB)
+# LEBANON LOCATIONS HIERARCHY FROM DB
 # =============================
 conn = sqlite3.connect("lebanon_locations.db")
 cursor = conn.cursor()
-cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-tables = cursor.fetchall()
-if not tables:
-    raise Exception("No tables found in the database!")
-table_name = tables[0][0]  # take the first table
-
+cursor.execute("SELECT NAME_0, NAME_1, NAME_2, NAME_3 FROM students")  # table name used in CSV import
 LEBANON_LOCATIONS = {}
-cursor.execute(f"SELECT NAME_0, NAME_1, NAME_2, NAME_3 FROM {table_name}")
 for country, gov, district, neighborhood in cursor.fetchall():
     if gov not in LEBANON_LOCATIONS:
         LEBANON_LOCATIONS[gov] = []
-    if neighborhood and neighborhood not in LEBANON_LOCATIONS[gov]:
+    if neighborhood:
         LEBANON_LOCATIONS[gov].append(neighborhood)
 conn.close()
 
@@ -194,7 +160,8 @@ async def main():
     else:
         matched_messages = []
 
-    existing_ids = {(msg['channel'], msg['message_id']) for msg in matched_messages}
+    # Track existing messages by (channel, date) instead of message_id
+    existing_ids = {(msg['channel'], msg['date']) for msg in matched_messages}
 
     @client.on(events.NewMessage(chats=channels))
     async def handler(event):
@@ -205,18 +172,18 @@ async def main():
             details = extract_important_details(event.raw_text)
 
             channel_name = event.chat.username if event.chat else str(event.chat_id)
-            msg_id = event.id
+            msg_date_str = str(event.date)
 
-            if (channel_name, msg_id) not in existing_ids:
+            if (channel_name, msg_date_str) not in existing_ids:
                 msg_data = {
                     'incident_type': incident_type,
                     'location': location,
                     'channel': channel_name,
-                    'date': str(event.date),
+                    'date': msg_date_str,
                     'details': details
                 }
                 matched_messages.append(msg_data)
-                existing_ids.add((channel_name, msg_id))
+                existing_ids.add((channel_name, msg_date_str))
 
                 with open(output_file, 'w', encoding='utf-8') as f:
                     json.dump(matched_messages, f, ensure_ascii=False, indent=2)
