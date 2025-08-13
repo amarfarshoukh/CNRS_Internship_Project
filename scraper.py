@@ -68,17 +68,15 @@ class IncidentKeywords:
 # =============================
 # LEBANON LOCATIONS HIERARCHY (from SQLite)
 # =============================
-import sqlite3
-
 db_path = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\lebanon_locations.db"
 
-LEBANON_LOCATIONS = {}  # { governorate (str) : [neighborhoods (str)...] }
+LEBANON_LOCATIONS = {}   # { governorate: [neighborhoods] }
+ALL_LOCATIONS = set()    # flat list of all Lebanese places
 
 try:
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
 
-    # Pull only Lebanon rows and needed columns
     cur.execute("""
         SELECT NAME_1, NAME_2, NAME_3
         FROM locations
@@ -90,52 +88,48 @@ try:
         gov = (name_1 or "").strip()
         nb  = (name_3 or "").strip()
 
-        # If governorate is missing, skip this row entirely
         if not gov:
             continue
 
-        # Initialize a set for de-duplication
         if gov not in temp:
             temp[gov] = set()
 
-        # Add neighborhood if present and non-empty
         if nb:
             temp[gov].add(nb)
 
-    # Convert sets to sorted lists for stable iteration
+        # Add to global set
+        ALL_LOCATIONS.add(gov)
+        if name_2:
+            ALL_LOCATIONS.add(name_2.strip())
+        if name_3:
+            ALL_LOCATIONS.add(name_3.strip())
+
     for gov, nbs in temp.items():
         LEBANON_LOCATIONS[gov] = sorted(nbs)
 
 finally:
     try:
         conn.close()
-    except Exception:
+    except:
         pass
 
 # =============================
-# LOCATION EXTRACTION (safe + robust)
+# LOCATION EXTRACTION
 # =============================
 def extract_location(text):
-    if not text:  # Safety check if the message is empty or None
+    if not text:
         return None
 
-    # Skip if location is explicitly undefined
+    # Skip undefined locations
     if "غير محدد" in text or "undefined" in text.lower():
         return None
 
-    # Skip if location outside Lebanon (optional if we can detect this)
-    # This assumes you have a list of Lebanon's locations in `all_locations`
-    for city, district, governorate, region in all_locations:
-        if city and city in text:
-            return city
-        if district and district in text:
-            return district
-        if governorate and governorate in text:
-            return governorate
-        if region and region in text:
-            return region
+    # Check if any Lebanon location is in text
+    for loc in ALL_LOCATIONS:
+        if loc and loc in text:
+            return loc
 
-    return None  # No match found
+    return None
 
 # =============================
 # DETAILS EXTRACTION
