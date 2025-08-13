@@ -94,16 +94,22 @@ class IncidentKeywords:
         return "unknown"
 
 # =============================
-# LEBANON LOCATIONS HIERARCHY
+# LEBANON LOCATIONS HIERARCHY (FROM DB)
 # =============================
 conn = sqlite3.connect("lebanon_locations.db")
 cursor = conn.cursor()
-cursor.execute("SELECT NAME_0, NAME_1, NAME_2, NAME_3 FROM students")  # table name used in CSV import
+cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+tables = cursor.fetchall()
+if not tables:
+    raise Exception("No tables found in the database!")
+table_name = tables[0][0]  # take the first table
+
 LEBANON_LOCATIONS = {}
+cursor.execute(f"SELECT NAME_0, NAME_1, NAME_2, NAME_3 FROM {table_name}")
 for country, gov, district, neighborhood in cursor.fetchall():
     if gov not in LEBANON_LOCATIONS:
         LEBANON_LOCATIONS[gov] = []
-    if neighborhood:
+    if neighborhood and neighborhood not in LEBANON_LOCATIONS[gov]:
         LEBANON_LOCATIONS[gov].append(neighborhood)
 conn.close()
 
