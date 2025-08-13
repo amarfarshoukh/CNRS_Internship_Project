@@ -66,37 +66,78 @@ class IncidentKeywords:
         return "unknown"
 
 # =============================
-# LEBANON LOCATIONS HIERARCHY
+# LEBANON LOCATIONS HIERARCHY (from SQLite)
 # =============================
+import sqlite3
 
 db_path = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\lebanon_locations.db"
-conn = sqlite3.connect(db_path)
-cursor = conn.cursor()
 
-cursor.execute("SELECT NAME_0, NAME_1, NAME_2, NAME_3 FROM locations")  # use the correct table name
-LEBANON_LOCATIONS = {}
-for name_0, name_1, name_2, name_3 in cursor.fetchall():
-    if name_1 not in LEBANON_LOCATIONS:
-        LEBANON_LOCATIONS[name_1] = []
-    if name_3:  # only add neighborhood if it exists
-        LEBANON_LOCATIONS[name_1].append(name_3)
+LEBANON_LOCATIONS = {}  # { governorate (str) : [neighborhoods (str)...] }
 
-conn.close()
+try:
+    conn = sqlite3.connect(db_path)
+    cur = conn.cursor()
+
+    # Pull only Lebanon rows and needed columns
+    cur.execute("""
+        SELECT NAME_1, NAME_2, NAME_3
+        FROM locations
+        WHERE NAME_0 = 'لبنان'
+    """)
+
+    temp = {}
+    for name_1, name_2, name_3 in cur.fetchall():
+        gov = (name_1 or "").strip()
+        nb  = (name_3 or "").strip()
+
+        # If governorate is missing, skip this row entirely
+        if not gov:
+            continue
+
+        # Initialize a set for de-duplication
+        if gov not in temp:
+            temp[gov] = set()
+
+        # Add neighborhood if present and non-empty
+        if nb:
+            temp[gov].add(nb)
+
+    # Convert sets to sorted lists for stable iteration
+    for gov, nbs in temp.items():
+        LEBANON_LOCATIONS[gov] = sorted(nbs)
+
+finally:
+    try:
+        conn.close()
+    except Exception:
+        pass
 
 # =============================
-# LOCATION EXTRACTION
+# LOCATION EXTRACTION (safe + robust)
 # =============================
-def extract_location(text):
+def extract_location(text: str) -> str:
+    # Handle None or empty quickly
     if not text:
         return "غير محدد"
-    for city, neighborhoods in LEBANON_LOCATIONS.items():
-        for nb in neighborhoods:
-            if nb in text:
-                return f"{city}, {nb}"
-        if city in text:
-            return city
-    return "غير محدد"
 
+    text_lower = text.lower()
+
+    # 1) Try to match neighborhoods first (more specific)
+    for gov, neighborhoods in LEBANON_LOCATIONS.items():
+        if not gov:
+            continue
+        for nb in neighborhoods:
+            if not nb:
+                continue
+            if nb.lower() in text_lower:
+                return f"{gov}, {nb}"
+
+    # 2) Then try to match the governorate name
+    for gov in LEBANON_LOCATIONS.keys():
+        if gov and gov.lower() in text_lower:
+            return gov
+
+    return "غير محدد"
 # =============================
 # DETAILS EXTRACTION
 # =============================
