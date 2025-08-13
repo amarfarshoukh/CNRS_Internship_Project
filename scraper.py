@@ -4,9 +4,9 @@ import datetime
 import os
 import re
 import qrcode
+import sqlite3
 from telethon import TelegramClient, events
 from telethon.tl.types import Channel
-import sqlite3
 
 # =============================
 # INCIDENT KEYWORDS
@@ -66,32 +66,35 @@ class IncidentKeywords:
         return "unknown"
 
 # =============================
-# LEBANON LOCATIONS FROM SQLITE DB
+# LEBANON LOCATIONS HIERARCHY (from DB)
 # =============================
-DB_PATH = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\lebanon_locations.db"
-
-conn = sqlite3.connect(DB_PATH)
+conn = sqlite3.connect(r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\lebanon_locations.db")
 cursor = conn.cursor()
+# Adjust table name if different
+cursor.execute("SELECT NAME_0, NAME_1, NAME_2, NAME_3 FROM lebanon_locations") 
 LEBANON_LOCATIONS = {}
-
-# Replace 'locations' with your actual table name if different
-cursor.execute("SELECT NAME_1, NAME_2, NAME_3 FROM locations")
-for gov, district, neighborhood in cursor.fetchall():
-    if gov not in LEBANON_LOCATIONS:
-        LEBANON_LOCATIONS[gov] = []
-    if neighborhood:
-        LEBANON_LOCATIONS[gov].append(neighborhood)
+for country, governorate, district, neighborhood in cursor.fetchall():
+    if not governorate or not neighborhood:
+        continue
+    if governorate not in LEBANON_LOCATIONS:
+        LEBANON_LOCATIONS[governorate] = []
+    LEBANON_LOCATIONS[governorate].append(neighborhood)
 conn.close()
 
 # =============================
 # LOCATION EXTRACTION
 # =============================
 def extract_location(text):
+    if not text:
+        return "غير محدد"
+    text_lower = text.lower()
     for city, neighborhoods in LEBANON_LOCATIONS.items():
+        if not city:
+            continue
         for nb in neighborhoods:
-            if nb in text:
+            if nb and nb.lower() in text_lower:
                 return f"{city}, {nb}"
-        if city in text:
+        if city.lower() in text_lower:
             return city
     return "غير محدد"
 
@@ -164,10 +167,12 @@ async def main():
     else:
         matched_messages = []
 
-    existing_ids = {(msg['channel'], msg.get('message_id', msg.get('id'))) for msg in matched_messages}
+    existing_ids = {(msg.get('channel'), msg.get('message_id')) for msg in matched_messages}
 
     @client.on(events.NewMessage(chats=channels))
     async def handler(event):
+        if not event.raw_text:
+            return
         text_lower = event.raw_text.lower()
         if any(kw in text_lower for kw in keywords_set):
             incident_type = keywords.get_incident_type(text_lower)
@@ -182,9 +187,9 @@ async def main():
                     'incident_type': incident_type,
                     'location': location,
                     'channel': channel_name,
+                    'message_id': msg_id,
                     'date': str(event.date),
-                    'details': details,
-                    'message_id': msg_id
+                    'details': details
                 }
                 matched_messages.append(msg_data)
                 existing_ids.add((channel_name, msg_id))
