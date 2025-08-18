@@ -2824,5 +2824,134 @@
       "casualties": [],
       "summary": "\"الوكالة الوطنيّة\": مسيرة إسرائيليّة ألقت قنبلة صوتية على بلدة راميا ٲثناء مراسم دفن أحد أبناء البلدة من دون وقوع إصابات\n https://twitter.com/MTVLebanonNews/status/1957383297421525010\nAugust 18, 2025 at 01:05PM"
     }
+  },
+  {
+    "incident_type": "fire",
+    "location": "بشامون",
+    "channel": null,
+    "message_id": 36,
+    "date": "2025-08-18 10:10:05+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "حريق بشامون"
+    }
+  },
+  {
+    "incident_type": "accident",
+    "location": "بيروت",
+    "channel": null,
+    "message_id": 37,
+    "date": "2025-08-18 10:10:10+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "حادث في بيروت"
+    }
+  },
+  {
+    "incident_type": "other",
+    "location": "عين التينة",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214492,
+    "date": "2025-08-18 10:11:44+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "18",
+        "2025",
+        "01",
+        "02"
+      ],
+      "casualties": [],
+      "summary": "باراك مغادراً عين التينة: كلنا نتحرك في الإتجاه الصحيح\n https://twitter.com/ALJADEEDNEWS/status/1957382482782794221\nAugust 18, 2025 at 01:02PM"
+    }
+  },
+  {
+    "incident_type": "other",
+    "location": "جديد",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214494,
+    "date": "2025-08-18 10:11:45+00:00",
+    "threat_level": "no",
+    "details": {
+      "numbers_found": [
+        "1",
+        "18",
+        "2025",
+        "01",
+        "09"
+      ],
+      "casualties": [],
+      "summary": "مراسل #الجديد: وصول الموفدين باراك واورتاغوس الى السراي الحكومي @farhat_muhamad1\n https://twitter.com/ALJADEEDNEWS/status/1957384420261786109\nAugust 18, 2025 at 01:09PM"
+    }
+  },
+  {
+    "incident_type": "other",
+    "location": "جنوب",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214495,
+    "date": "2025-08-18 10:11:46+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "5",
+        "18",
+        "2025",
+        "01",
+        "10"
+      ],
+      "casualties": [],
+      "summary": "هيئة أبناء العرقوب تستنكر صمت الحكومة تجاه الاحتلال جنوبًا ⬇️ https://t.co/5nsDwZoJIc\n https://twitter.com/ALJADEEDNEWS/status/1957384710352429421\nAugust 18, 2025 at 01:10PM"
+    }
+  },
+  {
+    "incident_type": "other",
+    "location": "جديد",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33312,
+    "date": "2025-08-18 10:12:16+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏مراسل الجديد: وصول الموفدين باراك واورتاغوس الى السراي الحكومي"
+    }
+  },
+  {
+    "incident_type": "flood/accident",
+    "location": "غزير",
+    "channel": "-1001418480303",
+    "message_id": 251152,
+    "date": "2025-08-18 10:13:14+00:00",
+    "threat_level": "no",
+    "details": {
+      "numbers_found": [
+        "7",
+        "18",
+        "2025",
+        "01",
+        "11"
+      ],
+      "casualties": [],
+      "summary": "أمطار غزيرة تعطل حركة المرور وتغرق الطرق في مومباي بالهند #LBCINewshttps://t.co/FrBYOz7vvc\n https://twitter.com/LBCI_NEWS/status/1957384892456526169\nAugust 18, 2025 at 01:11PM"
+    }
+  },
+  {
+    "incident_type": "other",
+    "location": "جديد",
+    "channel": "lebanondebate",
+    "message_id": 142441,
+    "date": "2025-08-18 10:19:50+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "733469"
+      ],
+      "casualties": [],
+      "summary": "بعد اجتماعات مع رجي... دولتان تؤيدان التجديد لـ\"اليونيفيل\"\nhttps://lbdb.co/733469"
+    }
   }
 ]
