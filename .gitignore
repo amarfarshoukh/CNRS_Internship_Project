@@ -8,3 +8,4 @@ __pycache__/
 # Ignore other big folders or files you don’t want in GitHub
 *.log
 .DS_Store
+*.csv
