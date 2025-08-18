@@ -6,23 +6,25 @@ import re
 import qrcode
 import sqlite3
 import subprocess
+import difflib
 from telethon import TelegramClient, events
 from telethon.tl.types import Channel
 
 # =============================
 # AI HELPER (Phi-3 via Ollama)
 # =============================
-def call_phi3(prompt):
+def call_phi3(prompt: str) -> str:
     try:
         result = subprocess.run(
             ["ollama", "run", "phi3:mini"],
-            input=prompt.encode(),
+            input=prompt.encode("utf-8"),
             capture_output=True,
             timeout=30
         )
-        return result.stdout.decode().strip()
+        out = (result.stdout or b"").decode("utf-8", errors="ignore").strip()
+        return out
     except Exception as e:
-        return f"AI_Error: {str(e)}"
+        return f"AI_Error: {e}"
 
 # =============================
 # INCIDENT KEYWORDS
@@ -82,87 +84,135 @@ class IncidentKeywords:
         return "unknown"
 
 # =============================
-# LEBANON LOCATIONS HIERARCHY (from SQLite)
+# Arabic normalization helpers
+# =============================
+AR_DIACRITICS_RE = re.compile(r"[\u064B-\u065F\u0617-\u061A\u06D6-\u06ED]")  # tashkeel
+def normalize_ar(s: str) -> str:
+    if not s:
+        return ""
+    s = AR_DIACRITICS_RE.sub("", s)
+    s = s.replace("أ","ا").replace("إ","ا").replace("آ","ا")
+    s = s.replace("ى","ي").replace("ؤ","و").replace("ئ","ي").replace("ـ","")
+    s = re.sub(r"[^\w\s\u0600-\u06FF]", " ", s)  # drop punctuation except Arabic letters/digits/underscore/space
+    s = re.sub(r"\s+", " ", s).strip()
+    return s
+
+def ngrams(tokens, n):
+    return [" ".join(tokens[i:i+n]) for i in range(len(tokens)-n+1)]
+
+# =============================
+# LEBANON LOCATIONS from SQLite
 # =============================
 db_path = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\lebanon_locations.db"
 
-LEBANON_LOCATIONS = {}
-ALL_LOCATIONS = set()
+LEB_ALL_ORIGINALS = set()   # all original strings (NAME_1/2/3)
+LEB_NORM_TO_ORIG = {}       # normalized -> set(originals)
+
+def add_location_string(s: str):
+    s = (s or "").strip()
+    if not s:
+        return
+    LEB_ALL_ORIGINALS.add(s)
+    n = normalize_ar(s)
+    if not n:
+        return
+    LEB_NORM_TO_ORIG.setdefault(n, set()).add(s)
 
 try:
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
-
     cur.execute("""
         SELECT NAME_1, NAME_2, NAME_3
         FROM locations
         WHERE NAME_0 = 'لبنان'
     """)
-
-    temp = {}
     for name_1, name_2, name_3 in cur.fetchall():
-        gov = (name_1 or "").strip()
-        nb  = (name_3 or "").strip()
-
-        if not gov:
-            continue
-
-        if gov not in temp:
-            temp[gov] = set()
-
-        if nb:
-            temp[gov].add(nb)
-
-        ALL_LOCATIONS.add(gov)
-        if name_2:
-            ALL_LOCATIONS.add(name_2.strip())
-        if name_3:
-            ALL_LOCATIONS.add(name_3.strip())
-
-    for gov, nbs in temp.items():
-        LEBANON_LOCATIONS[gov] = sorted(nbs)
-
+        add_location_string(name_1)
+        add_location_string(name_2)
+        add_location_string(name_3)
 finally:
     try:
         conn.close()
     except:
         pass
 
+LEB_NORM_KEYS = list(LEB_NORM_TO_ORIG.keys())  # for fuzzy matching
+
 # =============================
-# LOCATION EXTRACTION (with AI fallback)
+# LOCATION EXTRACTION (DB exact -> DB fuzzy -> AI)
 # =============================
-def extract_location(text):
-    if not text or "غير محدد" in text or "undefined" in text.lower():
-        return ai_suggest_location(text)
+def extract_location(text: str):
+    if not text:
+        return ("Unknown / Outside Lebanon", "none")
 
-    for loc in ALL_LOCATIONS:
-        if loc and loc in text:
-            return loc
+    # quick exact normalized substring search
+    nt = normalize_ar(text)
+    # exact scan
+    for norm_loc, originals in LEB_NORM_TO_ORIG.items():
+        if norm_loc and norm_loc in nt:
+            return (next(iter(originals)), "db_exact")
 
-    return ai_suggest_location(text)
+    # fuzzy on uni/bi/tri-grams
+    toks = nt.split()
+    grams = toks + ngrams(toks, 2) + ngrams(toks, 3)
 
-def ai_suggest_location(text):
+    # try longest grams first
+    for g_len in (3, 2, 1):
+        for g in (ngrams(toks, g_len) if g_len > 1 else toks):
+            if not g:
+                continue
+            g_norm = g if g_len == 1 else g  # already normalized
+            # exact containment on grams
+            if g_norm in LEB_NORM_TO_ORIG:
+                return (next(iter(LEB_NORM_TO_ORIG[g_norm])), "db_exact")
+
+            # fuzzy closest
+            best = difflib.get_close_matches(g_norm, LEB_NORM_KEYS, n=1, cutoff=0.90)
+            if best:
+                cand_norm = best[0]
+                originals = LEB_NORM_TO_ORIG.get(cand_norm)
+                if originals:
+                    return (next(iter(originals)), "db_fuzzy")
+
+    # AI fallback (restrict with a list to keep it grounded)
+    ai_loc = ai_suggest_location(text)
+    return (ai_loc, "ai")
+
+def ai_suggest_location(text: str) -> str:
+    # Give the model a (large) but bounded list to pick from
+    loc_list = sorted(LEB_ALL_ORIGINALS)
+    # If the list is huge, trim to first 1500 to keep prompt reasonable
+    if len(loc_list) > 1500:
+        loc_list = loc_list[:1500]
+
     prompt = f"""
-    The following message might contain a location in Lebanon.
-    Message: {text}
+أنت مساعد يقوم باستخراج المواقع داخل لبنان فقط.
+النص:
+{text}
 
-    Here is the full list of known Lebanese locations: {', '.join(list(ALL_LOCATIONS)[:200])} ...
+قائمة بالمواقع اللبنانية المحتملة (محافظات/أقضية/بلدات/أحياء):
+{", ".join(loc_list)}
 
-    Task: If the text mentions a Lebanese area, return the most likely one from the list.
-    If no Lebanese location is found, return "Unknown / Outside Lebanon".
-    Answer with only the location name.
-    """
-    suggestion = call_phi3(prompt)
-    return suggestion if suggestion else "Unknown / Outside Lebanon"
+التعليمات:
+- إذا كان النص يشير إلى مكان داخل لبنان فأعد اسم المكان كما هو بالضبط من القائمة أعلاه (اختَر الأكثر تحديداً).
+- إذا لم تجد مكاناً لبنانياً واضحاً فأعد: Unknown / Outside Lebanon
+أجب باسم المكان فقط دون أي إضافة.
+"""
+    suggestion = call_phi3(prompt).strip()
+    # sanitize a little
+    if not suggestion or "unknown" in suggestion.lower():
+        return "Unknown / Outside Lebanon"
+    # if model returned something not in our list, keep it but mark it as AI-picked
+    return suggestion
 
 # =============================
 # DETAILS EXTRACTION
 # =============================
 def extract_important_details(text):
-    numbers = re.findall(r"\d+", text)
+    numbers = re.findall(r"\d+", text or "")
     casualties = []
     ik = IncidentKeywords()
-    text_lower = text.lower()
+    text_lower = (text or "").lower()
     for cat, langs in ik.casualty_keywords.items():
         for words in langs.values():
             if any(kw in text_lower for kw in words):
@@ -170,7 +220,7 @@ def extract_important_details(text):
     return {
         "numbers_found": numbers,
         "casualties": list(set(casualties)),
-        "summary": text[:120] + "..." if len(text) > 120 else text
+        "summary": text[:120] + "..." if text and len(text) > 120 else (text or "")
     }
 
 # =============================
@@ -233,16 +283,18 @@ async def main():
         text_lower = event.raw_text.lower()
         if any(kw in text_lower for kw in keywords_set):
             incident_type = keywords.get_incident_type(text_lower)
-            location = extract_location(event.raw_text)
+            loc_value, loc_source = extract_location(event.raw_text)
             details = extract_important_details(event.raw_text)
 
-            channel_name = event.chat.username if event.chat else str(event.chat_id)
+            # Prefer a readable channel name; fallback to ID
+            channel_name = getattr(event.chat, "username", None) or getattr(event.chat, "title", None) or str(event.chat_id)
             msg_id = event.id
 
             if (channel_name, msg_id) not in existing_ids:
                 msg_data = {
                     'incident_type': incident_type,
-                    'location': location,
+                    'location': loc_value,
+                    'location_source': loc_source,   # db_exact | db_fuzzy | ai | none
                     'channel': channel_name,
                     'message_id': msg_id,
                     'date': str(event.date),
@@ -254,7 +306,7 @@ async def main():
                 with open(output_file, 'w', encoding='utf-8') as f:
                     json.dump(matched_messages, f, ensure_ascii=False, indent=2)
 
-                print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
+                print(f"[MATCH] {incident_type} @ {loc_value} ({loc_source}) from {channel_name}")
 
     print("Started monitoring. Waiting for new messages...")
 

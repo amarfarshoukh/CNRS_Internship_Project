@@ -1462,5 +1462,37 @@
       "casualties": [],
       "summary": "مراسل \"ليبانون ديبايت\": محلقة اسرائيلية القت قنبلة في بلدة الضهيرة قضاء صور\nhttps://lbdb.co/733404"
     }
+  },
+  {
+    "incident_type": "unknown",
+    "location": "Unknown / Outside Lebanon",
+    "channel": "lebanonNewsNow",
+    "message_id": 207032,
+    "date": "2025-08-18 06:20:47+00:00",
+    "details": {
+      "numbers_found": [
+        "16"
+      ],
+      "casualties": [
+        "killed"
+      ],
+      "summary": "‏🚨 ورد الآن / العربية: الجيش الإسرائيلي يعتقل 16 فلسطينيا في حملة مداهمات بالضفة الغربية \n\n @lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "Unknown / Outside Lebanon",
+    "channel": "lebanondebate",
+    "message_id": 142400,
+    "date": "2025-08-18 06:22:33+00:00",
+    "details": {
+      "numbers_found": [
+        "733405"
+      ],
+      "casualties": [
+        "injured"
+      ],
+      "summary": "رصاصة في الظهر... جريح بإشكال ليلي في صيدا\nhttps://lbdb.co/733405"
+    }
   }
 ]
