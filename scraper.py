@@ -14,7 +14,7 @@ import qrcode
 CSV_PATH = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\lebanon_locations.csv"
 OUTPUT_FILE = "matched_incidents.json"
 OLLAMA_MODEL = "phi3:mini"
-MAX_NUMBER_LEN = 6   # filter out numbers longer than this (likely IDs)
+MAX_NUMBER_LEN = 6  # filter out numbers longer than this (likely IDs)
 
 # Telegram API (use your values)
 api_id = 20976159
@@ -34,8 +34,9 @@ RE_DIACRITICS = re.compile(
 def normalize_arabic(text: str) -> str:
     if not text:
         return ""
+    text = str(text)
     text = RE_DIACRITICS.sub("", text)
-    text = text.replace('\u0640', '')
+    text = text.replace('\u0640', '')  # tatweel
     text = re.sub(r"[إأآا]", "ا", text)
     text = re.sub(r"[ؤ]", "و", text)
     text = re.sub(r"[ئ]", "ي", text)
@@ -45,62 +46,51 @@ def normalize_arabic(text: str) -> str:
     text = re.sub(r"\s+", " ", text).strip()
     return text
 
-COMMON_LOCATION_PREFIXES = [
-    "منطقة", "بلدة", "بلدية", "مدينة", "حي", "قضاء", "محافظة"
-]
-
-def strip_location_prefixes(text: str) -> str:
-    t = text
-    for pref in COMMON_LOCATION_PREFIXES:
-        t = re.sub(rf"\b{re.escape(pref)}\b\s*", "", t)
-    return t
-
 # -----------------------------
 # Load locations from CSV
 # -----------------------------
 def load_locations_from_csv(csv_path: str):
     if not os.path.exists(csv_path):
         raise FileNotFoundError(f"CSV not found: {csv_path}")
+
     with open(csv_path, newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         rows = list(reader)
+
     norm_to_original = {}
     for r in rows:
-        for key in r.keys():
-            candidate = r.get(key, "").strip()
-            if candidate:
-                normalized = normalize_arabic(strip_location_prefixes(candidate))
+        for key in ['NAME_0', 'NAME_1', 'NAME_2', 'NAME_3']:
+            val = r.get(key)
+            if val:
+                normalized = normalize_arabic(val.strip())
                 if normalized and normalized not in norm_to_original:
-                    norm_to_original[normalized] = candidate
-    return norm_to_original, set(norm_to_original.values())
+                    norm_to_original[normalized] = val.strip()
+    return norm_to_original
 
+# load at startup
 try:
-    NORM_LOC_MAP, ALL_ORIGINAL_LOCATIONS = load_locations_from_csv(CSV_PATH)
+    NORM_LOC_MAP = load_locations_from_csv(CSV_PATH)
     NORMALIZED_LOCATIONS = set(NORM_LOC_MAP.keys())
     print(f"Loaded {len(NORMALIZED_LOCATIONS)} normalized locations from CSV.")
 except Exception as e:
     print("Error loading CSV:", e)
     NORM_LOC_MAP = {}
     NORMALIZED_LOCATIONS = set()
-    ALL_ORIGINAL_LOCATIONS = set()
 
 # -----------------------------
-# Location extraction (DB-first)
+# Location extraction
 # -----------------------------
 def extract_location_db_first(text: str):
     if not text:
-        return None, None
+        return None
+
     text_norm = normalize_arabic(text)
-    text_norm_stripped = strip_location_prefixes(text_norm)
+    # Longest match first
     sorted_locs = sorted(NORMALIZED_LOCATIONS, key=lambda s: -len(s))
     for nloc in sorted_locs:
-        if nloc in text_norm or nloc in text_norm_stripped:
-            return NORM_LOC_MAP.get(nloc), nloc
-    tokens = re.split(r"\s+", text_norm_stripped)
-    for t in tokens:
-        if t in NORMALIZED_LOCATIONS:
-            return NORM_LOC_MAP.get(t), t
-    return None, None
+        if nloc in text_norm:
+            return NORM_LOC_MAP[nloc]
+    return None
 
 # -----------------------------
 # Incident keywords & details
@@ -125,15 +115,7 @@ class IncidentKeywords:
             'injured': {'ar': ['جريح','جرحى','مصاب','إصابة']},
             'missing': {'ar': ['مفقود','مفقودين','اختفى']}
         }
-    def all_keywords(self):
-        kws = set()
-        for cat in self.incident_keywords.values():
-            for lst in cat.values():
-                kws.update([w.lower() for w in lst])
-        for cat in self.casualty_keywords.values():
-            for lst in cat.values():
-                kws.update([w.lower() for w in lst])
-        return kws
+
     def get_incident_type_by_keywords(self, text):
         if not text:
             return None
@@ -144,6 +126,7 @@ class IncidentKeywords:
                     if kw in tl:
                         return itype
         return None
+
     def extract_casualties(self, text):
         tl = text.lower()
         cats = []
@@ -154,6 +137,7 @@ class IncidentKeywords:
                         cats.append(cat)
                         break
         return list(set(cats))
+
     def extract_numbers(self, text):
         nums = re.findall(r"[0-9]+|[٠-٩]+", text)
         conv = str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789")
@@ -184,7 +168,7 @@ Output JSON format:
 }}
 
 Important:
-- If the message contains phrases like "لا تهديد" (no threat), threat_level must be "no".
+- If the message contains phrases like "لا تهديد", threat_level must be "no".
 - Respond with JSON only, no explanations.
 """
     try:
@@ -199,10 +183,7 @@ Important:
         text_clean = re.sub(r"```.*?```", "", text, flags=re.DOTALL)
         m = re.search(r"\{.*?\}", text_clean, flags=re.DOTALL)
         if m:
-            try:
-                return json.loads(m.group())
-            except json.JSONDecodeError:
-                return None
+            return json.loads(m.group())
         return None
     except Exception as e:
         print("Phi3 call failed:", e)
@@ -213,7 +194,7 @@ Important:
 # -----------------------------
 async def qr_login(client):
     if not await client.is_user_authorized():
-        print("Not authorized. Scan QR code:")
+        print("Scan QR code:")
         qr_login = await client.qr_login()
         qr = qrcode.QRCode()
         qr.add_data(qr_login.url)
@@ -221,6 +202,8 @@ async def qr_login(client):
         qr.print_ascii(invert=True)
         await qr_login.wait()
         print("Logged in!")
+    else:
+        print("Already authorized!")
 
 async def get_my_channels(client):
     out = []
@@ -264,32 +247,30 @@ async def main():
             return
 
         # 1) Database-first location
-        db_loc, db_norm = extract_location_db_first(text)
-        location_known_by_db = bool(db_loc)
+        db_loc = extract_location_db_first(text)
+        location = db_loc if db_loc else None
 
-        # 2) Keyword quick check
+        # 2) Keyword quick check for incident_type
         keyword_type = IK.get_incident_type_by_keywords(text)
+
+        # 3) threat quick check
         threat_quick = "no" if "لا تهديد" in normalize_arabic(text) else None
 
-        # 3) Phi3 final check
+        # 4) Phi3 always
         phi3_res = query_phi3_json(text)
-        incident_type = keyword_type or (phi3_res.get("incident_type") if phi3_res else "other")
-        if phi3_res and phi3_res.get("incident_type"):
-            incident_type = phi3_res.get("incident_type")
+
+        # Incident type: prefer Phi3 if exists
+        incident_type = phi3_res.get("incident_type") if phi3_res and phi3_res.get("incident_type") else keyword_type or "other"
+
+        # Threat level
         threat_level = threat_quick if threat_quick is not None else (phi3_res.get("threat_level") if phi3_res else "yes")
 
-        # -----------------------------
-        # 4) Determine location (updated logic)
-        # -----------------------------
-        location = None
-        if location_known_by_db:
-            location = db_loc
-        else:
+        # Location: DB first; if not DB, check Phi3 only if in Lebanon
+        if not location:
             if phi3_res and phi3_res.get("location") and "Unknown" not in phi3_res.get("location"):
                 location = phi3_res.get("location")
             else:
-                # Drop message if no Lebanese location
-                print(f"⚠️ Dropped message (no Lebanese location): {text[:100]}...")
+                # message is outside Lebanon or unknown; skip
                 return
 
         # Extract numbers & casualties
