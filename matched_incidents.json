@@ -3310,5 +3310,320 @@
       "casualties": [],
       "summary": "‌‏ترامب: سأقود حملة للتخلّص من التصويت في الانتخابات عبر البريد"
     }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "Aleppo Governorate, Syria",
+    "channel": "LBCI_NEWS",
+    "message_id": 251159,
+    "date": "2025-08-18 11:28:40+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "18",
+        "2025",
+        "02",
+        "23"
+      ],
+      "casualties": [],
+      "summary": "الرئيس الإيرانيّ يزور أرمينيا للبحث في الممر المدعوم أميركيا #LBCINews https://t.co/fnmPZZXfgy\n https://twitter.com/LBCI_NEWS/status/1957402889724236185\nAugust 18, 2025 at 02:23PM"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "الديمان",
+    "channel": "LBCI_NEWS",
+    "message_id": 251160,
+    "date": "2025-08-18 11:28:41+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "11",
+        "18",
+        "2025",
+        "02",
+        "24"
+      ],
+      "casualties": [],
+      "summary": "مخزومي من الديمان: الحياد ضرورة لبناء وطن يحميه جيشه ومؤسساته #LBCINewshttps://t.co/p11RLTKguO\n https://twitter.com/LBCI_NEWS/status/1957403282428535228\nAugust 18, 2025 at 02:24PM"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "بيروت",
+    "channel": "MTVLebanonNews",
+    "message_id": 278497,
+    "date": "2025-08-18 11:32:29+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "18",
+        "2025",
+        "02",
+        "27"
+      ],
+      "casualties": [],
+      "summary": "نقيب مستوردي السيارات المستعملة إيلي قزي لـmtv: مشاكل عدّة تواجهنا منها إغلاق الصندوق الداخلي عند الساعة الواحدة في مرفأ بيروت ونطالب بإغلاقه عند الساعة الثالثة بالإضافة التأخير الناتج عن توقّف النظام\n https://twitter.com/MTVLebanonNews/status/1957404067782590491\nAugust 18, 2025 at 02:27PM"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "طاريا",
+    "channel": "MTVLebanonNews",
+    "message_id": 278498,
+    "date": "2025-08-18 11:32:30+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2019",
+        "18",
+        "2025",
+        "02",
+        "27"
+      ],
+      "casualties": [],
+      "summary": "إيلي قزي لـmtv: نطلب اجتماعًا طارئًا لهيئة المرفأ ووزارة الشغال للبحث في المشاكل التي تواجهنا وحلّها لأنّنا كقطاع ندفع خسائر كبيرة منذ العام 2019 ولم يعد بمقدورنا تحمّلها\n https://twitter.com/MTVLebanonNews/status/1957404094236070276\nAugust 18, 2025 at 02:27PM"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "البستان",
+    "channel": "LBCI_NEWS",
+    "message_id": 251162,
+    "date": "2025-08-18 11:33:36+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "18",
+        "2025",
+        "02",
+        "30"
+      ],
+      "casualties": [],
+      "summary": "البستاني: رفع التصنيف الإئتماني من CC إلى CCC من قبل \"ستاندرد أند بورز\" خطوة أولى إيجابية #LBCINewshttps://t.co/ktalXKfpZG\n https://twitter.com/LBCI_NEWS/status/1957404608826896724\nAugust 18, 2025 at 02:30PM"
+    }
+  },
+  {
+    "incident_type": "other",
+    "location": "Lebanon",
+    "channel": "MTVLebanonNews",
+    "message_id": 278499,
+    "date": "2025-08-18 11:37:12+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "7",
+        "6",
+        "18",
+        "2025",
+        "02",
+        "31"
+      ],
+      "casualties": [],
+      "summary": "برّاك وأورتاغوس يُغادران السراي من دون الإدلاء بأي تصريح https://t.co/EL7OY6RlQr\n https://twitter.com/MTVLebanonNews/status/1957405075720015997\nAugust 18, 2025 at 02:31PM"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "البستان",
+    "channel": "MTVLebanonNews",
+    "message_id": 278500,
+    "date": "2025-08-18 11:37:13+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "3",
+        "6",
+        "18",
+        "2025",
+        "02",
+        "34"
+      ],
+      "casualties": [],
+      "summary": "فريد البستاني: رفع التصنيف الائتماني للبنان خطوة أولى إيجابيةhttps://t.co/BgTi3u6xWX\n https://twitter.com/MTVLebanonNews/status/1957405829549740063\nAugust 18, 2025 at 02:34PM"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "عين التينة",
+    "channel": "MTVLebanonNews",
+    "message_id": 278501,
+    "date": "2025-08-18 11:37:14+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "71",
+        "18",
+        "2025",
+        "02",
+        "34"
+      ],
+      "casualties": [],
+      "summary": "برّاك من عين التينة: نتحرّك بالاتجاه الصحيحhttps://t.co/71YHjlmqGl\n https://twitter.com/MTVLebanonNews/status/1957405838475252125\nAugust 18, 2025 at 02:34PM"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "Lebanon",
+    "channel": "LBCI_NEWS",
+    "message_id": 251163,
+    "date": "2025-08-18 11:43:29+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "18",
+        "2025",
+        "02",
+        "41"
+      ],
+      "casualties": [],
+      "summary": "\"لقاء سيدة الجبل\": أمام حزب الله طريق واحد العودة إلى لبنان بشروط وثيقة الوفاق الوطني #LBCINewshttps://t.co/DVQLEjfkga\n https://twitter.com/LBCI_NEWS/status/1957407622807572480\nAugust 18, 2025 at 02:41PM"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "عبر.",
+    "channel": "lebanonnews2",
+    "message_id": 87193,
+    "date": "2025-08-18 11:46:50+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "touch توزع لمشتركيها هذه الرسالة\n\nDear Customer,\n\nBeware of fraud attempts through iMessage, SMS, WhatsApp, email, social media, or any other messaging platform.\nDo not click on suspicious links or share personal information with unverified sources.\n\n\nعزيزي المشترك،\n\nاحذر من محاولات الاحتيال عبر  iM..."
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "ريحا",
+    "channel": "lebanonnews2",
+    "message_id": 87195,
+    "date": "2025-08-18 11:48:26+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "🔴دار الفتوى تلقّت أكثر من رسالة اعتراض من رجال دين ونخب تُحذّر من تصريحات وفيديوهات لإمام مسجد يُركّز في الفترة في هجومه على الحز.. ب (النهار)\n\n\nhttps://telegram.me/lebanonnews2"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "جديد",
+    "channel": "lebanonnews2",
+    "message_id": 87196,
+    "date": "2025-08-18 11:51:55+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "🔴معلومات للـLBCI: الموفدان الأميركيان توم براك ومورغان أورتاغوس سيعودان إلى لبنان في زيارة جديدة نهاية هذا الشهر\n\n\n\nhttps://telegram.me/lebanonnews2"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "بعبدا",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214499,
+    "date": "2025-08-18 11:51:47+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "9",
+        "18",
+        "2025",
+        "02",
+        "48"
+      ],
+      "casualties": [],
+      "summary": "بتسامة بعد اللقاء.. أورتاغوس في لبنان مجدداًعلى هامش المؤتمر الصحفي الذي عقده المبعوث الاميركي توم باراك في قصر بعبدا، ظهرت الموفدة الاميركية مورغان اورتاغوس الى جانب باراك وعلى وجهها \"بسمة\" لافتة، وقد صرح باراك ان \"السيدة اورتاغوس عادة كجزء من فريقنا بتوصية من الرئيس دونالد https://t.co/b9iMMuNYvy\n..."
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "Lebanon",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214500,
+    "date": "2025-08-18 11:51:47+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "18",
+        "2025",
+        "02",
+        "48"
+      ],
+      "casualties": [],
+      "summary": "سلام خلال لقائه براك: على الجانب الأميركي الضغط على اسرائيل لوقف الأعمال العدائية والانسحاب من النقاط الخمس والإفراج عن الأسرى\n https://twitter.com/ALJADEEDNEWS/status/1957409341427814408\nAugust 18, 2025 at 02:48PM"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "أده",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214501,
+    "date": "2025-08-18 11:51:48+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "18",
+        "2025",
+        "02",
+        "49"
+      ],
+      "casualties": [],
+      "summary": "سلام عقب لقائه براك: أدعو الى إعلان التزام دولي واضح بعقد مؤتمر لدعم إعادة الإعمار والتعافي الاقتصادي في لبنان\n https://twitter.com/ALJADEEDNEWS/status/1957409572143976705\nAugust 18, 2025 at 02:49PM"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "أده",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33315,
+    "date": "2025-08-18 11:51:33+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏سلام عقب لقائه براك: أدعو الى إعلان التزام دولي واضح بعقد مؤتمر لدعم إعادة الإعمار والتعافي الاقتصادي في لبنان"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "طرابلس",
+    "channel": "lebanonNewsNow",
+    "message_id": 207078,
+    "date": "2025-08-18 11:47:26+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏🚨 ورد الآن / رئيس الحكومة نواف سلام  توجه الى طرابلس \n\n @lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "بلاط",
+    "channel": "LBCI_NEWS",
+    "message_id": 251166,
+    "date": "2025-08-18 11:53:20+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "9",
+        "2",
+        "18",
+        "2025",
+        "02",
+        "48"
+      ],
+      "casualties": [],
+      "summary": "مؤسسة العرفان التوحيدية: محاولة النيل من مقام وليد جنبلاط هو استهداف لدوره الجامع ورمزيته الوطنية#LBCINews https://t.co/9mWEPU2rrK\n https://twitter.com/LBCI_NEWS/status/1957409229762891990\nAugust 18, 2025 at 02:48PM"
+    }
   }
 ]

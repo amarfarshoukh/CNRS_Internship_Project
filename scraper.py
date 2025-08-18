@@ -217,7 +217,7 @@ async def main():
 
         text_norm = normalize_arabic(text)
 
-        # DB-first location
+        # ----- Only use DB-matched locations, never phi3 -----
         db_loc = None
         for loc_norm, loc_original in NORM_LOC_MAP.items():
             if loc_norm in text_norm:
@@ -250,16 +250,9 @@ async def main():
         # Threat level
         threat_level = threat_quick or (phi3_res.get("threat_level") if phi3_res and phi3_res.get("threat_level") else "yes")
 
-        # Location: if not in DB, accept Phi3 only if it's in Lebanon
-        if not location:
-            if phi3_res and phi3_res.get("location") and "Unknown" not in phi3_res.get("location"):
-                location_norm = normalize_arabic(phi3_res.get("location"))
-                if location_norm in NORMALIZED_LOCATIONS:
-                    location = NORM_LOC_MAP[location_norm]
-
-        # ---- PATCHED: SKIP IF incident_type IS NONE/NULL or "other" ----
+        # ---- PATCHED: SKIP IF incident_type IS NONE/NULL or "other" OR location is not from the database ----
         if not location or not incident_type or incident_type == "other":
-            # Skip messages outside Lebanon, with missing or 'other' incident types
+            # Skip messages outside Lebanon, with missing or 'other' incident types, or if location not in DB
             return
 
         # Numbers & casualties
