@@ -84,7 +84,7 @@ except Exception as e:
 class IncidentKeywords:
     def __init__(self):
         self.incident_keywords = {
-            'vehicle_accident': ['حادث سير','تصادم','دهس','انقلاب'],
+            'vehicle_accident': ['حادث سير','حوادث سير','تصادم','دهس','انقلاب'],
             'shooting': ['إطلاق نار','رصاص','مسلح','هجوم مسلح','اشتباك'],
             'protest': ['احتجاج','مظاهرة','تظاهرة','اعتصام'],
             'fire': ['حريق','احتراق','نار','اشتعال','اندلاع','دخان'],
@@ -226,9 +226,8 @@ async def main():
 
         location = db_loc
 
-        # Keyword incident type
+        # Keyword incident type (try both singular and plural for accidents)
         keyword_type = IK.get_incident_type_by_keywords(text)
-        # plural fix for vehicle accidents
         text_plural_fix = text_norm.replace("حوادث سير", "حادث سير")
         keyword_type_plural_fix = IK.get_incident_type_by_keywords(text_plural_fix)
         if keyword_type is None and keyword_type_plural_fix is not None:
@@ -239,7 +238,7 @@ async def main():
         # Phi3 final check
         phi3_res = query_phi3_json(text)
 
-        # Incident type selection
+        # Incident type selection: prefer Phi3 if not "other"
         incident_type = None
         if phi3_res:
             phi3_type = phi3_res.get("incident_type")
