@@ -1866,5 +1866,58 @@
       "casualties": [],
       "summary": "حريق ضخم يقترب من المنازل في منطقة بشامون وفرق الإطفاء تعمل على إخماده"
     }
+  },
+  {
+    "incident_type": "fire",
+    "location": "Unknown / Outside Lebanon",
+    "channel": "lebanondebate",
+    "message_id": 142424,
+    "date": "2025-08-18 08:24:15+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "733438"
+      ],
+      "casualties": [],
+      "summary": "ألسنة النيران تقترب من بيوت بشامون... ومناشدات للتدخل السريع (فيديو)\nhttps://lbdb.co/733438"
+    }
+  },
+  {
+    "incident_type": "other",
+    "location": "Unknown / Outside Lebanon",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214486,
+    "date": "2025-08-18 08:26:25+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "1957357940240679196",
+        "18",
+        "2025",
+        "11",
+        "24"
+      ],
+      "casualties": [],
+      "summary": "الرئيس عون بعد لقائه برّاك وأورتاغوس: هذا هو المطلوبhttps://t.co/qouMszzlhi\n https://twitter.com/ALJADEEDNEWS/status/195..."
+    }
+  },
+  {
+    "incident_type": "other",
+    "location": "Unknown / Outside Lebanon",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214487,
+    "date": "2025-08-18 08:26:26+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "1957358069215899820",
+        "18",
+        "2025",
+        "11",
+        "25"
+      ],
+      "casualties": [],
+      "summary": "\"السراوي\" في قبضة السلطات السورية.. فمن هو؟https://t.co/blpRWnUiMw\n https://twitter.com/ALJADEEDNEWS/status/195735806921..."
+    }
   }
 ]
