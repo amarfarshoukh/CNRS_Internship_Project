@@ -2089,5 +2089,247 @@
             "casualties": [],
             "summary": "‏🚨 ورد الآن / وزير الخارجية المصري: نواصل اتصالاتنا وجهودنا لوقف إطلاق النار في غزة وإنهاء الحرب وإدخال المساعدات \n\n @le..."
         }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "lebanondebate",
+        "message_id": 142428,
+        "date": "2025-08-18 08:56:27+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "733449"
+            ],
+            "casualties": [],
+            "summary": "مصادر لـ \"اي بي سي\": وزير الخارجية الاميركي وافق على خطة لإنهاء عمل قوات اليونيفيل وإدارة ترامب ترى أن الإنفاق على اليون..."
+        }
+    },
+    {
+        "incident_type": "shooting",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "MTVLebanonNews",
+        "message_id": 278488,
+        "date": "2025-08-18 08:57:45+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "60",
+                "6",
+                "4",
+                "1957365951537553887",
+                "18",
+                "2025",
+                "11",
+                "56"
+            ],
+            "casualties": [
+                "killed"
+            ],
+            "summary": "\"صفقة سرية\"... وجواسيس على لائحة الموتhttps://t.co/J60qI6DC4L\n https://twitter.com/MTVLebanonNews/status/195736595153755..."
+        }
+    },
+    {
+        "incident_type": "accident",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "lebanondebate",
+        "message_id": 142429,
+        "date": "2025-08-18 08:59:48+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "733439",
+                "733445",
+                "733425",
+                "733422",
+                "733442",
+                "733438"
+            ],
+            "casualties": [],
+            "summary": "\"رصاص الفجر\" يخترق \"منسقية القوات\"... من المستهدف؟\nhttps://lbdb.co/733439\n\nلا أجوبة على الورقة اللبنانية... دعم الجيش ضر..."
+        }
+    },
+    {
+        "incident_type": "fire",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "ALJADEED_NEWS",
+        "message_id": 214489,
+        "date": "2025-08-18 09:01:57+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "1957366792428687693",
+                "18",
+                "2025",
+                "11",
+                "59"
+            ],
+            "casualties": [],
+            "summary": "حريقٌ ضخم يهدد المنازلاندلع حريق ضخم في بلدة بشامون واقترب من المنازل ما دفع الأهالي لمناشدة الدفاع المدني والأجهزة المع..."
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "lebanondebate",
+        "message_id": 142430,
+        "date": "2025-08-18 09:02:03+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "733441"
+            ],
+            "casualties": [],
+            "summary": "\"حماس\" تتسلّم مقترحاً جديداً... والرد خلال ساعات\n\nhttps://lbdb.co/733441"
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "lebanonNewsNow",
+        "message_id": 207056,
+        "date": "2025-08-18 09:03:39+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [],
+            "casualties": [],
+            "summary": "‏🚨 ورد الآن / رئيس وزراء فلسطين: غزة بحاجة إلى تحرك دولي يجبر إسرائيل على إدخال المساعدات \n\n @lebanonNewsNow"
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "lebanonNewsNow",
+        "message_id": 207057,
+        "date": "2025-08-18 09:04:41+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [],
+            "casualties": [],
+            "summary": "‏🚨 ورد الآن / رئيس وزراء فلسطين: نواصل العمل مع مصر تحضيرا لمؤتمر إعادة إعمار غزة \n\n @lebanonNewsNow"
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "lebanondebate",
+        "message_id": 142431,
+        "date": "2025-08-18 09:04:27+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "733450"
+            ],
+            "casualties": [],
+            "summary": "واشنطن تمهّد لإنهاء مهمة \"اليونيفيل\"... وأوروبا ترفع لواء المعارضة\nhttps://lbdb.co/733450"
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "MTVLebanoNews",
+        "message_id": 38259,
+        "date": "2025-08-18 09:07:48+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [],
+            "casualties": [],
+            "summary": "‌‏الجبهة السيادية: نعلن سخطنا من التصريحات التي أطلقها الأمين العام لـ\"حزب الله\" نعيم قاسم والتي تشكّل اعتداءً مباشراً ع..."
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "LBCI_NEWS",
+        "message_id": 251140,
+        "date": "2025-08-18 09:08:04+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "2",
+                "3",
+                "1957367427911848349",
+                "18",
+                "2025",
+                "12",
+                "02"
+            ],
+            "casualties": [],
+            "summary": "لقاء سيجمع بري بالموفدين الأميركيين وتشديد لبنانيّ على التزام إسرائيل بالورقة https://t.co/H2jMLKB3zq\n https://twitter.c..."
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Aleppo",
+        "channel": "LBCI_NEWS",
+        "message_id": 251141,
+        "date": "2025-08-18 09:08:05+00:00",
+        "threat_level": "no",
+        "details": {
+            "numbers_found": [
+                "6",
+                "638",
+                "4",
+                "1957367981589082321",
+                "18",
+                "2025",
+                "12",
+                "04"
+            ],
+            "casualties": [],
+            "summary": "الرئيس عون لبطريرك كنيسة المشرق الآشورية: للمحافظة على الحضور المسيحيّ في المشرق العربيّ #LBCINews https://t.co/6JbP638k..."
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "MTVLebanoNews",
+        "message_id": 38260,
+        "date": "2025-08-18 09:08:51+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [],
+            "casualties": [],
+            "summary": "‌‏الجبهة السيادية: كلام قاسم هو إعلان تمرّد على الشرعية ومحاولة لجرّ لبنان إلى حروب وصراعات"
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "MTVLebanoNews",
+        "message_id": 38261,
+        "date": "2025-08-18 09:09:53+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [],
+            "casualties": [],
+            "summary": "‌‏الجبهة السيادية: لخروج وزراء \"حزب الله\" من الحكومة أو إقالتهم"
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "MTVLebanoNews",
+        "message_id": 38262,
+        "date": "2025-08-18 09:09:54+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [],
+            "casualties": [],
+            "summary": "‌‏الجبهة السيادية: نطالب بإحالة الشيخ نعيم قاسم ومعاونيه إلى القضاء ونثمّن مواقف الرئيس عون ورئيس الحكومة وعلى اللبنانيي..."
+        }
+    },
+    {
+        "incident_type": "fire",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "lebanonNewsNow",
+        "message_id": 207058,
+        "date": "2025-08-18 09:09:51+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [],
+            "casualties": [],
+            "summary": "‏🚨 ورد الآن / أ.ف.ب عن مسؤول فلسطيني: حماس تسلّمت مقترحا جديدا في القاهرة لوقف إطلاق النار في قطاع غزة \n\n @lebanonNewsNo..."
+        }
     }
 ]
