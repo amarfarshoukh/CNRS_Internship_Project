@@ -2635,5 +2635,46 @@
             "casualties": [],
             "summary": "‏🚨 ورد الآن / هيئة البث الإسرائيلية: الشرطة اعتقلت 25 شخصا خلال  مظاهرات أمس في منطقة تل أبيب \n\n @lebanonNewsNow"
         }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "lebanondebate",
+        "message_id": 142434,
+        "date": "2025-08-18 09:40:00+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "733456"
+            ],
+            "casualties": [],
+            "summary": "\"الوثائق المنسية\" في ألاسكا... إدارة ترامب تحوّل الفضيحة إلى نكتة!\nhttps://lbdb.co/733456"
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "lebanonNewsNow",
+        "message_id": 207065,
+        "date": "2025-08-18 09:39:14+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [],
+            "casualties": [],
+            "summary": "‏🚨 ورد الآن / الخارجية الإسرائيلية: إسرائيل ستقدم مساعدات إنسانية عاجلة لجنوب السودان \n\n @lebanonNewsNow"
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "MTVLebanoNews",
+        "message_id": 38263,
+        "date": "2025-08-18 09:44:24+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [],
+            "casualties": [],
+            "summary": "‌‏وزارة الخارجية: بريطانيا وباكستان أكدتا دعمهما لتمديد مهمة اليونيفيل أمام مجلس الأمن"
+        }
     }
 ]

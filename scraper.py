@@ -14,14 +14,14 @@ import qrcode
 CSV_PATH = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\lebanon_locations.csv"
 OUTPUT_FILE = "matched_incidents.json"
 OLLAMA_MODEL = "phi3:mini"
-MAX_NUMBER_LEN = 6  # filter out numbers longer than this (likely IDs)
+MAX_NUMBER_LEN = 6   # filter out numbers longer than this (likely IDs)
 
-# Telegram API (use your values)
+# Telegram API
 api_id = 20976159
 api_hash = '41bca65c99c9f4fb21ed627cc8f19ad8'
 
 # -----------------------------
-# Arabic normalization helpers
+# Arabic normalization
 # -----------------------------
 RE_DIACRITICS = re.compile(
     "[" +
@@ -36,7 +36,7 @@ def normalize_arabic(text: str) -> str:
         return ""
     text = str(text)
     text = RE_DIACRITICS.sub("", text)
-    text = text.replace('\u0640', '')  # tatweel
+    text = text.replace('\u0640', '')
     text = re.sub(r"[إأآا]", "ا", text)
     text = re.sub(r"[ؤ]", "و", text)
     text = re.sub(r"[ئ]", "ي", text)
@@ -52,48 +52,33 @@ def normalize_arabic(text: str) -> str:
 def load_locations_from_csv(csv_path: str):
     if not os.path.exists(csv_path):
         raise FileNotFoundError(f"CSV not found: {csv_path}")
-
     with open(csv_path, newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         rows = list(reader)
 
     norm_to_original = {}
     for r in rows:
-        for key in ['NAME_0', 'NAME_1', 'NAME_2', 'NAME_3']:
-            val = r.get(key)
+        for col in ['NAME_3', 'NAME_2', 'NAME_1']:
+            val = r.get(col)
             if val:
-                normalized = normalize_arabic(val.strip())
-                if normalized and normalized not in norm_to_original:
-                    norm_to_original[normalized] = val.strip()
+                val = val.strip()
+                if val:
+                    norm = normalize_arabic(val)
+                    if norm and norm not in norm_to_original:
+                        norm_to_original[norm] = val
     return norm_to_original
 
-# load at startup
 try:
     NORM_LOC_MAP = load_locations_from_csv(CSV_PATH)
     NORMALIZED_LOCATIONS = set(NORM_LOC_MAP.keys())
-    print(f"Loaded {len(NORMALIZED_LOCATIONS)} normalized locations from CSV.")
+    print(f"Loaded {len(NORMALIZED_LOCATIONS)} locations from CSV.")
 except Exception as e:
     print("Error loading CSV:", e)
     NORM_LOC_MAP = {}
     NORMALIZED_LOCATIONS = set()
 
 # -----------------------------
-# Location extraction
-# -----------------------------
-def extract_location_db_first(text: str):
-    if not text:
-        return None
-
-    text_norm = normalize_arabic(text)
-    # Longest match first
-    sorted_locs = sorted(NORMALIZED_LOCATIONS, key=lambda s: -len(s))
-    for nloc in sorted_locs:
-        if nloc in text_norm:
-            return NORM_LOC_MAP[nloc]
-    return None
-
-# -----------------------------
-# Incident keywords & details
+# Incident keywords
 # -----------------------------
 class IncidentKeywords:
     def __init__(self):
@@ -115,7 +100,6 @@ class IncidentKeywords:
             'injured': {'ar': ['جريح','جرحى','مصاب','إصابة']},
             'missing': {'ar': ['مفقود','مفقودين','اختفى']}
         }
-
     def get_incident_type_by_keywords(self, text):
         if not text:
             return None
@@ -126,7 +110,6 @@ class IncidentKeywords:
                     if kw in tl:
                         return itype
         return None
-
     def extract_casualties(self, text):
         tl = text.lower()
         cats = []
@@ -137,7 +120,6 @@ class IncidentKeywords:
                         cats.append(cat)
                         break
         return list(set(cats))
-
     def extract_numbers(self, text):
         nums = re.findall(r"[0-9]+|[٠-٩]+", text)
         conv = str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789")
@@ -151,7 +133,7 @@ class IncidentKeywords:
 IK = IncidentKeywords()
 
 # -----------------------------
-# Phi3 helpers
+# Phi3 query
 # -----------------------------
 def query_phi3_json(message: str):
     prompt = f"""
@@ -168,7 +150,7 @@ Output JSON format:
 }}
 
 Important:
-- If the message contains phrases like "لا تهديد", threat_level must be "no".
+- If the message contains phrases like "لا تهديد" (no threat), threat_level must be "no".
 - Respond with JSON only, no explanations.
 """
     try:
@@ -183,7 +165,10 @@ Important:
         text_clean = re.sub(r"```.*?```", "", text, flags=re.DOTALL)
         m = re.search(r"\{.*?\}", text_clean, flags=re.DOTALL)
         if m:
-            return json.loads(m.group())
+            try:
+                return json.loads(m.group())
+            except json.JSONDecodeError:
+                return None
         return None
     except Exception as e:
         print("Phi3 call failed:", e)
@@ -194,7 +179,7 @@ Important:
 # -----------------------------
 async def qr_login(client):
     if not await client.is_user_authorized():
-        print("Scan QR code:")
+        print("Not authorized. Scan QR code:")
         qr_login = await client.qr_login()
         qr = qrcode.QRCode()
         qr.add_data(qr_login.url)
@@ -213,7 +198,7 @@ async def get_my_channels(client):
     return out
 
 # -----------------------------
-# Main processing
+# JSON storage
 # -----------------------------
 def load_existing_matches(path=OUTPUT_FILE):
     if os.path.exists(path):
@@ -228,6 +213,9 @@ def save_matches(matches, path=OUTPUT_FILE):
     with open(path, 'w', encoding='utf-8') as f:
         json.dump(matches, f, ensure_ascii=False, indent=2)
 
+# -----------------------------
+# Main processing
+# -----------------------------
 async def main():
     client = TelegramClient('session', api_id, api_hash)
     await client.connect()
@@ -246,34 +234,40 @@ async def main():
         if (channel_name, msg_id) in existing_ids:
             return
 
-        # 1) Database-first location
-        db_loc = extract_location_db_first(text)
-        location = db_loc if db_loc else None
+        # 1) DB-first location
+        db_loc, db_norm = None, None
+        text_norm = normalize_arabic(text)
+        for loc_norm, loc_original in NORM_LOC_MAP.items():
+            if loc_norm in text_norm:
+                db_loc = loc_original
+                break
 
-        # 2) Keyword quick check for incident_type
+        location = db_loc
+
+        # 2) Keyword quick incident_type
         keyword_type = IK.get_incident_type_by_keywords(text)
-
-        # 3) threat quick check
         threat_quick = "no" if "لا تهديد" in normalize_arabic(text) else None
 
-        # 4) Phi3 always
+        # 3) Phi3 final check
         phi3_res = query_phi3_json(text)
 
-        # Incident type: prefer Phi3 if exists
-        incident_type = phi3_res.get("incident_type") if phi3_res and phi3_res.get("incident_type") else keyword_type or "other"
+        # Incident type: Phi3 preferred
+        incident_type = phi3_res.get("incident_type") if phi3_res and phi3_res.get("incident_type") else (keyword_type or "other")
 
         # Threat level
-        threat_level = threat_quick if threat_quick is not None else (phi3_res.get("threat_level") if phi3_res else "yes")
+        threat_level = threat_quick or (phi3_res.get("threat_level") if phi3_res and phi3_res.get("threat_level") else "yes")
 
-        # Location: DB first; if not DB, check Phi3 only if in Lebanon
+        # Location: if not in DB, accept Phi3 only if it's in Lebanon
         if not location:
             if phi3_res and phi3_res.get("location") and "Unknown" not in phi3_res.get("location"):
-                location = phi3_res.get("location")
-            else:
-                # message is outside Lebanon or unknown; skip
-                return
+                location_norm = normalize_arabic(phi3_res.get("location"))
+                if location_norm in NORMALIZED_LOCATIONS:
+                    location = NORM_LOC_MAP[location_norm]
+        if not location:
+            # Skip messages outside Lebanon
+            return
 
-        # Extract numbers & casualties
+        # Numbers & casualties
         numbers = IK.extract_numbers(text)
         casualties = IK.extract_casualties(text)
         summary = text[:300] + ("..." if len(text) > 300 else "")
