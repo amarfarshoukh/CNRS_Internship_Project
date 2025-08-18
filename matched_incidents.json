@@ -3269,5 +3269,46 @@
       "casualties": [],
       "summary": "‌‏معلومات mtv: براك يُغادر بيروت بعد ظهر اليوم"
     }
+  },
+  {
+    "incident_type": null,
+    "location": "بيروت",
+    "channel": "MTVLebanoNews",
+    "message_id": 38269,
+    "date": "2025-08-18 11:25:42+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏نقيب مستوردي السيارات المستعملة إيلي قزي لـmtv: مشاكل عدّة تواجهنا منها إغلاق الصندوق الداخلي عند الساعة الواحدة في مرفأ بيروت ونطالب بإغلاقه عند الساعة الثالثة بالإضافة التأخير الناتج عن توقّف النظام"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "طاريا",
+    "channel": "MTVLebanoNews",
+    "message_id": 38270,
+    "date": "2025-08-18 11:26:45+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2019"
+      ],
+      "casualties": [],
+      "summary": "‌‏إيلي قزي لـmtv: نطلب اجتماعًا طارئًا لهيئة المرفأ ووزارة الشغال للبحث في المشاكل التي تواجهنا وحلّها لأنّنا كقطاع ندفع خسائر كبيرة منذ العام 2019 ولم يعد بمقدورنا تحمّلها"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "عبر.",
+    "channel": "MTVLebanoNews",
+    "message_id": 38271,
+    "date": "2025-08-18 11:26:46+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏ترامب: سأقود حملة للتخلّص من التصويت في الانتخابات عبر البريد"
+    }
   }
 ]

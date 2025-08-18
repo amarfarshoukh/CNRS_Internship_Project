@@ -257,8 +257,9 @@ async def main():
                 if location_norm in NORMALIZED_LOCATIONS:
                     location = NORM_LOC_MAP[location_norm]
 
-        if not location or incident_type=="other":
-            # Skip messages outside Lebanon or not incidents
+        # ---- PATCHED: SKIP IF incident_type IS NONE/NULL or "other" ----
+        if not location or not incident_type or incident_type == "other":
+            # Skip messages outside Lebanon, with missing or 'other' incident types
             return
 
         # Numbers & casualties
