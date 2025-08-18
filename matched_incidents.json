@@ -2331,5 +2331,263 @@
             "casualties": [],
             "summary": "‏🚨 ورد الآن / أ.ف.ب عن مسؤول فلسطيني: حماس تسلّمت مقترحا جديدا في القاهرة لوقف إطلاق النار في قطاع غزة \n\n @lebanonNewsNo..."
         }
+    },
+    {
+        "incident_type": "shooting",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "lebanonNewsNow",
+        "message_id": 207059,
+        "date": "2025-08-18 09:11:57+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [],
+            "casualties": [],
+            "summary": "‏🚨 ورد الآن / المتحدث باسم القوات المسلحة الإيرانية: مؤامرة أميركا والكيان الصهيوني لنزع سلاح المقاومة ستفشل \n\n @lebanon..."
+        }
+    },
+    {
+        "incident_type": "shooting",
+        "location": "Lebanon",
+        "channel": "LBCI_NEWS",
+        "message_id": 251142,
+        "date": "2025-08-18 09:13:19+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "1957369429077250149",
+                "18",
+                "2025",
+                "12",
+                "10"
+            ],
+            "casualties": [],
+            "summary": "أ.ف.ب: مسؤول فلسطيني مطلع يعلن تسلم حماس مقترحًا جديدًا في القاهرة لوقف إطلاق النار في قطاع غزة\n https://twitter.com/LBC..."
+        }
+    },
+    {
+        "incident_type": "protest",
+        "location": "Lebanon",
+        "channel": "MTVLebanonNews",
+        "message_id": 278489,
+        "date": "2025-08-18 09:12:27+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "1957369320931033392",
+                "18",
+                "2025",
+                "12",
+                "09"
+            ],
+            "casualties": [],
+            "summary": "الجبهة السيادية: نعلن سخطنا من التصريحات التي أطلقها الأمين العام لـ\"حزب الله\" نعيم قاسم والتي تشكّل اعتداءً مباشراً على..."
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "MTVLebanonNews",
+        "message_id": 278490,
+        "date": "2025-08-18 09:12:28+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "1957369344180322599",
+                "18",
+                "2025",
+                "12",
+                "09"
+            ],
+            "casualties": [],
+            "summary": "الجبهة السيادية: كلام قاسم هو إعلان تمرّد على الشرعية ومحاولة لجرّ لبنان إلى حروب وصراعات\n https://twitter.com/MTVLebano..."
+        }
+    },
+    {
+        "incident_type": "protest",
+        "location": "Lebanon",
+        "channel": "MTVLebanonNews",
+        "message_id": 278491,
+        "date": "2025-08-18 09:12:29+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "1957369367714218093",
+                "18",
+                "2025",
+                "12",
+                "09"
+            ],
+            "casualties": [],
+            "summary": "الجبهة السيادية: نطالب بإحالة الشيخ نعيم قاسم ومعاونيه إلى القضاء ونثمّن مواقف الرئيس عون ورئيس الحكومة وعلى اللبنانيين ..."
+        }
+    },
+    {
+        "incident_type": "protest",
+        "location": "Lebanon",
+        "channel": "MTVLebanonNews",
+        "message_id": 278492,
+        "date": "2025-08-18 09:12:30+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "1957369393299485127",
+                "18",
+                "2025",
+                "12",
+                "10"
+            ],
+            "casualties": [],
+            "summary": "الجبهة السيادية: لخروج وزراء \"حزب الله\" من الحكومة أو إقالتهم\n https://twitter.com/MTVLebanonNews/status/195736939329948..."
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "MTVLebanonNews",
+        "message_id": 278493,
+        "date": "2025-08-18 09:12:31+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "4",
+                "0",
+                "1957369473562030498",
+                "18",
+                "2025",
+                "12",
+                "10"
+            ],
+            "casualties": [],
+            "summary": "بالتفاصيل: خطة إسرائيل لاحتلال غزةhttps://t.co/x4lNYwgl0i\n https://twitter.com/MTVLebanonNews/status/1957369473562030498..."
+        }
+    },
+    {
+        "incident_type": "attack/terrorism",
+        "location": "United States",
+        "channel": "LBCI_NEWS",
+        "message_id": 251143,
+        "date": "2025-08-18 09:13:20+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "1957369733914988547",
+                "18",
+                "2025",
+                "12",
+                "11"
+            ],
+            "casualties": [],
+            "summary": "المتحدث بإسم القوات المسلحة الإيرانية: مؤامرة أميركا والكيان الصهيوني لنزع سلاح المقاومة ستفشل\n https://twitter.com/LBCI..."
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Iran",
+        "channel": "LBCI_NEWS",
+        "message_id": 251144,
+        "date": "2025-08-18 09:13:20+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "1957369883634667922",
+                "18",
+                "2025",
+                "12",
+                "12"
+            ],
+            "casualties": [],
+            "summary": "المتحدث بإسم القوات المسلحة الإيرانية: تنفيذ الكيان الصهيوني تهديداته ضدنا سيجلب عليه هزائم أكبر وعواقب أشد\n https://twi..."
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "LBCI_NEWS",
+        "message_id": 251145,
+        "date": "2025-08-18 09:18:04+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "1957370327769481485",
+                "18",
+                "2025",
+                "12",
+                "13"
+            ],
+            "casualties": [],
+            "summary": "السلطات في باكستان استأنفت عمليات الإنقاذ والإغاثة#LBCINews https://t.co/wxIqFAIBlO\n https://twitter.com/LBCI_NEWS/statu..."
+        }
+    },
+    {
+        "incident_type": "shooting",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "lebanonNewsNow",
+        "message_id": 207060,
+        "date": "2025-08-18 09:14:00+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [],
+            "casualties": [],
+            "summary": "‏🚨 ورد الآن / المتحدث باسم القوات المسلحة الإيرانية: تنفيذ الكيان الصهيوني تهديداته ضدنا سيجلب عليه هزائم أكبر وعواقب أش..."
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "lebanonNewsNow",
+        "message_id": 207061,
+        "date": "2025-08-18 09:18:09+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [],
+            "casualties": [],
+            "summary": "‏🚨 ورد الآن / وزير الخارجية المصري: ما يتعرض له الشعب الفلسطيني الصامد في قطاع غزة هو جرح مفتوح في ضمير الإنسانية وانتها..."
+        }
+    },
+    {
+        "incident_type": "shooting",
+        "location": "Outside Lebanon",
+        "channel": "lebanonNewsNow",
+        "message_id": 207062,
+        "date": "2025-08-18 09:20:16+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "141"
+            ],
+            "casualties": [],
+            "summary": "‏🚨 ورد الآن / وزارة الدفاع الروسية: إسقاط 141 مسيّرة أوكرانية في يوم واحد \n\n @lebanonNewsNow"
+        }
+    },
+    {
+        "incident_type": "other",
+        "location": "Lebanon",
+        "channel": "lebanonNewsNow",
+        "message_id": 207063,
+        "date": "2025-08-18 09:22:21+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "320",
+                "5"
+            ],
+            "casualties": [],
+            "summary": "‏🚨 ورد الآن / مدير مجمع الشفاء الطبي في غزة للتلفزيون العربي: 320 ألف طفل في القطاع دون 5 سنوات يعانون من سوء التغذية \n\n..."
+        }
+    },
+    {
+        "incident_type": "shooting",
+        "location": "Unknown / Outside Lebanon",
+        "channel": "lebanondebate",
+        "message_id": 142432,
+        "date": "2025-08-18 09:14:17+00:00",
+        "threat_level": "yes",
+        "details": {
+            "numbers_found": [
+                "733453"
+            ],
+            "casualties": [],
+            "summary": "المتحدث باسم القوات المسلحة الإيرانية: مؤامرة أميركا والكيان الصهيوني لنزع سلاح المقاومة ستفشل\nhttps://lbdb.co/733453"
+        }
     }
 ]
