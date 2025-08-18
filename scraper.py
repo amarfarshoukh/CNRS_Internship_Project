@@ -1,13 +1,13 @@
 import asyncio
 import json
+import datetime
 import os
 import re
+import qrcode
 import sqlite3
 import subprocess
-import difflib
 from telethon import TelegramClient, events
 from telethon.tl.types import Channel
-import qrcode
 
 # =============================
 # INCIDENT KEYWORDS
@@ -19,12 +19,15 @@ class IncidentKeywords:
                      'en': ['fire','burning','flames','burn','blaze','ignite','combustion','firefighter','wildfire','house fire','factory fire','market fire','forest fire','civil defense','fire brigade']},
             'accident': {'ar': ['حادثة','حادث','حادث سير','حادث مرور','تصادم','انقلاب','اصطدام','سير','طريق','إسعاف','مرور','دهس','حادث دراجة نارية','حوادث قطار','حادث عمل','حادث شاحنة','حادث طيران'],
                          'en': ['accident','car accident','traffic accident','crash','collision','wreck','road','vehicle','ambulance','hit and run','motorcycle accident','train accident','workplace accident','truck accident','aviation accident']},
+            'earthquake': {'ar': ['زلزال','هزة','أرضية','زلازل','اهتزاز','تصدع','هزة أرضية','نشاط زلزالي'],
+                           'en': ['earthquake','seismic','tremor','quake','shake','magnitude','seismic activity']},
             'shooting': {'ar': ['إطلاق نار','رصاص','إطلاق','مسلح','رمي','نار','هجوم مسلح','اشتباك مسلح'],
                          'en': ['shooting','gunfire','shots','gunman','bullets','armed','armed attack','armed clash']},
-            'protest': {'ar': ['احتجاج','تظاهرة','مظاهرة','اعتصام','اعتصامات'],
-                        'en': ['protest','demonstration','riot','strike','march','rally']},
-            'natural_disaster': {'ar': ['زلزال','هزة','أرضية','زلازل','اهتزاز','تصدع','هزة أرضية','نشاط زلزالي','فيضان','سيول','أمطار','غرق','مياه','فيض','طوفان','فيضانات','ارتفاع منسوب المياه'],
-                                 'en': ['earthquake','seismic','tremor','quake','shake','magnitude','seismic activity','flood','flooding','overflow','deluge','inundation','water','rain','high water level']},
+            'explosion': {'ar': ['انفجار','تفجير','عبوة ناسفة','انفجار أنبوب غاز','انفجار سيارة مفخخة','تفجير انتحاري'],
+                          'en': ['explosion','detonation','blast','gas explosion','car bomb','suicide bombing','improvised explosive device']},
+            'collapse': {'ar': ['انهيار','انهيار مبنى','انهيار جسر','انهيار أرضي','سقوط رافعة','انهيار سقف','انهيار منجم'],
+                         'en': ['collapse','building collapse','bridge collapse','landslide','crane collapse','roof collapse','mine collapse']},
+            'other': {'ar': [], 'en': []}
         }
 
         self.casualty_keywords = {
@@ -40,12 +43,11 @@ class IncidentKeywords:
         kws = []
         for cat in self.incident_keywords.values():
             for lang_list in cat.values():
-                if lang_list is not Ellipsis:  # fix previous error
+                if lang_list is not Ellipsis:
                     kws.extend([kw.lower() for kw in lang_list])
         for cat in self.casualty_keywords.values():
             for lang_list in cat.values():
-                if lang_list is not Ellipsis:
-                    kws.extend([kw.lower() for kw in lang_list])
+                kws.extend([kw.lower() for kw in lang_list])
         return set(kws)
 
     def get_incident_type(self, text):
@@ -56,18 +58,18 @@ class IncidentKeywords:
                     return incident_type
         return "other"
 
-
 # =============================
-# LEBANON LOCATIONS FROM DATABASE
+# LEBANON LOCATIONS HIERARCHY (from SQLite)
 # =============================
 db_path = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\lebanon_locations.db"
+
 LEBANON_LOCATIONS = {}   # { governorate: [neighborhoods] }
 ALL_LOCATIONS = set()    # flat list of all Lebanese places
 
 try:
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
-    cur.execute("SELECT NAME_1, NAME_2, NAME_3 FROM locations WHERE NAME_0 = 'لبنان'")
+    cur.execute("""SELECT NAME_1, NAME_2, NAME_3 FROM locations WHERE NAME_0 = 'لبنان'""")
     temp = {}
     for name_1, name_2, name_3 in cur.fetchall():
         gov = (name_1 or "").strip()
@@ -91,14 +93,13 @@ finally:
     except:
         pass
 
-
 # =============================
-# PHI3 HELPER
+# LOCATION EXTRACTION + Phi3 fallback
 # =============================
 def query_phi3(message):
     prompt = f"""
     You are an incident analysis assistant.
-    Analyze the following message and return ONLY valid JSON.
+    Task: Analyze the following incident report and return ONLY valid JSON.
 
     Message: "{message}"
 
@@ -110,8 +111,8 @@ def query_phi3(message):
     }}
 
     Important:
-    - If the message contains 'لا تهديد', threat_level must be 'no'.
-    - Respond with JSON only, no explanations.
+    - If the message contains phrases like "لا تهديد", threat_level must be "no".
+    - Respond with JSON only.
     """
     result = subprocess.run(
         ["ollama", "run", "phi3:mini"],
@@ -128,26 +129,28 @@ def extract_json(response_text):
         return match.group()
     return None
 
-
-# =============================
-# LOCATION EXTRACTION WITH PHI3 FALLBACK
-# =============================
 def extract_location(text):
     for loc in ALL_LOCATIONS:
         if loc in text:
-            return loc
-    # fallback to Phi3
+            return loc, True
     try:
         response = query_phi3(text)
         json_text = extract_json(response)
         if json_text:
             data = json.loads(json_text)
-            if data.get("location"):
-                return data["location"]
+            location = data.get("location", "Unknown / Outside Lebanon")
+            if location != "Unknown / Outside Lebanon":
+                return location, True
+            else:
+                return location, False
     except Exception:
         pass
-    return "Unknown / Outside Lebanon"
+    return "Unknown / Outside Lebanon", False
 
+def extract_threat_level(text):
+    if "لا تهديد" in text:
+        return "no"
+    return "yes"
 
 # =============================
 # TELEGRAM SETUP
@@ -158,18 +161,14 @@ output_file = 'matched_incidents.json'
 
 async def qr_login(client):
     if not await client.is_user_authorized():
-        print("Not authorized. Please scan the QR code to log in:")
+        print("Not authorized. Please scan the QR code:")
         qr_login = await client.qr_login()
-        qr_url = qr_login.url
         qr = qrcode.QRCode()
-        qr.add_data(qr_url)
+        qr.add_data(qr_login.url)
         qr.make()
         qr.print_ascii(invert=True)
-        print("Scan this QR code from Telegram app: Settings > Devices > Link Desktop Device")
         await qr_login.wait()
-        print("Logged in successfully!")
-    else:
-        print("Already authorized!")
+        print("Logged in!")
 
 async def get_my_channels(client):
     channels = []
@@ -178,9 +177,8 @@ async def get_my_channels(client):
             channels.append(dialog.entity)
     return channels
 
-
 # =============================
-# MAIN SCRAPER LOOP
+# MAIN FUNCTION
 # =============================
 async def main():
     client = TelegramClient('session', api_id, api_hash)
@@ -191,8 +189,7 @@ async def main():
     keywords_set = ik.all_keywords()
     channels = await get_my_channels(client)
     print(f"Monitoring {len(channels)} channels...")
-    print("Started monitoring...")
-
+    
     if os.path.exists(output_file):
         try:
             with open(output_file, 'r', encoding='utf-8') as f:
@@ -207,60 +204,59 @@ async def main():
     async def process_message(event):
         if not event.raw_text:
             return
-
         text_lower = event.raw_text.lower()
         incident_type = ik.get_incident_type(text_lower)
-        location = extract_location(event.raw_text)
+        threat_level = extract_threat_level(event.raw_text)
+        location, known = extract_location(event.raw_text)
 
-        # Fallback to Phi3 if incident_type is "other"
+        channel_name = event.chat.username if event.chat else str(event.chat_id)
+        msg_id = event.id
+
+        # Use Phi3 if incident_type is "other"
         if incident_type == "other":
             try:
                 response = query_phi3(event.raw_text)
                 json_text = extract_json(response)
                 if json_text:
-                    data = json.loads(json_text)
-                    incident_type = data.get("incident_type", "other")
-            except Exception:
+                    data_phi3 = json.loads(json_text)
+                    incident_type = data_phi3.get("incident_type", "other")
+            except:
                 pass
 
-        threat_level = "no" if "لا تهديد" in event.raw_text else "yes"
-
-        channel_name = event.chat.username if event.chat else str(event.chat_id)
-        msg_id = event.id
-
         if (channel_name, msg_id) not in existing_ids:
-            details = {
-                "numbers_found": re.findall(r"\d+", event.raw_text),
-                "casualties": [],
-                "summary": event.raw_text[:120] + "..." if len(event.raw_text) > 120 else event.raw_text
-            }
             msg_data = {
-                "incident_type": incident_type,
-                "location": location,
-                "channel": channel_name,
-                "message_id": msg_id,
-                "date": str(event.date),
-                "threat_level": threat_level,
-                "details": details
+                'incident_type': incident_type,
+                'location': location,
+                'channel': channel_name,
+                'message_id': msg_id,
+                'date': str(event.date),
+                'threat_level': threat_level,
+                'details': {
+                    'numbers_found': re.findall(r"\d+", event.raw_text),
+                    'casualties': [],
+                    'summary': event.raw_text[:200] + ("..." if len(event.raw_text) > 200 else "")
+                }
             }
             matched_messages.append(msg_data)
             existing_ids.add((channel_name, msg_id))
-
             with open(output_file, 'w', encoding='utf-8') as f:
                 json.dump(matched_messages, f, ensure_ascii=False, indent=2)
+
+            if not known:
+                print(f"⚠️ Location not recognized: {event.raw_text[:50]}...")
 
             print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
 
     @client.on(events.NewMessage(chats=channels))
     async def handler(event):
-        await process_message(event)
+        asyncio.create_task(process_message(event))
 
+    print("Started monitoring. Waiting for new messages...")
     try:
         while True:
             await asyncio.sleep(1)
     finally:
         await client.disconnect()
-
 
 if __name__ == "__main__":
     asyncio.run(main())
