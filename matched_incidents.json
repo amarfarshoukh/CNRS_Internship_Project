@@ -1817,5 +1817,54 @@
       "casualties": [],
       "summary": "‏🚨 ورد الآن / \"لبنان 24\": حريق هائل يقترب من المنازل في منطقة بشامون وفرق الإطفاء تعمل على إخماده \n\n @lebanonNewsNow"
     }
+  },
+  {
+    "incident_type": "other",
+    "location": "Unknown / Outside Lebanon",
+    "channel": "MTVLebanoNews",
+    "message_id": 38254,
+    "date": "2025-08-18 08:11:53+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "4",
+        "70791425"
+      ],
+      "casualties": [],
+      "summary": "‌‏مريض بحاجة ماسّة لـ4 وحدات دمّ من فئة O- أو فئة B- في مستشفى الجعيتاوي. للتبرّع الاتصال على الرقم 70791425"
+    }
+  },
+  {
+    "incident_type": "other",
+    "location": "Unknown / Outside Lebanon",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214485,
+    "date": "2025-08-18 08:11:40+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "1",
+        "1957354345038590109",
+        "18",
+        "2025",
+        "11",
+        "10"
+      ],
+      "casualties": [],
+      "summary": "سلسلة لقاءات للموفدين الأميركيين.. التفاصيل مع مراسل الجديد@farhat_muhamad1 https://t.co/jDrbpiziwK\n https://twitter.com/ALJADEEDNEWS/status/1957354345038590109\nAugust 18, 2025 at 11:10AM"
+    }
+  },
+  {
+    "incident_type": "fire",
+    "location": "Unknown / Outside Lebanon",
+    "channel": "lebanondebate",
+    "message_id": 142422,
+    "date": "2025-08-18 08:12:26+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "حريق ضخم يقترب من المنازل في منطقة بشامون وفرق الإطفاء تعمل على إخماده"
+    }
   }
 ]
