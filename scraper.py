@@ -5,8 +5,24 @@ import os
 import re
 import qrcode
 import sqlite3
+import subprocess
 from telethon import TelegramClient, events
 from telethon.tl.types import Channel
+
+# =============================
+# AI HELPER (Phi-3 via Ollama)
+# =============================
+def call_phi3(prompt):
+    try:
+        result = subprocess.run(
+            ["ollama", "run", "phi3:mini"],
+            input=prompt.encode(),
+            capture_output=True,
+            timeout=30
+        )
+        return result.stdout.decode().strip()
+    except Exception as e:
+        return f"AI_Error: {str(e)}"
 
 # =============================
 # INCIDENT KEYWORDS
@@ -70,8 +86,8 @@ class IncidentKeywords:
 # =============================
 db_path = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\lebanon_locations.db"
 
-LEBANON_LOCATIONS = {}   # { governorate: [neighborhoods] }
-ALL_LOCATIONS = set()    # flat list of all Lebanese places
+LEBANON_LOCATIONS = {}
+ALL_LOCATIONS = set()
 
 try:
     conn = sqlite3.connect(db_path)
@@ -97,7 +113,6 @@ try:
         if nb:
             temp[gov].add(nb)
 
-        # Add to global set
         ALL_LOCATIONS.add(gov)
         if name_2:
             ALL_LOCATIONS.add(name_2.strip())
@@ -114,19 +129,31 @@ finally:
         pass
 
 # =============================
-# LOCATION EXTRACTION
+# LOCATION EXTRACTION (with AI fallback)
 # =============================
 def extract_location(text):
     if not text or "غير محدد" in text or "undefined" in text.lower():
-        return "Unknown / Outside Lebanon"
+        return ai_suggest_location(text)
 
-    # Check if any Lebanon location is in text
     for loc in ALL_LOCATIONS:
         if loc and loc in text:
             return loc
 
-    # Not found in DB → mark as outside
-    return "Unknown / Outside Lebanon"
+    return ai_suggest_location(text)
+
+def ai_suggest_location(text):
+    prompt = f"""
+    The following message might contain a location in Lebanon.
+    Message: {text}
+
+    Here is the full list of known Lebanese locations: {', '.join(list(ALL_LOCATIONS)[:200])} ...
+
+    Task: If the text mentions a Lebanese area, return the most likely one from the list.
+    If no Lebanese location is found, return "Unknown / Outside Lebanon".
+    Answer with only the location name.
+    """
+    suggestion = call_phi3(prompt)
+    return suggestion if suggestion else "Unknown / Outside Lebanon"
 
 # =============================
 # DETAILS EXTRACTION
@@ -239,4 +266,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
