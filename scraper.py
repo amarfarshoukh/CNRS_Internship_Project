@@ -17,20 +17,13 @@ OLLAMA_MODEL = "phi3:mini"
 MAX_NUMBER_LEN = 6
 PHI3_TIMEOUT = 60  # seconds
 
-# Telegram API (use your values)
 api_id = 20976159
 api_hash = '41bca65c99c9f4fb21ed627cc8f19ad8'
 
 # -----------------------------
 # Arabic normalization
 # -----------------------------
-RE_DIACRITICS = re.compile(
-    "[" +
-    "\u0610-\u061A" +
-    "\u064B-\u065F" +
-    "\u06D6-\u06ED" +
-    "]+"
-)
+RE_DIACRITICS = re.compile("[\u0610-\u061A\u064B-\u065F\u06D6-\u06ED]+")
 
 def normalize_arabic(text: str) -> str:
     if not text:
@@ -79,7 +72,7 @@ except Exception as e:
     ALL_ORIGINAL_LOCATIONS = set()
 
 # -----------------------------
-# Incident keywords & details
+# Incident keywords & helpers
 # -----------------------------
 class IncidentKeywords:
     def __init__(self):
@@ -101,6 +94,7 @@ class IncidentKeywords:
             'injured': ['جريح','جرحى','مصاب','إصابة'],
             'missing': ['مفقود','مفقودين','اختفى']
         }
+
     def get_incident_type_by_keywords(self, text):
         if not text:
             return None
@@ -110,6 +104,7 @@ class IncidentKeywords:
                 if kw in tl:
                     return itype
         return None
+
     def extract_casualties(self, text):
         tl = text.lower()
         cats = []
@@ -118,6 +113,7 @@ class IncidentKeywords:
                 if kw in tl:
                     cats.append(cat)
         return list(set(cats))
+
     def extract_numbers(self, text):
         nums = re.findall(r"[0-9]+|[٠-٩]+", text)
         conv = str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789")
@@ -144,9 +140,8 @@ Output JSON format:
 }}
 
 Important:
-- If the message contains phrases like "لا تهديد" (no threat), threat_level must be "no".
 - Only return incidents that concern Lebanon.
-- Respond with JSON only, no explanations.
+- Respond with JSON only.
 """
     try:
         res = subprocess.run(
@@ -217,43 +212,30 @@ async def main():
 
         text_norm = normalize_arabic(text)
 
-        # ----- Only use DB-matched locations, never phi3 -----
-        db_loc = None
+        # Only DB locations
+        location = None
         for loc_norm, loc_original in NORM_LOC_MAP.items():
             if loc_norm in text_norm:
-                db_loc = loc_original
+                location = loc_original
                 break
 
-        location = db_loc
+        if not location:
+            return  # skip outside Lebanon
 
-        # Keyword incident type (try both singular and plural for accidents)
-        keyword_type = IK.get_incident_type_by_keywords(text)
-        text_plural_fix = text_norm.replace("حوادث سير", "حادث سير")
-        keyword_type_plural_fix = IK.get_incident_type_by_keywords(text_plural_fix)
-        if keyword_type is None and keyword_type_plural_fix is not None:
-            keyword_type = keyword_type_plural_fix
-
-        threat_quick = "no" if "لا تهديد" in text_norm else None
-
-        # Phi3 final check
-        phi3_res = query_phi3_json(text)
-
-        # Incident type selection: prefer Phi3 if not "other"
-        incident_type = None
-        if phi3_res:
-            phi3_type = phi3_res.get("incident_type")
-            if phi3_type and phi3_type != "other":
-                incident_type = phi3_type
+        # Incident type detection
+        incident_type = IK.get_incident_type_by_keywords(text)
         if not incident_type:
-            incident_type = keyword_type or "other"
+            # fallback to Phi3
+            phi3_res = query_phi3_json(text)
+            if phi3_res and phi3_res.get("incident_type") != "other":
+                incident_type = phi3_res.get("incident_type")
+            else:
+                return  # skip if still unknown
 
         # Threat level
-        threat_level = threat_quick or (phi3_res.get("threat_level") if phi3_res and phi3_res.get("threat_level") else "yes")
-
-        # ---- PATCHED: SKIP IF incident_type IS NONE/NULL or "other" OR location is not from the database ----
-        if not location or not incident_type or incident_type == "other":
-            # Skip messages outside Lebanon, with missing or 'other' incident types, or if location not in DB
-            return
+        threat_level = "no" if "لا تهديد" in text_norm else "yes"
+        if 'phi3_res' in locals() and phi3_res and phi3_res.get("threat_level"):
+            threat_level = phi3_res.get("threat_level")
 
         # Numbers & casualties
         numbers = IK.extract_numbers(text)
