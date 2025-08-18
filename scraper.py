@@ -14,21 +14,27 @@ import qrcode
 CSV_PATH = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\lebanon_locations.csv"
 OUTPUT_FILE = "matched_incidents.json"
 OLLAMA_MODEL = "phi3:mini"
+MAX_NUMBER_LEN = 6
+PHI3_TIMEOUT = 60  # seconds
 
 # Telegram API (use your values)
 api_id = 20976159
 api_hash = '41bca65c99c9f4fb21ed627cc8f19ad8'
 
-MAX_NUMBER_LEN = 6
+# -----------------------------
+# Arabic normalization
+# -----------------------------
+RE_DIACRITICS = re.compile(
+    "[" +
+    "\u0610-\u061A" +
+    "\u064B-\u065F" +
+    "\u06D6-\u06ED" +
+    "]+"
+)
 
-# -----------------------------
-# Arabic normalization helpers
-# -----------------------------
-RE_DIACRITICS = re.compile("[" + "\u0610-\u061A\u064B-\u065F\u06D6-\u06ED" + "]+")
 def normalize_arabic(text: str) -> str:
     if not text:
         return ""
-    text = str(text)
     text = RE_DIACRITICS.sub("", text)
     text = text.replace('\u0640', '')
     text = re.sub(r"[إأآا]", "ا", text)
@@ -46,28 +52,31 @@ def normalize_arabic(text: str) -> str:
 def load_locations_from_csv(csv_path: str):
     if not os.path.exists(csv_path):
         raise FileNotFoundError(f"CSV not found: {csv_path}")
+
     with open(csv_path, newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         rows = list(reader)
+
     norm_to_original = {}
     for r in rows:
-        for key in ['NAME_3', 'NAME_2', 'NAME_1']:
-            candidate = r.get(key) or ""
-            candidate = candidate.strip()
+        for col in ['NAME_3', 'NAME_2', 'NAME_1']:
+            candidate = r.get(col, "")
             if candidate:
+                candidate = candidate.strip()
                 normalized = normalize_arabic(candidate)
-                if normalized not in norm_to_original:
+                if normalized and normalized not in norm_to_original:
                     norm_to_original[normalized] = candidate
-    return norm_to_original
+    return norm_to_original, set(norm_to_original.values())
 
 try:
-    NORM_LOC_MAP = load_locations_from_csv(CSV_PATH)
+    NORM_LOC_MAP, ALL_ORIGINAL_LOCATIONS = load_locations_from_csv(CSV_PATH)
     NORMALIZED_LOCATIONS = set(NORM_LOC_MAP.keys())
-    print(f"Loaded {len(NORMALIZED_LOCATIONS)} locations from CSV.")
+    print(f"Loaded {len(NORMALIZED_LOCATIONS)} normalized locations from CSV.")
 except Exception as e:
     print("Error loading CSV:", e)
     NORM_LOC_MAP = {}
     NORMALIZED_LOCATIONS = set()
+    ALL_ORIGINAL_LOCATIONS = set()
 
 # -----------------------------
 # Incident keywords & details
@@ -108,7 +117,6 @@ class IncidentKeywords:
             for kw in kws:
                 if kw in tl:
                     cats.append(cat)
-                    break
         return list(set(cats))
     def extract_numbers(self, text):
         nums = re.findall(r"[0-9]+|[٠-٩]+", text)
@@ -128,20 +136,17 @@ Task: Analyze the following incident report and return ONLY valid JSON.
 
 Message: "{message}"
 
-Rules:
-1) Choose the incident_type from this list ONLY:
-['vehicle_accident','shooting','protest','fire','natural_disaster','airstrike','collapse','pollution','epidemic','medical','explosion']
-2) If the message is not an incident or outside Lebanon, respond with incident_type 'other'.
-3) Determine the exact location if inside Lebanon; otherwise use 'Unknown / Outside Lebanon'.
-4) Threat level: 'yes' or 'no'. If the message contains phrases like 'لا تهديد', use 'no'.
-5) Respond in JSON ONLY.
-
 Output JSON format:
 {{
   "location": "Extracted location or 'Unknown / Outside Lebanon'",
-  "incident_type": "Choose from the list above or 'other'",
+  "incident_type": "Choose one of: vehicle_accident, shooting, protest, fire, natural_disaster, airstrike, collapse, pollution, epidemic, medical, explosion, other",
   "threat_level": "yes or no"
 }}
+
+Important:
+- If the message contains phrases like "لا تهديد" (no threat), threat_level must be "no".
+- Only return incidents that concern Lebanon.
+- Respond with JSON only, no explanations.
 """
     try:
         res = subprocess.run(
@@ -149,11 +154,10 @@ Output JSON format:
             input=prompt.encode("utf-8"),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            timeout=60
+            timeout=PHI3_TIMEOUT
         )
         text = res.stdout.decode("utf-8", errors="ignore").strip()
-        text_clean = re.sub(r"```.*?```", "", text, flags=re.DOTALL)
-        m = re.search(r"\{.*?\}", text_clean, flags=re.DOTALL)
+        m = re.search(r"\{.*?\}", text, flags=re.DOTALL)
         if m:
             return json.loads(m.group())
         return None
@@ -162,18 +166,17 @@ Output JSON format:
         return None
 
 # -----------------------------
-# Telegram helpers
+# Main processing
 # -----------------------------
 async def qr_login(client):
     if not await client.is_user_authorized():
-        print("Not authorized. Scan QR code:")
+        print("Scan QR code:")
         qr_login = await client.qr_login()
         qr = qrcode.QRCode()
         qr.add_data(qr_login.url)
         qr.make()
         qr.print_ascii(invert=True)
         await qr_login.wait()
-        print("Logged in!")
 
 async def get_my_channels(client):
     out = []
@@ -182,15 +185,12 @@ async def get_my_channels(client):
             out.append(d.entity)
     return out
 
-# -----------------------------
-# Main processing
-# -----------------------------
 def load_existing_matches(path=OUTPUT_FILE):
     if os.path.exists(path):
         try:
             with open(path, 'r', encoding='utf-8') as f:
                 return json.load(f)
-        except Exception:
+        except:
             return []
     return []
 
@@ -210,51 +210,59 @@ async def main():
 
     async def process_event(event):
         text = event.raw_text or ""
-        channel_name = event.chat.username if event.chat else str(event.chat_id)
+        channel_name = event.chat.username if event.chat and getattr(event.chat, 'username', None) else str(event.chat_id)
         msg_id = event.id
-
         if (channel_name, msg_id) in existing_ids:
             return
 
+        text_norm = normalize_arabic(text)
+
         # DB-first location
         db_loc = None
-        text_norm = normalize_arabic(text)
-        for loc_norm, loc_orig in NORM_LOC_MAP.items():
+        for loc_norm, loc_original in NORM_LOC_MAP.items():
             if loc_norm in text_norm:
-                db_loc = loc_orig
+                db_loc = loc_original
                 break
+
+        location = db_loc
 
         # Keyword incident type
         keyword_type = IK.get_incident_type_by_keywords(text)
-        threat_quick = "no" if "لا تهديد" in normalize_arabic(text) else None
+        # plural fix for vehicle accidents
+        text_plural_fix = text_norm.replace("حوادث سير", "حادث سير")
+        keyword_type_plural_fix = IK.get_incident_type_by_keywords(text_plural_fix)
+        if keyword_type is None and keyword_type_plural_fix is not None:
+            keyword_type = keyword_type_plural_fix
 
-        # Phi3 check
+        threat_quick = "no" if "لا تهديد" in text_norm else None
+
+        # Phi3 final check
         phi3_res = query_phi3_json(text)
 
+        # Incident type selection
         incident_type = None
-        location = db_loc
-        threat_level = threat_quick or "yes"
-
-        # Use Phi3 response if needed
         if phi3_res:
             phi3_type = phi3_res.get("incident_type")
-            phi3_loc = phi3_res.get("location")
-            phi3_threat = phi3_res.get("threat_level")
-            if not incident_type or phi3_type != 'other':
-                incident_type = phi3_type or keyword_type or "other"
-            if not location and phi3_loc and "Unknown" not in phi3_loc:
-                loc_norm = normalize_arabic(phi3_loc)
-                if loc_norm in NORMALIZED_LOCATIONS:
-                    location = NORM_LOC_MAP[loc_norm]
-            if not threat_level and phi3_threat:
-                threat_level = phi3_threat
+            if phi3_type and phi3_type != "other":
+                incident_type = phi3_type
+        if not incident_type:
+            incident_type = keyword_type or "other"
 
-        # Skip if no location inside Lebanon or not relevant
+        # Threat level
+        threat_level = threat_quick or (phi3_res.get("threat_level") if phi3_res and phi3_res.get("threat_level") else "yes")
+
+        # Location: if not in DB, accept Phi3 only if it's in Lebanon
         if not location:
-            return
-        if incident_type == "other":
+            if phi3_res and phi3_res.get("location") and "Unknown" not in phi3_res.get("location"):
+                location_norm = normalize_arabic(phi3_res.get("location"))
+                if location_norm in NORMALIZED_LOCATIONS:
+                    location = NORM_LOC_MAP[location_norm]
+
+        if not location or incident_type=="other":
+            # Skip messages outside Lebanon or not incidents
             return
 
+        # Numbers & casualties
         numbers = IK.extract_numbers(text)
         casualties = IK.extract_casualties(text)
         summary = text[:300] + ("..." if len(text) > 300 else "")
@@ -272,6 +280,7 @@ async def main():
                 "summary": summary
             }
         }
+
         matches.append(record)
         existing_ids.add((channel_name, msg_id))
         save_matches(matches)
@@ -288,8 +297,5 @@ async def main():
     finally:
         await client.disconnect()
 
-# -----------------------------
-# RUN
-# -----------------------------
 if __name__ == "__main__":
     asyncio.run(main())
