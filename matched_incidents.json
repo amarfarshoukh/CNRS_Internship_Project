@@ -1919,5 +1919,20 @@
       "casualties": [],
       "summary": "\"السراوي\" في قبضة السلطات السورية.. فمن هو؟https://t.co/blpRWnUiMw\n https://twitter.com/ALJADEEDNEWS/status/195735806921..."
     }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "Unknown / Outside Lebanon",
+    "channel": "lebanonnews2",
+    "message_id": 87191,
+    "date": "2025-08-18 08:29:53+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "🔴🇱🇧الرئيس عون: المطلوب الان هو التزام الأطراف الأخرى بمضمون ورقة الإعلان المشتركة ومزيد من دعم الجيش اللبناني وتسريع الخ..."
+    }
   }
 ]
