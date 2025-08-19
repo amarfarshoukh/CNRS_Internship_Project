@@ -6,12 +6,12 @@ import subprocess
 from telethon import TelegramClient, events
 from telethon.tl.types import Channel
 import qrcode
-import geopandas as gpd
 
 # -----------------------------
 # CONFIG
 # -----------------------------
-SHAPEFILE_PATH = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\lebanon-latest-free.shp\gis_osm_places_free_1.shp"
+CITIES_JSON = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output\cities.json"
+ROADS_JSON = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output\roads.json"
 OUTPUT_FILE = "matched_incidents.json"
 OLLAMA_MODEL = "phi3:mini"
 MAX_NUMBER_LEN = 6
@@ -40,34 +40,25 @@ def normalize_arabic(text: str) -> str:
     return text
 
 # -----------------------------
-# Load locations from Shapefile
+# Load locations from GeoJSON
 # -----------------------------
-def load_locations_from_shapefile(shapefile_path: str):
-    if not os.path.exists(shapefile_path):
-        raise FileNotFoundError(f"Shapefile not found: {shapefile_path}")
+def load_geojson_names(geojson_file):
+    if not os.path.exists(geojson_file):
+        return {}
+    with open(geojson_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    norm_map = {}
+    for feature in data['features']:
+        name = feature['properties'].get('name')
+        if name:
+            name_norm = normalize_arabic(name)
+            norm_map[name_norm] = name  # store original name
+    return norm_map
 
-    gdf = gpd.read_file(shapefile_path)
-    print(f"Loaded {len(gdf)} places from shapefile.")
+CITIES_MAP = load_geojson_names(CITIES_JSON)
+ROADS_MAP = load_geojson_names(ROADS_JSON)
 
-    norm_to_original = {}
-    for _, row in gdf.iterrows():
-        candidate = row.get("name", "")
-        if candidate:
-            candidate = candidate.strip()
-            normalized = normalize_arabic(candidate)
-            if normalized and normalized not in norm_to_original:
-                norm_to_original[normalized] = candidate
-    return norm_to_original, set(norm_to_original.values())
-
-try:
-    NORM_LOC_MAP, ALL_ORIGINAL_LOCATIONS = load_locations_from_shapefile(SHAPEFILE_PATH)
-    NORMALIZED_LOCATIONS = set(NORM_LOC_MAP.keys())
-    print(f"Loaded {len(NORMALIZED_LOCATIONS)} normalized locations from shapefile.")
-except Exception as e:
-    print("Error loading shapefile:", e)
-    NORM_LOC_MAP = {}
-    NORMALIZED_LOCATIONS = set()
-    ALL_ORIGINAL_LOCATIONS = set()
+ALL_LOCATIONS = {**CITIES_MAP, **ROADS_MAP}  # combine both
 
 # -----------------------------
 # Incident keywords & helpers
@@ -165,6 +156,7 @@ async def qr_login(client):
     if not await client.is_user_authorized():
         print("Scan QR code:")
         qr_login = await client.qr_login()
+        import qrcode
         qr = qrcode.QRCode()
         qr.add_data(qr_login.url)
         qr.make()
@@ -210,15 +202,16 @@ async def main():
 
         text_norm = normalize_arabic(text)
 
-        # Only GIS-based locations
+        # ---------------------
+        # Location detection using GeoJSON
+        # ---------------------
         location = None
-        for loc_norm, loc_original in NORM_LOC_MAP.items():
+        for loc_norm, loc_original in ALL_LOCATIONS.items():
             if loc_norm in text_norm:
                 location = loc_original
                 break
-
         if not location:
-            return  # skip outside Lebanon
+            return  # skip if outside Lebanon
 
         # Incident type detection
         incident_type = IK.get_incident_type_by_keywords(text)
@@ -227,14 +220,13 @@ async def main():
             if phi3_res and phi3_res.get("incident_type") != "other":
                 incident_type = phi3_res.get("incident_type")
             else:
-                return  # skip if still unknown
+                return
 
         # Threat level
         threat_level = "no" if "لا تهديد" in text_norm else "yes"
         if 'phi3_res' in locals() and phi3_res and phi3_res.get("threat_level"):
             threat_level = phi3_res.get("threat_level")
 
-        # Numbers & casualties
         numbers = IK.extract_numbers(text)
         casualties = IK.extract_casualties(text)
         summary = text[:300] + ("..." if len(text) > 300 else "")
