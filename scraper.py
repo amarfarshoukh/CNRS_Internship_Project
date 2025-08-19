@@ -1,5 +1,4 @@
 import asyncio
-import csv
 import json
 import os
 import re
@@ -7,11 +6,12 @@ import subprocess
 from telethon import TelegramClient, events
 from telethon.tl.types import Channel
 import qrcode
+import geopandas as gpd
 
 # -----------------------------
 # CONFIG
 # -----------------------------
-CSV_PATH = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\lebanon_locations.csv"
+SHAPEFILE_PATH = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\lebanon-latest-free.shp\gis_osm_places_free_1.shp"
 OUTPUT_FILE = "matched_incidents.json"
 OLLAMA_MODEL = "phi3:mini"
 MAX_NUMBER_LEN = 6
@@ -40,33 +40,31 @@ def normalize_arabic(text: str) -> str:
     return text
 
 # -----------------------------
-# Load locations from CSV
+# Load locations from Shapefile
 # -----------------------------
-def load_locations_from_csv(csv_path: str):
-    if not os.path.exists(csv_path):
-        raise FileNotFoundError(f"CSV not found: {csv_path}")
+def load_locations_from_shapefile(shapefile_path: str):
+    if not os.path.exists(shapefile_path):
+        raise FileNotFoundError(f"Shapefile not found: {shapefile_path}")
 
-    with open(csv_path, newline='', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        rows = list(reader)
+    gdf = gpd.read_file(shapefile_path)
+    print(f"Loaded {len(gdf)} places from shapefile.")
 
     norm_to_original = {}
-    for r in rows:
-        for col in ['NAME_3', 'NAME_2', 'NAME_1']:
-            candidate = r.get(col, "")
-            if candidate:
-                candidate = candidate.strip()
-                normalized = normalize_arabic(candidate)
-                if normalized and normalized not in norm_to_original:
-                    norm_to_original[normalized] = candidate
+    for _, row in gdf.iterrows():
+        candidate = row.get("name", "")
+        if candidate:
+            candidate = candidate.strip()
+            normalized = normalize_arabic(candidate)
+            if normalized and normalized not in norm_to_original:
+                norm_to_original[normalized] = candidate
     return norm_to_original, set(norm_to_original.values())
 
 try:
-    NORM_LOC_MAP, ALL_ORIGINAL_LOCATIONS = load_locations_from_csv(CSV_PATH)
+    NORM_LOC_MAP, ALL_ORIGINAL_LOCATIONS = load_locations_from_shapefile(SHAPEFILE_PATH)
     NORMALIZED_LOCATIONS = set(NORM_LOC_MAP.keys())
-    print(f"Loaded {len(NORMALIZED_LOCATIONS)} normalized locations from CSV.")
+    print(f"Loaded {len(NORMALIZED_LOCATIONS)} normalized locations from shapefile.")
 except Exception as e:
-    print("Error loading CSV:", e)
+    print("Error loading shapefile:", e)
     NORM_LOC_MAP = {}
     NORMALIZED_LOCATIONS = set()
     ALL_ORIGINAL_LOCATIONS = set()
@@ -212,7 +210,7 @@ async def main():
 
         text_norm = normalize_arabic(text)
 
-        # Only DB locations
+        # Only GIS-based locations
         location = None
         for loc_norm, loc_original in NORM_LOC_MAP.items():
             if loc_norm in text_norm:
@@ -225,7 +223,6 @@ async def main():
         # Incident type detection
         incident_type = IK.get_incident_type_by_keywords(text)
         if not incident_type:
-            # fallback to Phi3
             phi3_res = query_phi3_json(text)
             if phi3_res and phi3_res.get("incident_type") != "other":
                 incident_type = phi3_res.get("incident_type")
