@@ -155,7 +155,7 @@ def detect_location_from_map(text_norm):
     for loc_norm, loc_original in ALL_LOCATIONS.items():
         if loc_norm in text_norm:
             return loc_original
-    return None  # skip if no Lebanon location found
+    return None
 
 # -----------------------------
 # Main processing
@@ -213,8 +213,10 @@ async def main():
         # Location detection
         # ---------------------
         location = detect_location_from_map(text_norm)
+
+        # Skip if location not found or outside Lebanon
         if not location:
-            return  # skip message if location not found in Lebanon
+            return  # <-- NEWS WITHOUT LEBANESE LOCATION IGNORED
 
         # ---------------------
         # Incident type detection

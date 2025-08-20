@@ -5921,5 +5921,100 @@
       "casualties": [],
       "summary": "كرامي من بعبدا: 4 أيام تدريس أسبوعيًاhttps://t.co/tIQ7ont4TZ\n https://twitter.com/ALJADEEDNEWS/status/1958073451052208281\nAugust 20, 2025 at 10:47AM"
     }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "\\",
+    "channel": "MTVLebanonNews",
+    "message_id": 278747,
+    "date": "2025-08-20 08:17:52+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "4",
+        "3",
+        "6",
+        "20",
+        "2025",
+        "11",
+        "10"
+      ],
+      "casualties": [],
+      "summary": "قداسة البابا إلى لبنان؟https://t.co/i4g3Zn6vgz\n https://twitter.com/MTVLebanonNews/status/1958079246649139243\nAugust 20, 2025 at 11:10AM"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "\\",
+    "channel": "MTVLebanonNews",
+    "message_id": 278748,
+    "date": "2025-08-20 08:17:53+00:00",
+    "threat_level": "no",
+    "details": {
+      "numbers_found": [
+        "488",
+        "2",
+        "20",
+        "2025",
+        "11",
+        "11"
+      ],
+      "casualties": [],
+      "summary": "لهيب آب \"راجع\"... وأيام حارّة مُقبلة!https://t.co/pn488ZQ2iJ\n https://twitter.com/MTVLebanonNews/status/1958079527705338177\nAugust 20, 2025 at 11:11AM"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "\\",
+    "channel": "MTVLebanonNews",
+    "message_id": 278749,
+    "date": "2025-08-20 08:17:54+00:00",
+    "threat_level": "no",
+    "details": {
+      "numbers_found": [
+        "2",
+        "1",
+        "20",
+        "2025",
+        "11",
+        "14"
+      ],
+      "casualties": [],
+      "summary": "أسبوعان طلبهما الجيش... وحربٌ أهلية يُريدها هؤلاء!https://t.co/rB2IX1ezCp@YoussefRaggi\n https://twitter.com/MTVLebanonNews/status/1958080184520704138\nAugust 20, 2025 at 11:14AM"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "غزة",
+    "channel": "lebanonNewsNow",
+    "message_id": 207354,
+    "date": "2025-08-20 08:18:33+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2026"
+      ],
+      "casualties": [],
+      "summary": "‏🚨 ورد الآن / إعلام إسرائيلي عن مسؤولين بالجيش: من المتوقع استمرار القتال في مدينة غزة حتى 2026 \n\n @lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "\\",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214663,
+    "date": "2025-08-20 08:21:39+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "8",
+        "20",
+        "2025",
+        "11",
+        "18"
+      ],
+      "casualties": [],
+      "summary": "رفع علم الحزب و هتف\" هيا حزب الله\" مغني يمثل أمام المحكمة ⏬https://t.co/8yKQJbAfci\n https://twitter.com/ALJADEEDNEWS/status/1958081170047984009\nAugust 20, 2025 at 11:18AM"
+    }
   }
 ]
