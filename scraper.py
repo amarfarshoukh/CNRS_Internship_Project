@@ -57,8 +57,7 @@ def load_geojson_names(geojson_file):
 
 CITIES_MAP = load_geojson_names(CITIES_JSON)
 ROADS_MAP = load_geojson_names(ROADS_JSON)
-
-ALL_LOCATIONS = {**CITIES_MAP, **ROADS_MAP}  # combine both
+ALL_LOCATIONS = {**CITIES_MAP, **ROADS_MAP}
 
 # -----------------------------
 # Incident keywords & helpers
@@ -150,13 +149,21 @@ Important:
         return None
 
 # -----------------------------
+# Location detection using GeoJSON only
+# -----------------------------
+def detect_location_from_map(text_norm):
+    for loc_norm, loc_original in ALL_LOCATIONS.items():
+        if loc_norm in text_norm:
+            return loc_original
+    return None
+
+# -----------------------------
 # Main processing
 # -----------------------------
 async def qr_login(client):
     if not await client.is_user_authorized():
         print("Scan QR code:")
         qr_login = await client.qr_login()
-        import qrcode
         qr = qrcode.QRCode()
         qr.add_data(qr_login.url)
         qr.make()
@@ -203,17 +210,15 @@ async def main():
         text_norm = normalize_arabic(text)
 
         # ---------------------
-        # Location detection using GeoJSON
+        # Location detection
         # ---------------------
-        location = None
-        for loc_norm, loc_original in ALL_LOCATIONS.items():
-            if loc_norm in text_norm:
-                location = loc_original
-                break
+        location = detect_location_from_map(text_norm)
         if not location:
-            return  # skip if outside Lebanon
+            return  # skip news if location not found on map
 
+        # ---------------------
         # Incident type detection
+        # ---------------------
         incident_type = IK.get_incident_type_by_keywords(text)
         if not incident_type:
             phi3_res = query_phi3_json(text)
@@ -263,3 +268,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
