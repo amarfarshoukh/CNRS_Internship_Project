@@ -14,9 +14,6 @@ CITIES_JSON = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\In
 ROADS_JSON = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output\roads.json"
 OUTPUT_FILE = "matched_incidents.json"
 OLLAMA_MODEL = "phi3:mini"
-MAX_NUMBER_LEN = 6
-PHI3_TIMEOUT = 60  # seconds
-
 api_id = 20976159
 api_hash = '41bca65c99c9f4fb21ed627cc8f19ad8'
 
@@ -52,15 +49,21 @@ def load_geojson_names(geojson_file):
         name = feature['properties'].get('name')
         if name:
             name_norm = normalize_arabic(name)
-            norm_map[name_norm] = name  # store original name
+            norm_map[name_norm] = name
     return norm_map
 
 CITIES_MAP = load_geojson_names(CITIES_JSON)
 ROADS_MAP = load_geojson_names(ROADS_JSON)
 ALL_LOCATIONS = {**CITIES_MAP, **ROADS_MAP}
 
+def detect_location_from_map(text_norm):
+    for loc_norm, loc_original in ALL_LOCATIONS.items():
+        if loc_norm in text_norm:
+            return loc_original
+    return None
+
 # -----------------------------
-# Incident keywords & helpers
+# Incident keywords
 # -----------------------------
 class IncidentKeywords:
     def __init__(self):
@@ -105,15 +108,15 @@ class IncidentKeywords:
     def extract_numbers(self, text):
         nums = re.findall(r"[0-9]+|[٠-٩]+", text)
         conv = str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789")
-        cleaned = [n.translate(conv) for n in nums if len(n.translate(conv)) <= MAX_NUMBER_LEN]
+        cleaned = [n.translate(conv) for n in nums]
         return cleaned
 
 IK = IncidentKeywords()
 
 # -----------------------------
-# Phi3 helpers
+# Phi3 async worker
 # -----------------------------
-def query_phi3_json(message: str):
+async def query_phi3_json(message: str):
     prompt = f"""
 You are an incident analysis assistant.
 Task: Analyze the following incident report and return ONLY valid JSON.
@@ -136,8 +139,7 @@ Important:
             ["ollama", "run", OLLAMA_MODEL],
             input=prompt.encode("utf-8"),
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=PHI3_TIMEOUT
+            stderr=subprocess.PIPE
         )
         text = res.stdout.decode("utf-8", errors="ignore").strip()
         m = re.search(r"\{.*?\}", text, flags=re.DOTALL)
@@ -149,16 +151,23 @@ Important:
         return None
 
 # -----------------------------
-# Location detection using GeoJSON only
+# Load/save matches
 # -----------------------------
-def detect_location_from_map(text_norm):
-    for loc_norm, loc_original in ALL_LOCATIONS.items():
-        if loc_norm in text_norm:
-            return loc_original
-    return None
+def load_existing_matches(path=OUTPUT_FILE):
+    if os.path.exists(path):
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            return []
+    return []
+
+def save_matches(matches, path=OUTPUT_FILE):
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(matches, f, ensure_ascii=False, indent=2)
 
 # -----------------------------
-# Main processing
+# Main async code
 # -----------------------------
 async def qr_login(client):
     if not await client.is_user_authorized():
@@ -177,62 +186,41 @@ async def get_my_channels(client):
             out.append(d.entity)
     return out
 
-def load_existing_matches(path=OUTPUT_FILE):
-    if os.path.exists(path):
-        try:
-            with open(path, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except:
-            return []
-    return []
+# -----------------------------
+# Message queue & Phi3 worker
+# -----------------------------
+message_queue = asyncio.Queue()
 
-def save_matches(matches, path=OUTPUT_FILE):
-    with open(path, 'w', encoding='utf-8') as f:
-        json.dump(matches, f, ensure_ascii=False, indent=2)
-
-async def main():
-    client = TelegramClient('session', api_id, api_hash)
-    await client.connect()
-    await qr_login(client)
-    channels = await get_my_channels(client)
-    print(f"Monitoring {len(channels)} channels...")
-
-    matches = load_existing_matches()
-    existing_ids = {(m.get('channel'), m.get('message_id')) for m in matches}
-
-    async def process_event(event):
+async def phi3_worker(matches, existing_ids):
+    while True:
+        event = await message_queue.get()
         text = event.raw_text or ""
         channel_name = event.chat.username if event.chat and getattr(event.chat, 'username', None) else str(event.chat_id)
         msg_id = event.id
+
         if (channel_name, msg_id) in existing_ids:
-            return
+            message_queue.task_done()
+            continue
 
         text_norm = normalize_arabic(text)
-
-        # ---------------------
-        # Location detection
-        # ---------------------
         location = detect_location_from_map(text_norm)
 
-        # Skip if location not found or outside Lebanon
+        # Skip messages outside Lebanon
         if not location:
-            return  # <-- NEWS WITHOUT LEBANESE LOCATION IGNORED
+            message_queue.task_done()
+            return  # do not save
 
-        # ---------------------
-        # Incident type detection
-        # ---------------------
         incident_type = IK.get_incident_type_by_keywords(text)
-        phi3_res = None
         if not incident_type:
-            phi3_res = query_phi3_json(text)
+            phi3_res = await query_phi3_json(text)
             if phi3_res and phi3_res.get("incident_type") != "other":
                 incident_type = phi3_res.get("incident_type")
             else:
+                message_queue.task_done()
                 return
 
-        # Threat level
         threat_level = "no" if "لا تهديد" in text_norm else "yes"
-        if phi3_res and phi3_res.get("threat_level"):
+        if 'phi3_res' in locals() and phi3_res and phi3_res.get("threat_level"):
             threat_level = phi3_res.get("threat_level")
 
         numbers = IK.extract_numbers(text)
@@ -257,10 +245,27 @@ async def main():
         existing_ids.add((channel_name, msg_id))
         save_matches(matches)
         print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
+        message_queue.task_done()
+
+# -----------------------------
+# Telegram event handler
+# -----------------------------
+async def main():
+    client = TelegramClient('session', api_id, api_hash)
+    await client.connect()
+    await qr_login(client)
+    channels = await get_my_channels(client)
+    print(f"Monitoring {len(channels)} channels...")
+
+    matches = load_existing_matches()
+    existing_ids = {(m.get('channel'), m.get('message_id')) for m in matches}
+
+    # Start Phi3 worker
+    asyncio.create_task(phi3_worker(matches, existing_ids))
 
     @client.on(events.NewMessage(chats=channels))
     async def handler(event):
-        asyncio.create_task(process_event(event))
+        await message_queue.put(event)
 
     print("Started monitoring. Waiting for new messages...")
     try:

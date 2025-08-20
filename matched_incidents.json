@@ -6016,5 +6016,84 @@
       "casualties": [],
       "summary": "رفع علم الحزب و هتف\" هيا حزب الله\" مغني يمثل أمام المحكمة ⏬https://t.co/8yKQJbAfci\n https://twitter.com/ALJADEEDNEWS/status/1958081170047984009\nAugust 20, 2025 at 11:18AM"
     }
+  },
+  {
+    "incident_type": "political demonstration",
+    "location": "\\",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214664,
+    "date": "2025-08-20 08:36:38+00:00",
+    "threat_level": "no",
+    "details": {
+      "numbers_found": [
+        "3",
+        "0",
+        "20",
+        "2025",
+        "11",
+        "35"
+      ],
+      "casualties": [],
+      "summary": "الكتائب: الخطاب التحريضي لحزب الله لا يمثّل الشيعة ⏬https://t.co/GMv3S0XgvZ\n https://twitter.com/ALJADEEDNEWS/status/1958085364838449570\nAugust 20, 2025 at 11:35AM"
+    }
+  },
+  {
+    "incident_type": "other (related to GPS jamming in Iran, not Lebanon)",
+    "location": "\\",
+    "channel": "MTVLebanoNews",
+    "message_id": 38428,
+    "date": "2025-08-20 08:37:54+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏إيران: توقف نظام تحديد المواقع GPS بسبب احتمال وجود مسيّرات"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "16",
+    "channel": "LBCI_NEWS",
+    "message_id": 251422,
+    "date": "2025-08-20 08:38:24+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "6",
+        "4",
+        "20",
+        "2025",
+        "11",
+        "34"
+      ],
+      "casualties": [],
+      "summary": "سيزار أبي خليل للـLBCI: نحن مع حصرية السلاح وامتلاك الجيش لهذا السلاح#LBCINews @CesarAbiKhalil https://t.co/c6r4GWdepy\n https://twitter.com/LBCI_NEWS/status/1958085201533231164\nAugust 20, 2025 at 11:34AM"
+    }
+  },
+  {
+    "incident_type": "explosion",
+    "location": "زيتون",
+    "channel": "lebanonNewsNow",
+    "message_id": 207360,
+    "date": "2025-08-20 08:39:57+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏🚨 ورد الآن / الجيش الإسرائيلي: بدء المرحلة التمهيدية لاحتلال غزة من حي الزيتون وجباليا ونجري عمليات برية واسعة \n\n @lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "زيتون",
+    "channel": "MTVLebanoNews",
+    "message_id": 38430,
+    "date": "2025-08-20 08:40:57+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏الجيش الإسرائيلي: بدء المرحلة التمهيدية لاحتلال غزة من حي الزيتون وجباليا ونجري عمليات برية واسعة"
+    }
   }
 ]
