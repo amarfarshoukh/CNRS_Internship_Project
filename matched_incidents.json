@@ -5709,5 +5709,82 @@
       "casualties": [],
       "summary": "‏مجلس الوزراء السعودي يرحب بالقمتين اللتين عقدهما ترمب مع بوتين وزيلينسكي وقادة أوروبيين"
     }
+  },
+  {
+    "incident_type": "fire",
+    "location": "\\",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33368,
+    "date": "2025-08-19 18:09:16+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏البيت الأبيض: حماس وافقت على مقترح وقف إطلاق النار بعد ربط ترامب تحرير الرهائن بتدمير حماس"
+    }
+  },
+  {
+    "incident_type": "medical",
+    "location": "دير القمر",
+    "channel": "lebanondebate",
+    "message_id": 142817,
+    "date": "2025-08-20 06:51:22+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "734102"
+      ],
+      "casualties": [],
+      "summary": "البستاني بعد لقائه عون: استلام مستشفى دير القمر اليوم لصالح وزارة الصحة\n\nhttps://lbdb.co/734102"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "\\",
+    "channel": "LBCI_NEWS",
+    "message_id": 251404,
+    "date": "2025-08-20 06:58:13+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "5",
+        "20",
+        "2025",
+        "09",
+        "48"
+      ],
+      "casualties": [],
+      "summary": "باسيل: لحل شامل يحمي لبنان وتسليم السلاح من دون صدام داخلي #LBCINewshttps://t.co/5RPWTPcRQp\n https://twitter.com/LBCI_NEWS/status/1958058647822410100\nAugust 20, 2025 at 09:48AM"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "\\",
+    "channel": "lebanonNewsNow",
+    "message_id": 207344,
+    "date": "2025-08-20 07:12:22+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "14"
+      ],
+      "casualties": [
+        "injured"
+      ],
+      "summary": "‏🚨 ورد الآن / أوكرانيا: إصابة 14 جراء قصف روسي ليلي على سومي \n\n @lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "غزة",
+    "channel": "MTVLebanoNews",
+    "message_id": 38419,
+    "date": "2025-08-20 07:19:34+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏الخارجية الصينية: نشعر بقلق بالغ إزاء الوضع الحالي في غزة ونأمل في توصّل الأطراف إلى وقف إطلاق نار بأقرب وقت"
+    }
   }
 ]

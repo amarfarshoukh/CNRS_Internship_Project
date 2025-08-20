@@ -155,7 +155,7 @@ def detect_location_from_map(text_norm):
     for loc_norm, loc_original in ALL_LOCATIONS.items():
         if loc_norm in text_norm:
             return loc_original
-    return None
+    return None  # skip if no Lebanon location found
 
 # -----------------------------
 # Main processing
@@ -214,12 +214,13 @@ async def main():
         # ---------------------
         location = detect_location_from_map(text_norm)
         if not location:
-            return  # skip news if location not found on map
+            return  # skip message if location not found in Lebanon
 
         # ---------------------
         # Incident type detection
         # ---------------------
         incident_type = IK.get_incident_type_by_keywords(text)
+        phi3_res = None
         if not incident_type:
             phi3_res = query_phi3_json(text)
             if phi3_res and phi3_res.get("incident_type") != "other":
@@ -229,7 +230,7 @@ async def main():
 
         # Threat level
         threat_level = "no" if "لا تهديد" in text_norm else "yes"
-        if 'phi3_res' in locals() and phi3_res and phi3_res.get("threat_level"):
+        if phi3_res and phi3_res.get("threat_level"):
             threat_level = phi3_res.get("threat_level")
 
         numbers = IK.extract_numbers(text)
@@ -268,4 +269,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
