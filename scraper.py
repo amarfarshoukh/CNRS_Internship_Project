@@ -237,27 +237,30 @@ async def phi3_worker(matches, existing_ids):
             if (channel_name, msg_id) in existing_ids:
                 continue
 
-            location = detect_location(text)
-            # extra check: location should not be numeric
+            # STEP 1: Check location keywords
+            has_kw = any(kw in normalize_arabic(text) for kw in LOCATION_KEYWORDS)
+
+            # STEP 2: Match with GeoJSON
+            location = detect_location(text) if has_kw else None
+
+            # If no location found, skip
             if not location or location.strip().isdigit():
                 continue
 
-            incident_type = IK.get_incident_type_by_keywords(text)
-            phi3_res = None
-            if not incident_type:
-                phi3_res = await query_phi3_json(text)
-                if phi3_res and phi3_res.get("incident_type") and phi3_res.get("incident_type") != "other":
-                    incident_type = phi3_res.get("incident_type")
-                else:
-                    continue
+            # STEP 3: AI Validation (to avoid wrong matches like "جويا" in Gaza)
+            phi3_res = await query_phi3_json(text)
+            if not phi3_res:
+                continue
 
+            # AI must confirm incident type
+            incident_type = phi3_res.get("incident_type")
             if not incident_type or incident_type == "other":
                 continue
 
-            threat_level = "no" if "لا تهديد" in normalize_arabic(text) else "yes"
-            if phi3_res and phi3_res.get("threat_level"):
-                threat_level = phi3_res.get("threat_level")
+            # Use AI threat_level if available
+            threat_level = phi3_res.get("threat_level", "yes")
 
+            # Numbers + casualties (keyword-based extraction for enrichment)
             numbers = IK.extract_numbers(text)
             casualties = IK.extract_casualties(text)
             summary = text[:300] + ("..." if len(text) > 300 else "")
@@ -284,7 +287,6 @@ async def phi3_worker(matches, existing_ids):
             if similar_records:
                 similar_records.append(record)
                 best_record = select_best_message(similar_records)
-                # in-place update of matches
                 matches[:] = [m for m in matches if not (m.get('incident_type') == record['incident_type'] and m.get('location') == record['location'])]
                 matches.append(best_record)
             else:
