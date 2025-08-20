@@ -85,7 +85,8 @@ def detect_location_from_map(text_norm):
             if words[i:i+len(loc_words)] == loc_words:
                 # Only accept locations that are not numeric and length > 1
                 if not loc_original.strip().isdigit() and len(loc_original.strip()) > 1:
-                    return loc_original
+                    if not loc_norm.strip().isdigit() and len(loc_norm.strip()) > 1:
+                        return loc_original
     return None
 
 # -----------------------------
@@ -234,11 +235,12 @@ async def phi3_worker(matches, existing_ids):
             msg_id = event.id
 
             if (channel_name, msg_id) in existing_ids:
-                continue  # task_done will still be called in finally
+                continue
 
             location = detect_location(text)
-            if not location:
-                continue  # task_done will still be called in finally
+            # extra check: location should not be numeric
+            if not location or location.strip().isdigit():
+                continue
 
             incident_type = IK.get_incident_type_by_keywords(text)
             phi3_res = None
@@ -247,9 +249,12 @@ async def phi3_worker(matches, existing_ids):
                 if phi3_res and phi3_res.get("incident_type") and phi3_res.get("incident_type") != "other":
                     incident_type = phi3_res.get("incident_type")
                 else:
-                    continue  # task_done will still be called in finally
+                    continue
 
-            threat_level = "no" if "لا تهديد" in text else "yes"
+            if not incident_type or incident_type == "other":
+                continue
+
+            threat_level = "no" if "لا تهديد" in normalize_arabic(text) else "yes"
             if phi3_res and phi3_res.get("threat_level"):
                 threat_level = phi3_res.get("threat_level")
 
@@ -279,7 +284,8 @@ async def phi3_worker(matches, existing_ids):
             if similar_records:
                 similar_records.append(record)
                 best_record = select_best_message(similar_records)
-                matches = [m for m in matches if not (m.get('incident_type') == record['incident_type'] and m.get('location') == record['location'])]
+                # in-place update of matches
+                matches[:] = [m for m in matches if not (m.get('incident_type') == record['incident_type'] and m.get('location') == record['location'])]
                 matches.append(best_record)
             else:
                 matches.append(record)

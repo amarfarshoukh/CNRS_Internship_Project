@@ -6163,5 +6163,25 @@
       "casualties": [],
       "summary": "فيضان في بيروت"
     }
+  },
+  {
+    "incident_type": "medical",
+    "location": "غزة",
+    "channel": "LBCI_NEWS",
+    "message_id": 251441,
+    "date": "2025-08-20 10:43:13+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "269",
+        "112",
+        "20",
+        "2025",
+        "01",
+        "38"
+      ],
+      "casualties": [],
+      "summary": "وزارة الصحة في غزة: ارتفاع عدد شهداء المجاعة وسوء التغذية إلى 269 بينهم 112 طفلا\n https://twitter.com/LBCI_NEWS/status/1958116441301090525\nAugust 20, 2025 at 01:38PM"
+    }
   }
 ]
