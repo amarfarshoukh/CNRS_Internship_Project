@@ -6,6 +6,7 @@ import subprocess
 from telethon import TelegramClient, events
 from telethon.tl.types import Channel
 import qrcode
+from rapidfuzz import fuzz
 
 # -----------------------------
 # CONFIG
@@ -60,7 +61,6 @@ ALL_LOCATIONS = {**CITIES_MAP, **ROADS_MAP}
 def detect_location_from_map(text_norm):
     for loc_norm, loc_original in ALL_LOCATIONS.items():
         if loc_norm in text_norm:
-            # Only accept location names that are not just numbers
             if not loc_original.strip().isdigit() and len(loc_original.strip()) > 1:
                 return loc_original
     return None
@@ -117,7 +117,7 @@ class IncidentKeywords:
 IK = IncidentKeywords()
 
 # -----------------------------
-# Phi3 async worker (run in executor to avoid blocking)
+# Phi3 async worker
 # -----------------------------
 async def query_phi3_json(message: str):
     prompt = f"""
@@ -174,27 +174,31 @@ def save_matches(matches, path=OUTPUT_FILE):
         json.dump(matches, f, ensure_ascii=False, indent=2)
 
 # -----------------------------
-# Main async code
+# Deduplication helpers
 # -----------------------------
-async def qr_login(client):
-    if not await client.is_user_authorized():
-        print("Scan QR code:")
-        qr_login = await client.qr_login()
-        qr = qrcode.QRCode()
-        qr.add_data(qr_login.url)
-        qr.make()
-        qr.print_ascii(invert=True)
-        await qr_login.wait()
+def is_redundant(new_record, existing_records, threshold=85):
+    new_text = new_record['details']['summary']
+    new_type = new_record['incident_type']
+    new_loc = new_record['location']
 
-async def get_my_channels(client):
-    out = []
-    async for d in client.iter_dialogs():
-        if isinstance(d.entity, Channel):
-            out.append(d.entity)
-    return out
+    for rec in existing_records:
+        if rec['incident_type'] == new_type and rec['location'] == new_loc:
+            old_text = rec['details']['summary']
+            similarity = fuzz.token_set_ratio(new_text, old_text)
+            if similarity >= threshold:
+                return True
+    return False
+
+def select_best_message(records):
+    records.sort(key=lambda m: (
+        len(m['details'].get('numbers_found', [])) +
+        len(m['details'].get('casualties', [])) +
+        len(m['details'].get('summary', ''))
+    ), reverse=True)
+    return records[0]
 
 # -----------------------------
-# Message queue & Phi3 worker
+# Main Phi3 worker
 # -----------------------------
 message_queue = asyncio.Queue()
 
@@ -211,10 +215,8 @@ async def phi3_worker(matches, existing_ids):
 
             text_norm = normalize_arabic(text)
             location = detect_location_from_map(text_norm)
-
-            # Skip messages outside Lebanon or with invalid location (numeric only)
             if not location or location.strip().isdigit():
-                continue  # do not save
+                continue
 
             incident_type = IK.get_incident_type_by_keywords(text)
             phi3_res = None
@@ -228,7 +230,6 @@ async def phi3_worker(matches, existing_ids):
             if not incident_type or incident_type == "other":
                 continue
 
-            # Threat level
             threat_level = "no" if "لا تهديد" in text_norm else "yes"
             if phi3_res and phi3_res.get("threat_level"):
                 threat_level = phi3_res.get("threat_level")
@@ -251,7 +252,19 @@ async def phi3_worker(matches, existing_ids):
                 }
             }
 
-            matches.append(record)
+            # Deduplication across channels
+            similar_records = [
+                m for m in matches
+                if m['incident_type'] == record['incident_type'] and m['location'] == record['location']
+            ]
+            if similar_records:
+                similar_records.append(record)
+                best_record = select_best_message(similar_records)
+                matches = [m for m in matches if not (m['incident_type'] == record['incident_type'] and m['location'] == record['location'])]
+                matches.append(best_record)
+            else:
+                matches.append(record)
+
             existing_ids.add((channel_name, msg_id))
             save_matches(matches)
             print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
@@ -259,7 +272,27 @@ async def phi3_worker(matches, existing_ids):
             message_queue.task_done()
 
 # -----------------------------
-# Telegram event handler
+# Telegram login / channels
+# -----------------------------
+async def qr_login(client):
+    if not await client.is_user_authorized():
+        print("Scan QR code:")
+        qr_login = await client.qr_login()
+        qr = qrcode.QRCode()
+        qr.add_data(qr_login.url)
+        qr.make()
+        qr.print_ascii(invert=True)
+        await qr_login.wait()
+
+async def get_my_channels(client):
+    out = []
+    async for d in client.iter_dialogs():
+        if isinstance(d.entity, Channel):
+            out.append(d.entity)
+    return out
+
+# -----------------------------
+# Main async
 # -----------------------------
 async def main():
     client = TelegramClient('session', api_id, api_hash)
@@ -271,7 +304,6 @@ async def main():
     matches = load_existing_matches()
     existing_ids = {(m.get('channel'), m.get('message_id')) for m in matches}
 
-    # Start Phi3 worker
     asyncio.create_task(phi3_worker(matches, existing_ids))
 
     @client.on(events.NewMessage(chats=channels))
@@ -287,3 +319,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+    
