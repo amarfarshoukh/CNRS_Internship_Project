@@ -5786,5 +5786,101 @@
       "casualties": [],
       "summary": "‌‏الخارجية الصينية: نشعر بقلق بالغ إزاء الوضع الحالي في غزة ونأمل في توصّل الأطراف إلى وقف إطلاق نار بأقرب وقت"
     }
+  },
+  {
+    "incident_type": "protest",
+    "location": "بعبدا",
+    "channel": "LBCI_NEWS",
+    "message_id": 251409,
+    "date": "2025-08-20 07:23:25+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "4",
+        "4",
+        "20",
+        "2025",
+        "10",
+        "19"
+      ],
+      "casualties": [],
+      "summary": "كرامي من بعبدا: إعتماد 4 أيام للتعليم الرسمي إستمرار للإجراء السابق ونعمل على تصحيح أجور الأساتذة #LBCINewshttps://t.co/EHk4hcjRik\n https://twitter.com/LBCI_NEWS/status/1958066237012861285\nAugust 20, 2025 at 10:19AM"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "غزة",
+    "channel": "LBCI_NEWS",
+    "message_id": 251412,
+    "date": "2025-08-20 07:28:25+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "20",
+        "2025",
+        "10",
+        "24"
+      ],
+      "casualties": [],
+      "summary": "مسؤول عسكري إسرائيلي: نتوقع الإنتهاء من خطة الهجوم على مدينة غزة في الأيام المقبلة\n https://twitter.com/LBCI_NEWS/status/1958067681292087529\nAugust 20, 2025 at 10:24AM"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "75",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214659,
+    "date": "2025-08-20 07:31:06+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "158",
+        "20",
+        "2025",
+        "10",
+        "22"
+      ],
+      "casualties": [],
+      "summary": "البابا في لبنان.. والراعي الى القدس؟https://t.co/UPxdRJ158N\n https://twitter.com/ALJADEEDNEWS/status/1958067131049758866\nAugust 20, 2025 at 10:22AM"
+    }
+  },
+  {
+    "incident_type": "armed_conflict",
+    "location": "\\",
+    "channel": "LBCI_NEWS",
+    "message_id": 251413,
+    "date": "2025-08-20 07:33:41+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "60",
+        "63",
+        "3",
+        "20",
+        "2025",
+        "10",
+        "29"
+      ],
+      "casualties": [],
+      "summary": "وزير الدفاع الإسرائيلي يقرّ خطة السيطرة على مدينة ويطلب استدعاء 60 ألف جندي احتياط#LBCINews https://t.co/hpW63f3WjN\n https://twitter.com/LBCI_NEWS/status/1958068786289955143\nAugust 20, 2025 at 10:29AM"
+    }
+  },
+  {
+    "incident_type": "medical",
+    "location": "بعبدا",
+    "channel": "LBCI_NEWS",
+    "message_id": 251415,
+    "date": "2025-08-20 07:38:16+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "20",
+        "2025",
+        "10",
+        "33"
+      ],
+      "casualties": [],
+      "summary": "النائب فريد البستاني من بعبدا: مستشفى دير القمر الحكومي حق الشوفيين على الدولة ويجب أن يفتح هذه السنة\n https://twitter.com/LBCI_NEWS/status/1958069892978020463\nAugust 20, 2025 at 10:33AM"
+    }
   }
 ]
