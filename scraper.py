@@ -59,24 +59,23 @@ ROADS_MAP = load_geojson_names(ROADS_JSON)
 ALL_LOCATIONS = {**CITIES_MAP, **ROADS_MAP}
 
 # -----------------------------
-# Fast location detection keywords
+# Location detection keywords
 # -----------------------------
 LOCATION_KEYWORDS = [
-    "في", "في منطقة", "على شارع", "بمحلة", "بمنطقة", "في حي", "بالقرب من", "عند", "بالمنطقة", "بالمدينة"
+    "في", "في منطقة", "في حي", "في بلدة", "بالقرب من", "عند", "جنوب", "شمال", "شرق", "غرب"
 ]
 
-def detect_location_fast(text_norm):
+def detect_location(text):
+    text_norm = normalize_arabic(text)
+    # fast check using keywords
     for kw in LOCATION_KEYWORDS:
         if kw in text_norm:
-            # Extract the text immediately after the keyword
-            idx = text_norm.find(kw) + len(kw)
-            candidate = text_norm[idx:].strip().split(" ")[0:3]  # take up to 3 words
-            candidate_str = " ".join(candidate)
-            # Check if candidate exists in map
-            for loc_norm, loc_original in ALL_LOCATIONS.items():
-                if candidate_str in loc_norm:
-                    return loc_original
-    return None
+            # try to match any location from map
+            loc = detect_location_from_map(text_norm)
+            if loc:
+                return loc
+    # fallback: always check map
+    return detect_location_from_map(text_norm)
 
 def detect_location_from_map(text_norm):
     words = text_norm.split()
@@ -84,18 +83,10 @@ def detect_location_from_map(text_norm):
         loc_words = loc_norm.split()
         for i in range(len(words) - len(loc_words) + 1):
             if words[i:i+len(loc_words)] == loc_words:
+                # Only accept locations that are not numeric and length > 1
                 if not loc_original.strip().isdigit() and len(loc_original.strip()) > 1:
                     return loc_original
     return None
-
-def detect_location(text):
-    text_norm = normalize_arabic(text)
-    # Try fast keyword detection first
-    loc = detect_location_fast(text_norm)
-    if loc:
-        return loc
-    # fallback to full map scan
-    return detect_location_from_map(text_norm)
 
 # -----------------------------
 # Incident keywords
@@ -208,6 +199,19 @@ def save_matches(matches, path=OUTPUT_FILE):
 # -----------------------------
 # Deduplication helpers
 # -----------------------------
+def is_redundant(new_record, existing_records, threshold=85):
+    new_text = new_record['details']['summary']
+    new_type = new_record['incident_type']
+    new_loc = new_record['location']
+
+    for rec in existing_records:
+        if rec['incident_type'] == new_type and rec['location'] == new_loc:
+            old_text = rec['details']['summary']
+            similarity = fuzz.token_set_ratio(new_text, old_text)
+            if similarity >= threshold:
+                return True
+    return False
+
 def select_best_message(records):
     records.sort(key=lambda m: (
         len(m['details'].get('numbers_found', [])) +
@@ -230,13 +234,11 @@ async def phi3_worker(matches, existing_ids):
             msg_id = event.id
 
             if (channel_name, msg_id) in existing_ids:
-                message_queue.task_done()
-                continue
+                continue  # task_done will still be called in finally
 
             location = detect_location(text)
             if not location:
-                message_queue.task_done()
-                continue
+                continue  # task_done will still be called in finally
 
             incident_type = IK.get_incident_type_by_keywords(text)
             phi3_res = None
@@ -245,8 +247,7 @@ async def phi3_worker(matches, existing_ids):
                 if phi3_res and phi3_res.get("incident_type") and phi3_res.get("incident_type") != "other":
                     incident_type = phi3_res.get("incident_type")
                 else:
-                    message_queue.task_done()
-                    continue
+                    continue  # task_done will still be called in finally
 
             threat_level = "no" if "لا تهديد" in text else "yes"
             if phi3_res and phi3_res.get("threat_level"):
@@ -286,6 +287,7 @@ async def phi3_worker(matches, existing_ids):
             existing_ids.add((channel_name, msg_id))
             save_matches(matches)
             print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
+
         finally:
             message_queue.task_done()
 
