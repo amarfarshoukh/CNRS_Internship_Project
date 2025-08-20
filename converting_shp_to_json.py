@@ -1,37 +1,65 @@
 import geopandas as gpd
 import os
-import json
 
 # -----------------------------
-# CONFIG
+# Paths to your shapefiles
 # -----------------------------
-BASE_FOLDER = r"C:\Users\user\Downloads\lebanon-latest-free.shp"
-OUTPUT_FOLDER = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output"
-os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+ROADS_SHP = r"C:\Users\user\Downloads\lebanon-latest-free.shp\gis_osm_roads_free_1.shp"
+PLACES_SHP = r"C:\Users\user\Downloads\lebanon-latest-free.shp\gis_osm_places_free_1.shp"
+
+OUTPUT_DIR = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output"
+OUTPUT_ROADS_JSON = os.path.join(OUTPUT_DIR, "roads.json")
+OUTPUT_CITIES_JSON = os.path.join(OUTPUT_DIR, "cities.json")
 
 # -----------------------------
-# HELPER
+# Lebanon bounding box (approx.)
 # -----------------------------
-def save_layer_to_geojson(shp_path, layer_name, output_file):
-    gdf = gpd.read_file(shp_path, layer=layer_name)
-    # Keep only useful columns
-    if layer_name.startswith("gis_osm_roads"):
-        gdf = gdf[["osm_id", "fclass", "name", "geometry"]]
-    elif layer_name.startswith("gis_osm_places"):
-        gdf = gdf[["osm_id", "fclass", "name", "geometry"]]
-    geojson_str = gdf.to_json()
-    with open(output_file, "w", encoding="utf-8") as f:
-        f.write(geojson_str)
-    print(f"Saved {layer_name} with {len(gdf)} features to {output_file}")
+LEBANON_BBOX = {
+    "min_lat": 33.0,
+    "max_lat": 34.7,
+    "min_lon": 35.1,
+    "max_lon": 36.6
+}
 
 # -----------------------------
-# SAVE ROADS
+# Ensure output folder exists
 # -----------------------------
-roads_shp = os.path.join(BASE_FOLDER, "gis_osm_roads_free_1.shp")
-save_layer_to_geojson(roads_shp, "gis_osm_roads_free_1", os.path.join(OUTPUT_FOLDER, "roads.json"))
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # -----------------------------
-# SAVE CITIES
+# Helper: filter inside Lebanon
 # -----------------------------
-cities_shp = os.path.join(BASE_FOLDER, "gis_osm_places_free_1.shp")
-save_layer_to_geojson(cities_shp, "gis_osm_places_free_1", os.path.join(OUTPUT_FOLDER, "cities.json"))
+def filter_lebanon(gdf):
+    # Filter by bounding box
+    return gdf.cx[LEBANON_BBOX["min_lon"]:LEBANON_BBOX["max_lon"],
+                  LEBANON_BBOX["min_lat"]:LEBANON_BBOX["max_lat"]]
+
+# -----------------------------
+# Convert roads
+# -----------------------------
+roads_gdf = gpd.read_file(ROADS_SHP)
+
+# Filter roads inside Lebanon
+roads_gdf = roads_gdf[roads_gdf.geometry.bounds.minx <= LEBANON_BBOX["max_lon"]]
+roads_gdf = roads_gdf[roads_gdf.geometry.bounds.maxx >= LEBANON_BBOX["min_lon"]]
+roads_gdf = roads_gdf[roads_gdf.geometry.bounds.miny <= LEBANON_BBOX["max_lat"]]
+roads_gdf = roads_gdf[roads_gdf.geometry.bounds.maxy >= LEBANON_BBOX["min_lat"]]
+
+# Export to GeoJSON
+roads_gdf.to_file(OUTPUT_ROADS_JSON, driver="GeoJSON")
+print(f"Roads GeoJSON saved: {OUTPUT_ROADS_JSON}")
+
+# -----------------------------
+# Convert cities/places
+# -----------------------------
+cities_gdf = gpd.read_file(PLACES_SHP)
+
+# Filter inside Lebanon
+cities_gdf = cities_gdf[cities_gdf.geometry.y.between(LEBANON_BBOX["min_lat"], LEBANON_BBOX["max_lat"])]
+cities_gdf = cities_gdf[cities_gdf.geometry.x.between(LEBANON_BBOX["min_lon"], LEBANON_BBOX["max_lon"])]
+
+# Export to GeoJSON
+cities_gdf.to_file(OUTPUT_CITIES_JSON, driver="GeoJSON")
+print(f"Cities GeoJSON saved: {OUTPUT_CITIES_JSON}")
+
+print("Conversion complete! Roads and cities are ready for your project.")

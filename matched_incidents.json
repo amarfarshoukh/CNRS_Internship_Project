@@ -5882,5 +5882,44 @@
       "casualties": [],
       "summary": "النائب فريد البستاني من بعبدا: مستشفى دير القمر الحكومي حق الشوفيين على الدولة ويجب أن يفتح هذه السنة\n https://twitter.com/LBCI_NEWS/status/1958069892978020463\nAugust 20, 2025 at 10:33AM"
     }
+  },
+  {
+    "incident_type": "medical",
+    "location": "بعبدا",
+    "channel": "LBCI_NEWS",
+    "message_id": 251417,
+    "date": "2025-08-20 07:43:05+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "20",
+        "2025",
+        "10",
+        "37"
+      ],
+      "casualties": [],
+      "summary": "النائب فريد البستاني من بعبدا: مستشفى دير القمر ليس مستشفى فريد البستاني بل هو مستشفى حكومي للدولة وفيما الأموال موجودة وتذهب الى غير مستشفيات فلتذهب الى دير القمر لفتح هذا المستشفى\n https://twitter.com/LBCI_NEWS/status/1958070803041222714\nAugust 20, 2025 at 10:37AM"
+    }
+  },
+  {
+    "incident_type": "fire",
+    "location": "بعبدا",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214661,
+    "date": "2025-08-20 07:51:40+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "4",
+        "7",
+        "4",
+        "20",
+        "2025",
+        "10",
+        "47"
+      ],
+      "casualties": [],
+      "summary": "كرامي من بعبدا: 4 أيام تدريس أسبوعيًاhttps://t.co/tIQ7ont4TZ\n https://twitter.com/ALJADEEDNEWS/status/1958073451052208281\nAugust 20, 2025 at 10:47AM"
+    }
   }
 ]
