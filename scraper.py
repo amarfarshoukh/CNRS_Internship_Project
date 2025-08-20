@@ -14,6 +14,7 @@ CITIES_JSON = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\In
 ROADS_JSON = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output\roads.json"
 OUTPUT_FILE = "matched_incidents.json"
 OLLAMA_MODEL = "phi3:mini"
+MAX_NUMBER_LEN = 6
 api_id = 20976159
 api_hash = '41bca65c99c9f4fb21ed627cc8f19ad8'
 
@@ -108,13 +109,13 @@ class IncidentKeywords:
     def extract_numbers(self, text):
         nums = re.findall(r"[0-9]+|[٠-٩]+", text)
         conv = str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789")
-        cleaned = [n.translate(conv) for n in nums]
+        cleaned = [n.translate(conv) for n in nums if len(n.translate(conv)) <= MAX_NUMBER_LEN]
         return cleaned
 
 IK = IncidentKeywords()
 
 # -----------------------------
-# Phi3 async worker
+# Phi3 async worker (run in executor to avoid blocking)
 # -----------------------------
 async def query_phi3_json(message: str):
     prompt = f"""
@@ -134,21 +135,25 @@ Important:
 - Only return incidents that concern Lebanon.
 - Respond with JSON only.
 """
-    try:
-        res = subprocess.run(
-            ["ollama", "run", OLLAMA_MODEL],
-            input=prompt.encode("utf-8"),
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        text = res.stdout.decode("utf-8", errors="ignore").strip()
-        m = re.search(r"\{.*?\}", text, flags=re.DOTALL)
-        if m:
-            return json.loads(m.group())
-        return None
-    except Exception as e:
-        print("Phi3 call failed:", e)
-        return None
+    loop = asyncio.get_running_loop()
+    def run_subprocess():
+        try:
+            res = subprocess.run(
+                ["ollama", "run", OLLAMA_MODEL],
+                input=prompt.encode("utf-8"),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=60
+            )
+            text = res.stdout.decode("utf-8", errors="ignore").strip()
+            m = re.search(r"\{.*?\}", text, flags=re.DOTALL)
+            if m:
+                return json.loads(m.group())
+            return None
+        except Exception as e:
+            print("Phi3 call failed:", e)
+            return None
+    return await loop.run_in_executor(None, run_subprocess)
 
 # -----------------------------
 # Load/save matches
@@ -194,58 +199,62 @@ message_queue = asyncio.Queue()
 async def phi3_worker(matches, existing_ids):
     while True:
         event = await message_queue.get()
-        text = event.raw_text or ""
-        channel_name = event.chat.username if event.chat and getattr(event.chat, 'username', None) else str(event.chat_id)
-        msg_id = event.id
+        try:
+            text = event.raw_text or ""
+            channel_name = event.chat.username if event.chat and getattr(event.chat, 'username', None) else str(event.chat_id)
+            msg_id = event.id
 
-        if (channel_name, msg_id) in existing_ids:
-            message_queue.task_done()
-            continue
+            if (channel_name, msg_id) in existing_ids:
+                continue
 
-        text_norm = normalize_arabic(text)
-        location = detect_location_from_map(text_norm)
+            text_norm = normalize_arabic(text)
+            location = detect_location_from_map(text_norm)
 
-        # Skip messages outside Lebanon
-        if not location:
-            message_queue.task_done()
-            return  # do not save
+            # Skip messages outside Lebanon
+            if not location:
+                continue  # do not save
 
-        incident_type = IK.get_incident_type_by_keywords(text)
-        if not incident_type:
-            phi3_res = await query_phi3_json(text)
-            if phi3_res and phi3_res.get("incident_type") != "other":
-                incident_type = phi3_res.get("incident_type")
-            else:
-                message_queue.task_done()
-                return
+            incident_type = IK.get_incident_type_by_keywords(text)
+            phi3_res = None
+            if not incident_type:
+                phi3_res = await query_phi3_json(text)
+                if phi3_res and phi3_res.get("incident_type") and phi3_res.get("incident_type") != "other":
+                    incident_type = phi3_res.get("incident_type")
+                else:
+                    continue
 
-        threat_level = "no" if "لا تهديد" in text_norm else "yes"
-        if 'phi3_res' in locals() and phi3_res and phi3_res.get("threat_level"):
-            threat_level = phi3_res.get("threat_level")
+            if not incident_type or incident_type == "other":
+                continue
 
-        numbers = IK.extract_numbers(text)
-        casualties = IK.extract_casualties(text)
-        summary = text[:300] + ("..." if len(text) > 300 else "")
+            # Threat level
+            threat_level = "no" if "لا تهديد" in text_norm else "yes"
+            if phi3_res and phi3_res.get("threat_level"):
+                threat_level = phi3_res.get("threat_level")
 
-        record = {
-            "incident_type": incident_type,
-            "location": location,
-            "channel": channel_name,
-            "message_id": msg_id,
-            "date": str(event.date),
-            "threat_level": threat_level,
-            "details": {
-                "numbers_found": numbers,
-                "casualties": casualties,
-                "summary": summary
+            numbers = IK.extract_numbers(text)
+            casualties = IK.extract_casualties(text)
+            summary = text[:300] + ("..." if len(text) > 300 else "")
+
+            record = {
+                "incident_type": incident_type,
+                "location": location,
+                "channel": channel_name,
+                "message_id": msg_id,
+                "date": str(event.date),
+                "threat_level": threat_level,
+                "details": {
+                    "numbers_found": numbers,
+                    "casualties": casualties,
+                    "summary": summary
+                }
             }
-        }
 
-        matches.append(record)
-        existing_ids.add((channel_name, msg_id))
-        save_matches(matches)
-        print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
-        message_queue.task_done()
+            matches.append(record)
+            existing_ids.add((channel_name, msg_id))
+            save_matches(matches)
+            print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
+        finally:
+            message_queue.task_done()
 
 # -----------------------------
 # Telegram event handler
@@ -275,4 +284,4 @@ async def main():
         await client.disconnect()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(main()) 
