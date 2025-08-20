@@ -59,10 +59,16 @@ ROADS_MAP = load_geojson_names(ROADS_JSON)
 ALL_LOCATIONS = {**CITIES_MAP, **ROADS_MAP}
 
 def detect_location_from_map(text_norm):
+    words = text_norm.split()
     for loc_norm, loc_original in ALL_LOCATIONS.items():
-        if loc_norm in text_norm:
-            if not loc_original.strip().isdigit() and len(loc_original.strip()) > 1:
-                return loc_original
+        loc_words = loc_norm.split()
+        for i in range(len(words) - len(loc_words) + 1):
+            if words[i:i+len(loc_words)] == loc_words:
+                # Only accept locations that are not numeric and length > 1
+                if not loc_original.strip().isdigit() and len(loc_original.strip()) > 1:
+                    # Additional check: reject locations that are just numbers (even if in the JSON)
+                    if not loc_norm.strip().isdigit() and len(loc_norm.strip()) > 1:
+                        return loc_original
     return None
 
 # -----------------------------
@@ -215,6 +221,7 @@ async def phi3_worker(matches, existing_ids):
 
             text_norm = normalize_arabic(text)
             location = detect_location_from_map(text_norm)
+            # --- STRICT: skip if location is missing or is numeric (even after normalization) ---
             if not location or location.strip().isdigit():
                 continue
 
