@@ -6139,19 +6139,6 @@
     }
   },
   {
-    "incident_type": "airstrike",
-    "location": "صباح",
-    "channel": "MTVLebanoNews",
-    "message_id": 38436,
-    "date": "2025-08-20 09:46:49+00:00",
-    "threat_level": "yes",
-    "details": {
-      "numbers_found": [],
-      "casualties": [],
-      "summary": "‌‏\"القسام\": هاجمنا صباح اليوم موقعاً للعدو جنوب شرقي خان يونس واستهدفنا دبابات ميركافا بعبوات وقذائف"
-    }
-  },
-  {
     "incident_type": "protest",
     "location": "غزة",
     "channel": "lebanonNewsNow",
@@ -6175,41 +6162,6 @@
       "numbers_found": [],
       "casualties": [],
       "summary": "فيضان في بيروت"
-    }
-  },
-  {
-    "incident_type": "protest",
-    "location": "بان",
-    "channel": "lebanondebate",
-    "message_id": 142840,
-    "date": "2025-08-20 09:59:57+00:00",
-    "threat_level": "yes",
-    "details": {
-      "numbers_found": [
-        "734225"
-      ],
-      "casualties": [],
-      "summary": "طالبان تعتبر الاعتراف الروسي بحكومتها \"إنجازاً كبيراً\" بعد أربع سنوات في الحكم\n\nhttps://lbdb.co/734225"
-    }
-  },
-  {
-    "incident_type": "economic crisis",
-    "location": "علق",
-    "channel": "LBCI_NEWS",
-    "message_id": 251436,
-    "date": "2025-08-20 10:03:45+00:00",
-    "threat_level": "yes",
-    "details": {
-      "numbers_found": [
-        "4",
-        "7",
-        "20",
-        "2025",
-        "01",
-        "02"
-      ],
-      "casualties": [],
-      "summary": "بيان لوزير المالية يتعلق بتوجب رسم الطابع المالي النسبي على بعض العقود والملاحق التعديلية #LBCINewshttps://t.co/4Qe7pSeIJQ\n https://twitter.com/LBCI_NEWS/status/1958107487573258624\nAugust 20, 2025 at 01:02PM"
     }
   }
 ]
