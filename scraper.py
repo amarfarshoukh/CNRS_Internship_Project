@@ -58,18 +58,44 @@ CITIES_MAP = load_geojson_names(CITIES_JSON)
 ROADS_MAP = load_geojson_names(ROADS_JSON)
 ALL_LOCATIONS = {**CITIES_MAP, **ROADS_MAP}
 
+# -----------------------------
+# Fast location detection keywords
+# -----------------------------
+LOCATION_KEYWORDS = [
+    "في", "في منطقة", "على شارع", "بمحلة", "بمنطقة", "في حي", "بالقرب من", "عند", "بالمنطقة", "بالمدينة"
+]
+
+def detect_location_fast(text_norm):
+    for kw in LOCATION_KEYWORDS:
+        if kw in text_norm:
+            # Extract the text immediately after the keyword
+            idx = text_norm.find(kw) + len(kw)
+            candidate = text_norm[idx:].strip().split(" ")[0:3]  # take up to 3 words
+            candidate_str = " ".join(candidate)
+            # Check if candidate exists in map
+            for loc_norm, loc_original in ALL_LOCATIONS.items():
+                if candidate_str in loc_norm:
+                    return loc_original
+    return None
+
 def detect_location_from_map(text_norm):
     words = text_norm.split()
     for loc_norm, loc_original in ALL_LOCATIONS.items():
         loc_words = loc_norm.split()
         for i in range(len(words) - len(loc_words) + 1):
             if words[i:i+len(loc_words)] == loc_words:
-                # Only accept locations that are not numeric and length > 1
                 if not loc_original.strip().isdigit() and len(loc_original.strip()) > 1:
-                    # Additional check: reject locations that are just numbers (even if in the JSON)
-                    if not loc_norm.strip().isdigit() and len(loc_norm.strip()) > 1:
-                        return loc_original
+                    return loc_original
     return None
+
+def detect_location(text):
+    text_norm = normalize_arabic(text)
+    # Try fast keyword detection first
+    loc = detect_location_fast(text_norm)
+    if loc:
+        return loc
+    # fallback to full map scan
+    return detect_location_from_map(text_norm)
 
 # -----------------------------
 # Incident keywords
@@ -182,19 +208,6 @@ def save_matches(matches, path=OUTPUT_FILE):
 # -----------------------------
 # Deduplication helpers
 # -----------------------------
-def is_redundant(new_record, existing_records, threshold=85):
-    new_text = new_record['details']['summary']
-    new_type = new_record['incident_type']
-    new_loc = new_record['location']
-
-    for rec in existing_records:
-        if rec['incident_type'] == new_type and rec['location'] == new_loc:
-            old_text = rec['details']['summary']
-            similarity = fuzz.token_set_ratio(new_text, old_text)
-            if similarity >= threshold:
-                return True
-    return False
-
 def select_best_message(records):
     records.sort(key=lambda m: (
         len(m['details'].get('numbers_found', [])) +
@@ -217,12 +230,12 @@ async def phi3_worker(matches, existing_ids):
             msg_id = event.id
 
             if (channel_name, msg_id) in existing_ids:
+                message_queue.task_done()
                 continue
 
-            text_norm = normalize_arabic(text)
-            location = detect_location_from_map(text_norm)
-            # --- STRICT: skip if location is missing or is numeric (even after normalization) ---
-            if not location or location.strip().isdigit():
+            location = detect_location(text)
+            if not location:
+                message_queue.task_done()
                 continue
 
             incident_type = IK.get_incident_type_by_keywords(text)
@@ -232,12 +245,10 @@ async def phi3_worker(matches, existing_ids):
                 if phi3_res and phi3_res.get("incident_type") and phi3_res.get("incident_type") != "other":
                     incident_type = phi3_res.get("incident_type")
                 else:
+                    message_queue.task_done()
                     continue
 
-            if not incident_type or incident_type == "other":
-                continue
-
-            threat_level = "no" if "لا تهديد" in text_norm else "yes"
+            threat_level = "no" if "لا تهديد" in text else "yes"
             if phi3_res and phi3_res.get("threat_level"):
                 threat_level = phi3_res.get("threat_level")
 
@@ -259,15 +270,15 @@ async def phi3_worker(matches, existing_ids):
                 }
             }
 
-            # Deduplication across channels
+            # Deduplication
             similar_records = [
                 m for m in matches
-                if m['incident_type'] == record['incident_type'] and m['location'] == record['location']
+                if m.get('incident_type') == record['incident_type'] and m.get('location') == record['location']
             ]
             if similar_records:
                 similar_records.append(record)
                 best_record = select_best_message(similar_records)
-                matches = [m for m in matches if not (m['incident_type'] == record['incident_type'] and m['location'] == record['location'])]
+                matches = [m for m in matches if not (m.get('incident_type') == record['incident_type'] and m.get('location') == record['location'])]
                 matches.append(best_record)
             else:
                 matches.append(record)
@@ -326,4 +337,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-    
