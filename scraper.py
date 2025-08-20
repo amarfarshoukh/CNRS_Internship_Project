@@ -11,13 +11,17 @@ from rapidfuzz import fuzz
 # -----------------------------
 # CONFIG
 # -----------------------------
-CITIES_JSON = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output\cities.json"
-ROADS_JSON = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output\roads.json"
+CITIES_JSON = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output\gis_osm_places_a_free_1.json"
+ROADS_JSON = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output\gis_osm_roads_free_1.json"
 OUTPUT_FILE = "matched_incidents.json"
 OLLAMA_MODEL = "phi3:mini"
 MAX_NUMBER_LEN = 6
 api_id = 20976159
 api_hash = '41bca65c99c9f4fb21ed627cc8f19ad8'
+
+LOCATION_KEYWORDS = [
+    "في", "في منطقة", "في حي", "في بلدة", "بالقرب من", "عند", "جنوب", "شمال", "شرق", "غرب"
+]
 
 # -----------------------------
 # Arabic normalization
@@ -38,56 +42,56 @@ def normalize_arabic(text: str) -> str:
     text = re.sub(r"\s+", " ", text).strip()
     return text
 
+def is_arabic(text: str) -> bool:
+    return bool(re.search(r'[\u0600-\u06FF]', text))
+
 # -----------------------------
-# Load locations from GeoJSON
+# Load locations from JSON with coordinates
 # -----------------------------
-def load_geojson_names(geojson_file):
+def load_geojson_locations(geojson_file):
+    """
+    Loads Arabic location names with coordinates from JSON.
+    Returns: {normalized_name: {"original": name, "coordinates": coords}}
+    """
     if not os.path.exists(geojson_file):
         return {}
+    
     with open(geojson_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
+    
     norm_map = {}
-    for feature in data['features']:
-        name = feature['properties'].get('name')
-        if name:
+    for item in data:
+        name = item.get('name')
+        coords = item.get('coordinates')  # can be None if missing
+        if name and is_arabic(name):
             name_norm = normalize_arabic(name)
-            norm_map[name_norm] = name
+            norm_map[name_norm] = {"original": name, "coordinates": coords}
     return norm_map
 
-CITIES_MAP = load_geojson_names(CITIES_JSON)
-ROADS_MAP = load_geojson_names(ROADS_JSON)
+CITIES_MAP = load_geojson_locations(CITIES_JSON)
+ROADS_MAP = load_geojson_locations(ROADS_JSON)
 ALL_LOCATIONS = {**CITIES_MAP, **ROADS_MAP}
 
 # -----------------------------
-# Location detection keywords
+# Location detection
 # -----------------------------
-LOCATION_KEYWORDS = [
-    "في", "في منطقة", "في حي", "في بلدة", "بالقرب من", "عند", "جنوب", "شمال", "شرق", "غرب"
-]
-
-def detect_location(text):
-    text_norm = normalize_arabic(text)
-    # fast check using keywords
-    for kw in LOCATION_KEYWORDS:
-        if kw in text_norm:
-            # try to match any location from map
-            loc = detect_location_from_map(text_norm)
-            if loc:
-                return loc
-    # fallback: always check map
-    return detect_location_from_map(text_norm)
-
 def detect_location_from_map(text_norm):
     words = text_norm.split()
-    for loc_norm, loc_original in ALL_LOCATIONS.items():
+    for loc_norm, loc_data in ALL_LOCATIONS.items():
         loc_words = loc_norm.split()
         for i in range(len(words) - len(loc_words) + 1):
             if words[i:i+len(loc_words)] == loc_words:
-                # Only accept locations that are not numeric and length > 1
-                if not loc_original.strip().isdigit() and len(loc_original.strip()) > 1:
-                    if not loc_norm.strip().isdigit() and len(loc_norm.strip()) > 1:
-                        return loc_original
-    return None
+                return loc_data["original"], loc_data["coordinates"]
+    return None, None
+
+def detect_location(text):
+    text_norm = normalize_arabic(text)
+    for kw in LOCATION_KEYWORDS:
+        if kw in text_norm:
+            loc, coords = detect_location_from_map(text_norm)
+            if loc:
+                return loc, coords
+    return detect_location_from_map(text_norm)
 
 # -----------------------------
 # Incident keywords
@@ -100,7 +104,7 @@ class IncidentKeywords:
             'protest': ['احتجاج','مظاهرة','تظاهرة','اعتصام'],
             'fire': ['حريق','احتراق','نار','اشتعال','اندلاع','دخان'],
             'natural_disaster': ['زلزال','هزة أرضية','فيضان','سيول','انهيار أرضي'],
-            "airstrike": ["مسيرة", "طيران حربي", "غارة جوية", "قصف", "صاروخ", "قنبلة"],
+            'airstrike': ["مسيرة", "طيران حربي", "غارة جوية", "قصف", "صاروخ", "قنبلة"],
             'collapse': ['انهيار','انهيار مبنى','سقوط'],
             'pollution': ['تلوث','تسرب نفطي','انسكاب'],
             'epidemic': ['وباء','تفشي','إصابات جماعية'],
@@ -237,30 +241,21 @@ async def phi3_worker(matches, existing_ids):
             if (channel_name, msg_id) in existing_ids:
                 continue
 
-            # STEP 1: Check location keywords
             has_kw = any(kw in normalize_arabic(text) for kw in LOCATION_KEYWORDS)
+            location, coordinates = detect_location(text) if has_kw else (None, None)
 
-            # STEP 2: Match with GeoJSON
-            location = detect_location(text) if has_kw else None
-
-            # If no location found, skip
             if not location or location.strip().isdigit():
                 continue
 
-            # STEP 3: AI Validation (to avoid wrong matches like "جويا" in Gaza)
             phi3_res = await query_phi3_json(text)
             if not phi3_res:
                 continue
 
-            # AI must confirm incident type
             incident_type = phi3_res.get("incident_type")
             if not incident_type or incident_type == "other":
                 continue
 
-            # Use AI threat_level if available
             threat_level = phi3_res.get("threat_level", "yes")
-
-            # Numbers + casualties (keyword-based extraction for enrichment)
             numbers = IK.extract_numbers(text)
             casualties = IK.extract_casualties(text)
             summary = text[:300] + ("..." if len(text) > 300 else "")
@@ -268,6 +263,7 @@ async def phi3_worker(matches, existing_ids):
             record = {
                 "incident_type": incident_type,
                 "location": location,
+                "coordinates": coordinates,
                 "channel": channel_name,
                 "message_id": msg_id,
                 "date": str(event.date),
@@ -279,7 +275,6 @@ async def phi3_worker(matches, existing_ids):
                 }
             }
 
-            # Deduplication
             similar_records = [
                 m for m in matches
                 if m.get('incident_type') == record['incident_type'] and m.get('location') == record['location']
@@ -305,12 +300,12 @@ async def phi3_worker(matches, existing_ids):
 async def qr_login(client):
     if not await client.is_user_authorized():
         print("Scan QR code:")
-        qr_login = await client.qr_login()
+        qr_login_obj = await client.qr_login()
         qr = qrcode.QRCode()
-        qr.add_data(qr_login.url)
+        qr.add_data(qr_login_obj.url)
         qr.make()
         qr.print_ascii(invert=True)
-        await qr_login.wait()
+        await qr_login_obj.wait()
 
 async def get_my_channels(client):
     out = []
