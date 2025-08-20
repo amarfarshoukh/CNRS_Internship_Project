@@ -60,7 +60,9 @@ ALL_LOCATIONS = {**CITIES_MAP, **ROADS_MAP}
 def detect_location_from_map(text_norm):
     for loc_norm, loc_original in ALL_LOCATIONS.items():
         if loc_norm in text_norm:
-            return loc_original
+            # Only accept location names that are not just numbers
+            if not loc_original.strip().isdigit() and len(loc_original.strip()) > 1:
+                return loc_original
     return None
 
 # -----------------------------
@@ -210,8 +212,8 @@ async def phi3_worker(matches, existing_ids):
             text_norm = normalize_arabic(text)
             location = detect_location_from_map(text_norm)
 
-            # Skip messages outside Lebanon
-            if not location:
+            # Skip messages outside Lebanon or with invalid location (numeric only)
+            if not location or location.strip().isdigit():
                 continue  # do not save
 
             incident_type = IK.get_incident_type_by_keywords(text)
@@ -284,4 +286,4 @@ async def main():
         await client.disconnect()
 
 if __name__ == "__main__":
-    asyncio.run(main()) 
+    asyncio.run(main())

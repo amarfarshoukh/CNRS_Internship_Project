@@ -6095,5 +6095,47 @@
       "casualties": [],
       "summary": "‌‏الجيش الإسرائيلي: بدء المرحلة التمهيدية لاحتلال غزة من حي الزيتون وجباليا ونجري عمليات برية واسعة"
     }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "16",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214667,
+    "date": "2025-08-20 09:36:32+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "64",
+        "5",
+        "9",
+        "20",
+        "2025",
+        "12",
+        "31"
+      ],
+      "casualties": [],
+      "summary": "بعد تقرير \"الجديد\".. حيدر الحسيني بقبضة الأمن!@SamiHatoum64 https://t.co/KSI5OyujY9\n https://twitter.com/ALJADEEDNEWS/status/1958099651615248830\nAugust 20, 2025 at 12:31PM"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "76",
+    "channel": "MTVLebanonNews",
+    "message_id": 278759,
+    "date": "2025-08-20 09:37:44+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "3",
+        "20",
+        "2025",
+        "12",
+        "30"
+      ],
+      "casualties": [
+        "injured"
+      ],
+      "summary": "وسائل إعلام إسرائيلية: إصابة 3 جنود على الأقل في الهجوم الذي تعرّض له موقع للجيش الإسرائيلي في خان يونس حالة أحدهم حرجة\n https://twitter.com/MTVLebanonNews/status/1958099407640920121\nAugust 20, 2025 at 12:30PM"
+    }
   }
 ]
