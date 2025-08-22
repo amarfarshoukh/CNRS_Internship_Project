@@ -9,7 +9,6 @@
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""
   />
   <!-- MarkerCluster CSS -->
@@ -43,7 +42,6 @@
       padding: 6px 10px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer;
     }
     .controls input[type="text"] { flex: 1; min-width: 160px; }
-    .badge { border-radius: 999px; padding: 2px 8px; font-size: 12px; border: 1px solid #ddd; }
     .footer { font-size: 12px; color: #444; margin-top: 12px; }
   </style>
 </head>
@@ -67,30 +65,18 @@
       <div class="legend" id="legend"></div>
 
       <div class="footer">
-        Tiles © OpenStreetMap contributors. Data from your Telegram pipeline.
+        Tiles © OpenStreetMap contributors. Data from your JSON pipeline.
       </div>
     </aside>
     <div id="map"></div>
   </div>
 
   <!-- Leaflet JS -->
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""
-  ></script>
-
-  <!-- MarkerCluster JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
   <script>
-    // --- Map Init ---
-    const map = L.map('map', {
-      minZoom: 7,
-      maxZoom: 18,
-      zoomControl: true
-    }).setView([33.9, 35.86], 8);
-
+    const map = L.map('map', { minZoom: 7, maxZoom: 18 }).setView([33.9, 35.86], 8);
     const lebanonBounds = L.latLngBounds([[32.8, 34.9], [34.9, 36.9]]);
     map.setMaxBounds(lebanonBounds);
     map.on('drag', () => map.panInsideBounds(lebanonBounds, { animate: true }));
@@ -99,56 +85,56 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // --- Data/Filters ---
-    let allItems = [];
-    let searchTerm = '';
-    const cluster = L.markerClusterGroup();
-    map.addLayer(cluster);
+    const TYPE_COLORS = {
+      fire: "red",
+      protest: "purple",
+      vehicle_accident: "orange",
+      shooting: "red",
+      natural_disaster: "blue",
+      airstrike: "black",
+      collapse: "brown",
+      pollution: "green",
+      epidemic: "pink",
+      medical: "yellow",
+      explosion: "gray",
+      other: "white"
+    };
 
+    const ALL_TYPES = Object.keys(TYPE_COLORS);
+    let activeTypes = new Set(ALL_TYPES);
+    let searchTerm = '';
+    const cluster = L.markerClusterGroup().addTo(map);
     const filtersDiv = document.getElementById('filters');
     const legendDiv = document.getElementById('legend');
+    let allItems = [];
 
-    const TYPE_COLORS = {}; 
-    let activeTypes = new Set();
-
-    function buildFilters(items) {
-      const types = [...new Set(items.map(i => i.incident_type || 'other'))];
-      types.forEach(t => {
-        TYPE_COLORS[t] = items.find(i => i.incident_type === t)?.color || '#777';
-        activeTypes.add(t);
-
-        const id = `filter-${t}`;
-        const label = document.createElement('label');
-        label.innerHTML = `<input type="checkbox" id="${id}" checked>
-                           <span class="swatch" style="background:${TYPE_COLORS[t]}"></span>
-                           <span>${t}</span>`;
-        filtersDiv.appendChild(label);
-        label.querySelector('input').addEventListener('change', e => {
-          e.target.checked ? activeTypes.add(t) : activeTypes.delete(t);
-          render();
-        });
-
-        const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.alignItems = 'center';
-        row.innerHTML = `<span class="swatch" style="background:${TYPE_COLORS[t]}"></span><span>${t}</span>`;
-        legendDiv.appendChild(row);
+    ALL_TYPES.forEach(t => {
+      const id = `filter-${t}`;
+      const label = document.createElement('label');
+      label.innerHTML = `<input type="checkbox" id="${id}" checked>
+                         <span class="swatch" style="background:${TYPE_COLORS[t]}"></span>
+                         <span>${t}</span>`;
+      filtersDiv.appendChild(label);
+      label.querySelector('input').addEventListener('change', e => {
+        e.target.checked ? activeTypes.add(t) : activeTypes.delete(t);
+        render();
       });
-    }
 
-    // Buttons
+      const row = document.createElement('div');
+      row.style.display = 'flex';
+      row.style.alignItems = 'center';
+      row.innerHTML = `<span class="swatch" style="background:${TYPE_COLORS[t]}"></span><span>${t}</span>`;
+      legendDiv.appendChild(row);
+    });
+
     document.getElementById('select-all').onclick = () => {
-      Object.keys(TYPE_COLORS).forEach(t => {
-        activeTypes.add(t);
-        document.getElementById('filter-' + t).checked = true;
-      });
+      activeTypes = new Set(ALL_TYPES);
+      ALL_TYPES.forEach(t => document.getElementById('filter-' + t).checked = true);
       render();
     };
     document.getElementById('select-none').onclick = () => {
-      Object.keys(TYPE_COLORS).forEach(t => {
-        activeTypes.delete(t);
-        document.getElementById('filter-' + t).checked = false;
-      });
+      activeTypes.clear();
+      ALL_TYPES.forEach(t => document.getElementById('filter-' + t).checked = false);
       render();
     };
     document.getElementById('refresh').onclick = () => refresh();
@@ -157,80 +143,73 @@
       render();
     });
 
-    function render() {
-      cluster.clearLayers();
-      map.eachLayer(l => {
-        if (l.incidentPolygon) map.removeLayer(l);
+    function markerFor(item) {
+      if (!item.coordinates || !item.coordinates.length) return null;
+      const polyCoords = item.coordinates.map(poly => poly.map(c => [c[1], c[0]]));
+      const polygon = L.polygon(polyCoords, {
+        color: TYPE_COLORS[item.incident_type] || '#666',
+        weight: 2,
+        fillOpacity: 0.4
       });
-
-      const shown = [];
-      allItems.forEach(item => {
-        if (!matchesFilters(item)) return;
-
-        // Polygon from coordinates
-        if (item.coordinates && item.coordinates.length) {
-          const polygon = L.polygon(item.coordinates, {
-            color: item.color || '#777',
-            weight: 2,
-            fillOpacity: 0.4
-          }).addTo(map);
-          polygon.incidentPolygon = true;
-
-          const html = `<div style="min-width:180px">
-                          <strong>${item.incident_type || 'incident'}</strong><br>
-                          ${item.text || ''}<br>
-                          ${item.city || ''}<br>
-                          ${item.ts ? new Date(item.ts).toLocaleString() : ''}
-                        </div>`;
-          polygon.bindPopup(html);
-        } else if (item.latitude && item.longitude) {
-          const m = L.circleMarker([item.latitude, item.longitude], {
-            radius: 8,
-            color: '#222',
-            fillColor: item.color || '#777',
-            fillOpacity: 0.9,
-            weight: 1
-          });
-          const html = `<div style="min-width:180px">
-                          <strong>${item.incident_type || 'incident'}</strong><br>
-                          ${item.text || ''}<br>
-                          ${item.city || ''}<br>
-                          ${item.ts ? new Date(item.ts).toLocaleString() : ''}
-                        </div>`;
-          m.bindPopup(html);
-          cluster.addLayer(m);
-        }
-        shown.push(item);
-      });
-
-      document.getElementById('last-updated').textContent =
-        `${shown.length} shown / ${allItems.length} total — ${new Date().toLocaleTimeString()}`;
+      const popupHtml = `
+        <div style="min-width:220px">
+          <strong>${item.incident_type}</strong><br>
+          <b>City:</b> ${item.city}<br>
+          <b>Date:</b> ${item.date}<br>
+          <b>Channel:</b> ${item.channel}<br>
+          <b>Summary:</b> ${item.details?.summary || ''}
+        </div>`;
+      polygon.bindPopup(popupHtml);
+      return polygon;
     }
 
     function matchesFilters(item) {
-      if (!item) return false;
-      if (searchTerm) {
-        const hay = (item.text || '') + ' ' + (item.city || '') + ' ' + (item.incident_type || '');
-        if (!hay.toLowerCase().includes(searchTerm)) return false;
-      }
+      if (!item.coordinates || !item.coordinates.length) return false;
       if (!activeTypes.has(item.incident_type || 'other')) return false;
+      if (searchTerm) {
+        const hay = (item.details?.summary || '') + ' ' + (item.city || '') + ' ' + (item.incident_type || '');
+        return hay.toLowerCase().includes(searchTerm);
+      }
       return true;
+    }
+
+    function render() {
+      cluster.clearLayers();
+      const shown = [];
+      allItems.forEach(it => {
+        if (matchesFilters(it)) {
+          const m = markerFor(it);
+          if (m) cluster.addLayer(m);
+          shown.push(it);
+        }
+      });
+      document.getElementById('last-updated').textContent =
+        `${shown.length} shown / ${allItems.length} total — ${new Date().toLocaleTimeString()}`;
+
+      // Fit map to Lebanon bounds
+      map.fitBounds(lebanonBounds);
     }
 
     async function refresh() {
       try {
-        const res = await fetch('/incidents');
+        const res = await fetch('matched_incidents.json');
         const json = await res.json();
-        allItems = json.incidents || [];
-        if (!Object.keys(TYPE_COLORS).length) buildFilters(allItems);
+        allItems = json.map(i => ({
+          incident_type: i.incident_type,
+          city: i.location,
+          coordinates: i.coordinates,
+          details: i.details,
+          date: i.date,
+          channel: i.channel
+        }));
         render();
-      } catch (e) {
+      } catch(e) {
         console.error('Failed to load incidents:', e);
       }
     }
 
     refresh();
-    setInterval(refresh, 30000); // auto-refresh
+    setInterval(refresh, 30000);
   </script>
 </body>
 </html>
