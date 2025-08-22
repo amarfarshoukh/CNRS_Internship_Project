@@ -155,29 +155,26 @@ IK = IncidentKeywords()
 # -----------------------------
 def query_phi3_json(message: str):
     prompt = f"""
-You are a highly accurate Arabic incident analysis assistant.
-Analyze the following incident report (Arabic only) and return ONLY valid JSON.
+You are a strict Arabic incident analysis assistant.
+Return ONLY valid JSON with these fields:
+- "location": Lebanese location or "Unknown / Outside Lebanon"
+- "incident_type": one of ["vehicle_accident", "shooting", "protest", "fire", "natural_disaster", "airstrike", "collapse", "pollution", "epidemic", "medical", "explosion", "other"]
+- "threat_level": "yes" or "no"
+- "casualties": array of Arabic keywords (e.g., قتيل, جريح, مفقود), or empty array if none
+- "numbers": array of numbers found, or empty array if none
 
 Message: "{message}"
 
-Output JSON format:
-{{
-  - ONLY return JSON. Do not add explanations.
-- If location is outside Lebanon, use "Unknown / Outside Lebanon".
-- If numbers or casualties are not found, return empty arrays.
-- Always return incident_type as one of the allowed types: vehicle_accident, shooting, protest, fire, natural_disaster, airstrike, collapse, pollution, epidemic, medical, explosion, other
-}}
-
 Rules:
-- Only consider incidents inside Lebanon.
-- Detect incident type using Arabic keywords first.
-- Extract numbers and casualties (Arabic keywords: قتيل, جريح, مفقود, etc.).
-- Never include text outside JSON.
-- Use double quotes.
-- If no Lebanese location, ignore the news.
+- Only consider incidents inside Lebanon
+- Detect incident type using Arabic keywords first; if detected, keep it
+- Never include explanations or extra text outside JSON
+- Always use double quotes
+- If location cannot be determined in Lebanon, use "Unknown / Outside Lebanon"
 
 Respond ONLY with JSON.
 """
+
     try:
         res = subprocess.run(
             ["ollama", "run", OLLAMA_MODEL],
@@ -187,18 +184,24 @@ Respond ONLY with JSON.
             timeout=PHI3_TIMEOUT
         )
         text = res.stdout.decode("utf-8", errors="ignore").strip()
+
+        # Extract JSON from the output
         m = re.search(r"\{.*\}", text, flags=re.DOTALL)
         if m:
             json_str = m.group()
             try:
-                return json.loads(json_str)
+                return json.loads(json_str)  # primary attempt
             except json.JSONDecodeError:
+                # fallback: safely evaluate literal JSON-like dict
                 try:
                     return ast.literal_eval(json_str)
                 except:
                     print("Phi3 returned invalid JSON:", json_str)
                     return None
-        return None
+        else:
+            print("Phi3 did not return JSON:", text)
+            return None
+
     except Exception as e:
         print("Phi3 call failed:", e)
         return None
