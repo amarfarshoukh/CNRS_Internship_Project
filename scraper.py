@@ -20,7 +20,9 @@ api_hash = '41bca65c99c9f4fb21ed627cc8f19ad8'
 PHI3_TIMEOUT = 60
 
 LOCATION_KEYWORDS = [
-    "في", "في منطقة", "في حي", "في بلدة", "بالقرب من", "عند", "جنوب", "شمال", "شرق", "غرب"
+    "في", "في منطقة", "في حي", "في بلدة", "في شارع",
+    "بالقرب من", "قرب", "قرب مدينة", "قرب شارع", "عند",
+    "جنوب", "شمال", "شرق", "غرب"
 ]
 
 # -----------------------------
@@ -152,7 +154,7 @@ class IncidentKeywords:
 IK = IncidentKeywords()
 
 # -----------------------------
-# Phi3 synchronous call
+# Phi3 worker
 # -----------------------------
 def query_phi3_json(message: str):
     prompt = f"""
@@ -170,7 +172,7 @@ Output JSON format:
 
 Important:
 - Only return incidents that concern Lebanon.
-- Respond with JSON only.
+- Respond with JSON ONLY. Do not add any explanation.
 """
     try:
         res = subprocess.run(
@@ -196,12 +198,6 @@ Important:
     except Exception as e:
         print("Phi3 call failed:", e)
         return None
-
-# -----------------------------
-# Async wrapper for Phi3
-# -----------------------------
-async def query_phi3_json_async(message: str):
-    return await asyncio.to_thread(query_phi3_json, message)
 
 # -----------------------------
 # Load/save matches
@@ -231,7 +227,7 @@ def select_best_message(records):
     return records[0]
 
 # -----------------------------
-# Message queue & worker
+# Main Phi3 async worker
 # -----------------------------
 message_queue = asyncio.Queue()
 
@@ -252,7 +248,7 @@ async def phi3_worker(matches, existing_ids):
             if not location or not coordinates:
                 continue
 
-            phi3_res = await query_phi3_json_async(text)  # <--- FIXED HERE
+            phi3_res = query_phi3_json(text)
             if not phi3_res:
                 continue
 
@@ -310,7 +306,7 @@ async def phi3_worker(matches, existing_ids):
             message_queue.task_done()
 
 # -----------------------------
-# Telegram login
+# Telegram login / channels
 # -----------------------------
 async def qr_login(client):
     if not await client.is_user_authorized():

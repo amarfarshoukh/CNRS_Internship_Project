@@ -7727,5 +7727,47 @@
       "casualties": [],
       "summary": "‏🚨 ورد الآن / إسرائيل تتحضر لهجوم \"قوي\" على مواقع حوثية في اليمن (الحدث) \n\n @lebanonNewsNow"
     }
+  },
+  {
+    "incident_type": "protest",
+    "location": "الجية",
+    "coordinates": [
+      35.4251394,
+      33.6591946
+    ],
+    "channel": "testingammoura",
+    "message_id": 10,
+    "date": "2025-08-22 21:00:15+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "حوادث سير في الجية"
+    }
+  },
+  {
+    "incident_type": "vehicle_accident",
+    "location": "بعبدا",
+    "coordinates": [
+      35.5445655,
+      33.8335501
+    ],
+    "channel": "MTVLebanonNews",
+    "message_id": 279071,
+    "date": "2025-08-22 21:07:35+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "0",
+        "23",
+        "2025",
+        "12",
+        "01"
+      ],
+      "casualties": [
+        "injured"
+      ],
+      "summary": "التحكم المروري: جريح في انقلاب سيارة على أوتوستراد الرميلة باتجاه الدامور ودراج من مفرزة سير بعبدا يعمل على المعالجة https://t.co/YbTZQOFJy0\n https://twitter.com/MTVLebanonNews/status/1958998004490543598\nAugust 23, 2025 at 12:01AM"
+    }
   }
 ]
