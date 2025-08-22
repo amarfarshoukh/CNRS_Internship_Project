@@ -162,11 +162,10 @@ Message: "{message}"
 
 Output JSON format:
 {{
-  "location": "Extracted location inside Lebanon, or 'Unknown / Outside Lebanon'",
-  "incident_type": "vehicle_accident, shooting, protest, fire, natural_disaster, airstrike, collapse, pollution, epidemic, medical, explosion, other",
-  "threat_level": "yes or no",
-  "numbers_found": ["list all numeric values in the report relevant to the incident"],
-  "casualties": ["killed", "injured", "missing"]
+  - ONLY return JSON. Do not add explanations.
+- If location is outside Lebanon, use "Unknown / Outside Lebanon".
+- If numbers or casualties are not found, return empty arrays.
+- Always return incident_type as one of the allowed types: vehicle_accident, shooting, protest, fire, natural_disaster, airstrike, collapse, pollution, epidemic, medical, explosion, other
 }}
 
 Rules:
@@ -175,7 +174,7 @@ Rules:
 - Extract numbers and casualties (Arabic keywords: قتيل, جريح, مفقود, etc.).
 - Never include text outside JSON.
 - Use double quotes.
-- If no Lebanese location, set location to 'Unknown / Outside Lebanon'.
+- If no Lebanese location, ignore the news.
 
 Respond ONLY with JSON.
 """
