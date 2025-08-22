@@ -45,7 +45,7 @@ def is_arabic(text: str) -> bool:
     return bool(re.search(r'[\u0600-\u06FF]', text))
 
 # -----------------------------
-# Load all GeoJSON locations from folder
+# Load all GeoJSON locations
 # -----------------------------
 def extract_centroid(coords):
     if not coords:
@@ -152,7 +152,7 @@ class IncidentKeywords:
 IK = IncidentKeywords()
 
 # -----------------------------
-# Phi3 async worker
+# Phi3 synchronous call
 # -----------------------------
 def query_phi3_json(message: str):
     prompt = f"""
@@ -181,15 +181,12 @@ Important:
             timeout=PHI3_TIMEOUT
         )
         text = res.stdout.decode("utf-8", errors="ignore").strip()
-        
-        # Attempt to extract JSON-like object
         m = re.search(r"\{.*?\}", text, flags=re.DOTALL)
         if m:
             json_str = m.group()
             try:
-                return json.loads(json_str)  # first attempt
+                return json.loads(json_str)
             except json.JSONDecodeError:
-                # fallback: convert single quotes to double quotes safely
                 try:
                     return ast.literal_eval(json_str)
                 except:
@@ -199,6 +196,12 @@ Important:
     except Exception as e:
         print("Phi3 call failed:", e)
         return None
+
+# -----------------------------
+# Async wrapper for Phi3
+# -----------------------------
+async def query_phi3_json_async(message: str):
+    return await asyncio.to_thread(query_phi3_json, message)
 
 # -----------------------------
 # Load/save matches
@@ -228,7 +231,7 @@ def select_best_message(records):
     return records[0]
 
 # -----------------------------
-# Main Phi3 worker
+# Message queue & worker
 # -----------------------------
 message_queue = asyncio.Queue()
 
@@ -249,7 +252,7 @@ async def phi3_worker(matches, existing_ids):
             if not location or not coordinates:
                 continue
 
-            phi3_res = await query_phi3_json(text)
+            phi3_res = await query_phi3_json_async(text)  # <--- FIXED HERE
             if not phi3_res:
                 continue
 
@@ -307,7 +310,7 @@ async def phi3_worker(matches, existing_ids):
             message_queue.task_done()
 
 # -----------------------------
-# Telegram login / channels
+# Telegram login
 # -----------------------------
 async def qr_login(client):
     if not await client.is_user_authorized():
@@ -331,7 +334,7 @@ async def get_my_channels(client):
 # -----------------------------
 async def main():
     client = TelegramClient('session', api_id, api_hash)
-    await client.start()  # handles connection & authorization
+    await client.start()
     await qr_login(client)
     channels = await get_my_channels(client)
     channel_ids = [c.id for c in channels]
