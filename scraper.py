@@ -49,6 +49,10 @@ def is_arabic(text: str) -> bool:
 # Load locations from JSON with coordinates
 # -----------------------------
 def load_geojson_locations(geojson_file):
+    """
+    Loads Arabic location names with coordinates from JSON.
+    Returns: {normalized_name: {"original": name, "coordinates": [lon, lat]}}
+    """
     if not os.path.exists(geojson_file):
         return {}
     
@@ -58,10 +62,18 @@ def load_geojson_locations(geojson_file):
     norm_map = {}
     for item in data:
         name = item.get('name')
-        coords = item.get('coordinates')  # can be None if missing
-        if name and is_arabic(name):
+        coords = item.get('coordinates')  # polygon: [[[lon, lat], ...]]
+        if name and is_arabic(name) and coords:
+            try:
+                first_ring = coords[0]  # outer ring
+                lon = sum([p[0] for p in first_ring]) / len(first_ring)
+                lat = sum([p[1] for p in first_ring]) / len(first_ring)
+                coords_point = [lon, lat]
+            except Exception:
+                coords_point = None
+
             name_norm = normalize_arabic(name)
-            norm_map[name_norm] = {"original": name, "coordinates": coords}
+            norm_map[name_norm] = {"original": name, "coordinates": coords_point}
     return norm_map
 
 CITIES_MAP = load_geojson_locations(CITIES_JSON)
@@ -78,7 +90,7 @@ def detect_location_from_map(text_norm):
         for i in range(len(words) - len(loc_words) + 1):
             if words[i:i+len(loc_words)] == loc_words:
                 return loc_data["original"], loc_data["coordinates"]
-    return "Unknown / Outside Lebanon", None
+    return None, None
 
 def detect_location(text):
     text_norm = normalize_arabic(text)
@@ -142,8 +154,9 @@ Message: "{message}"
 
 Output JSON format:
 {{
-  "incident_type": "vehicle_accident/shooting/protest/fire/natural_disaster/airstrike/collapse/pollution/epidemic/medical/explosion/other",
-  "threat_level": "yes/no"
+  "location": "Extracted location or 'Unknown / Outside Lebanon'",
+  "incident_type": "Choose one of: vehicle_accident, shooting, protest, fire, natural_disaster, airstrike, collapse, pollution, epidemic, medical, explosion, other",
+  "threat_level": "yes or no"
 }}
 
 Important:
@@ -184,24 +197,11 @@ def load_existing_matches(path=OUTPUT_FILE):
 
 def save_matches(matches, path=OUTPUT_FILE):
     with open(path, 'w', encoding='utf-8') as f:
-        json.dump(matches, f, ensure_ascii=False, indent=2, sort_keys=True)
+        json.dump(matches, f, ensure_ascii=False, indent=2)
 
 # -----------------------------
 # Deduplication helpers
 # -----------------------------
-def is_redundant(new_record, existing_records, threshold=85):
-    new_text = new_record['details']['summary']
-    new_type = new_record['incident_type']
-    new_loc = new_record['location']
-
-    for rec in existing_records:
-        if rec['incident_type'] == new_type and rec['location'] == new_loc:
-            old_text = rec['details']['summary']
-            similarity = fuzz.token_set_ratio(new_text, old_text)
-            if similarity >= threshold:
-                return True
-    return False
-
 def select_best_message(records):
     records.sort(key=lambda m: (
         len(m['details'].get('numbers_found', [])) +
@@ -226,8 +226,10 @@ async def phi3_worker(matches, existing_ids):
             if (channel_name, msg_id) in existing_ids:
                 continue
 
-            location, coordinates = detect_location(text)
-            if not location or location.strip().isdigit():
+            has_kw = any(kw in normalize_arabic(text) for kw in LOCATION_KEYWORDS)
+            location, coordinates = detect_location(text) if has_kw else (None, None)
+
+            if not location or not coordinates:
                 continue
 
             phi3_res = await query_phi3_json(text)
