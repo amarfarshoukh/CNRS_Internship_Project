@@ -11,46 +11,38 @@ CORS(app)
 INCIDENTS_FILE = "matched_incidents.json"
 reload_interval = 10  # seconds
 
-# Shared variable to store loaded incidents
 geojson_cache = {"type": "FeatureCollection", "features": []}
 
-# City-to-coordinates lookup
-city_coords = {
-    "Beirut": [33.8938, 35.5018],
-    "Tripoli": [34.4333, 35.8497],
-    "Sidon": [33.5599, 35.3728],
-    "Tyre": [33.2702, 35.2037],
-    "Baalbek": [34.0064, 36.2034],
-    "Zahle": [33.8446, 35.8973],
-    "Byblos": [34.1233, 35.6510]
-}
-
-# Incident type to color mapping
-incident_colors = {
-    "fire": "red",
+# Incident type colors
+INCIDENT_COLORS = {
+    "vehicle_accident": "orange",
+    "shooting": "red",
     "protest": "purple",
-    "accident": "orange",
-    "flood": "blue",
-    "other": "gray"
+    "fire": "red",
+    "natural_disaster": "brown",
+    "airstrike": "black",
+    "collapse": "gray",
+    "pollution": "green",
+    "epidemic": "yellow",
+    "medical": "blue",
+    "explosion": "darkred",
+    "other": "white"
 }
 
+# Helper to safely get [lat, lon]
 def get_point_coordinates(inc):
-    """
-    Returns [lat, lon] for the incident. 
-    Uses coordinates if available, otherwise city lookup.
-    """
     coords = inc.get("coordinates")
-    if coords and isinstance(coords, list):
-        # Handle single point or polygon
-        point = coords
-        while isinstance(point[0], list):
-            point = point[0]
-        # If still a list of 2 floats, return [lat, lon]
-        if len(point) >= 2 and isinstance(point[0], (int, float)) and isinstance(point[1], (int, float)):
-            return [point[1], point[0]]  # convert [lon, lat] -> [lat, lon]
-    # Fallback to city lookup
-    elif inc.get("location") and inc["location"] in city_coords:
-        return city_coords[inc["location"]]
+    if coords and isinstance(coords, (list, tuple)):
+        try:
+            # flatten nested arrays if needed
+            point = coords
+            while isinstance(point[0], list):
+                point = point[0]
+            if len(point) >= 2 and all(isinstance(c, (int, float)) for c in point[:2]):
+                # convert [lon, lat] -> [lat, lon] for Leaflet
+                return [point[1], point[0]]
+        except Exception:
+            return None
     return None
 
 def load_incidents():
@@ -64,35 +56,38 @@ def load_incidents():
                 features = []
                 for inc in incidents:
                     coords = get_point_coordinates(inc)
-                    if coords:
-                        inc_type = inc.get("incident_type", "other")
-                        features.append({
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": coords
-                            },
-                            "properties": {
-                                "incident_type": inc_type,
-                                "color": incident_colors.get(inc_type, "gray"),
-                                "location": inc.get("location"),
-                                "channel": inc.get("channel"),
-                                "date": inc.get("date"),
-                                "threat_level": inc.get("threat_level"),
-                                "details": inc.get("details")
-                            }
-                        })
+                    if not coords:
+                        continue
+
+                    incident_type = inc.get("incident_type", "other")
+                    color = INCIDENT_COLORS.get(incident_type, "white")
+
+                    features.append({
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": coords
+                        },
+                        "properties": {
+                            "incident_type": incident_type,
+                            "color": color,
+                            "location": inc.get("location"),
+                            "channel": inc.get("channel"),
+                            "date": inc.get("date"),
+                            "threat_level": inc.get("threat_level"),
+                            "details": inc.get("details")
+                        }
+                    })
+
                 geojson_cache = {"type": "FeatureCollection", "features": features}
             except Exception as e:
                 print(f"Error loading incidents: {e}")
         time.sleep(reload_interval)
 
-# Start background thread
 threading.Thread(target=load_incidents, daemon=True).start()
 
 @app.route("/incidents", methods=["GET"])
 def get_incidents():
-    """Returns the latest incidents in GeoJSON format for Leaflet."""
     return jsonify(geojson_cache)
 
 @app.route("/")
