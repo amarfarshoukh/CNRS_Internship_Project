@@ -2,46 +2,59 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 import json
 import os
+import threading
+import time
 
 app = Flask(__name__)
-CORS(app)  # Allow requests from your frontend
+CORS(app)
 
-# Path to your processed incident file
 INCIDENTS_FILE = "matched_incidents.json"
+reload_interval = 10  # seconds
+
+# Shared variable to store loaded incidents
+geojson_cache = {"type": "FeatureCollection", "features": []}
+
+def load_incidents():
+    global geojson_cache
+    while True:
+        if os.path.exists(INCIDENTS_FILE):
+            try:
+                with open(INCIDENTS_FILE, "r", encoding="utf-8") as f:
+                    incidents = json.load(f)
+
+                features = []
+                for inc in incidents:
+                    coords = inc.get("coordinates")
+                    if coords and isinstance(coords, (list, tuple)) and len(coords) == 2:
+                        features.append({
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": coords
+                            },
+                            "properties": {
+                                "incident_type": inc.get("incident_type"),
+                                "location": inc.get("location"),
+                                "channel": inc.get("channel"),
+                                "date": inc.get("date"),
+                                "threat_level": inc.get("threat_level"),
+                                "details": inc.get("details")
+                            }
+                        })
+                geojson_cache = {"type": "FeatureCollection", "features": features}
+            except Exception as e:
+                print(f"Error loading incidents: {e}")
+        time.sleep(reload_interval)
+
+# Start background thread to reload incidents
+threading.Thread(target=load_incidents, daemon=True).start()
 
 @app.route("/incidents", methods=["GET"])
 def get_incidents():
     """
-    Returns all incidents in GeoJSON-like format for Leaflet map.
+    Returns the latest incidents in GeoJSON format for Leaflet.
     """
-    if not os.path.exists(INCIDENTS_FILE):
-        return jsonify({"type": "FeatureCollection", "features": []})
-
-    with open(INCIDENTS_FILE, "r", encoding="utf-8") as f:
-        incidents = json.load(f)
-
-    # Convert incidents to GeoJSON features
-    features = []
-    for inc in incidents:
-        coords = inc.get("coordinates")
-        if coords and isinstance(coords, (list, tuple)) and len(coords) == 2:
-            features.append({
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": coords  # [lng, lat]
-                },
-                "properties": {
-                    "incident_type": inc.get("incident_type"),
-                    "location": inc.get("location"),
-                    "channel": inc.get("channel"),
-                    "date": inc.get("date"),
-                    "threat_level": inc.get("threat_level"),
-                    "details": inc.get("details")
-                }
-            })
-
-    return jsonify({"type": "FeatureCollection", "features": features})
+    return jsonify(geojson_cache)
 
 @app.route("/")
 def index():
