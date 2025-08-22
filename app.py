@@ -1,43 +1,34 @@
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify
 from flask_cors import CORS
-import os, json
+import json
+import os
 
-app = Flask(__name__, static_folder='.', static_url_path='/')
-CORS(app)
+app = Flask(__name__)
+CORS(app)  # Allow cross-origin requests for your frontend
 
-# Path to your matched_incidents.json
-DB_PATH = os.path.join(os.path.dirname(__file__), 'matched_incidents.json')
+# Path to your incidents GeoJSON
+INCIDENTS_FILE = "geojson_output/incidents.geojson"
 
-@app.get('/incidents')
+@app.route("/incidents", methods=["GET"])
 def get_incidents():
-    try:
-        with open(DB_PATH, 'r', encoding='utf-8') as f:
-            items = json.load(f)
-    except FileNotFoundError:
-        items = []
+    """
+    Returns all incidents in GeoJSON format for Leaflet map.
+    """
+    if not os.path.exists(INCIDENTS_FILE):
+        return jsonify({"type": "FeatureCollection", "features": []})
 
-    # Optional: map JSON fields to frontend expected keys
-    incidents = []
-    for i in items:
-        incidents.append({
-            'latitude': i.get('lat') or i.get('latitude'),
-            'longitude': i.get('lon') or i.get('longitude'),
-            'type': i.get('type', 'other'),
-            'severity': i.get('severity', 1),
-            'text': i.get('text', ''),
-            'city': i.get('city', ''),
-            'ts': i.get('ts', ''),
-            'source_url': i.get('source_url', '')
-        })
-    return jsonify(incidents)
+    with open(INCIDENTS_FILE, "r", encoding="utf-8") as f:
+        data = json.load(f)
 
-@app.get('/')
-def root():
-    return send_from_directory(app.static_folder, 'index.html')
+    # Ensure it's a proper FeatureCollection
+    if data.get("type") != "FeatureCollection":
+        return jsonify({"type": "FeatureCollection", "features": []})
 
-@app.get('/<path:path>')
-def serve_static(path):
-    return send_from_directory(app.static_folder, path)
+    return jsonify(data)
 
-if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1', port=5000)
+@app.route("/")
+def index():
+    return "Leaflet Map Backend Running. Use /incidents to fetch data."
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=5000)
