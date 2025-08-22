@@ -49,10 +49,6 @@ def is_arabic(text: str) -> bool:
 # Load locations from JSON with coordinates
 # -----------------------------
 def load_geojson_locations(geojson_file):
-    """
-    Loads Arabic location names with coordinates from JSON.
-    Returns: {normalized_name: {"original": name, "coordinates": coords}}
-    """
     if not os.path.exists(geojson_file):
         return {}
     
@@ -82,7 +78,7 @@ def detect_location_from_map(text_norm):
         for i in range(len(words) - len(loc_words) + 1):
             if words[i:i+len(loc_words)] == loc_words:
                 return loc_data["original"], loc_data["coordinates"]
-    return None, None
+    return "Unknown / Outside Lebanon", None
 
 def detect_location(text):
     text_norm = normalize_arabic(text)
@@ -117,16 +113,6 @@ class IncidentKeywords:
             'missing': ['مفقود','مفقودين','اختفى']
         }
 
-    def get_incident_type_by_keywords(self, text):
-        if not text:
-            return None
-        tl = text.lower()
-        for itype, kws in self.incident_keywords.items():
-            for kw in kws:
-                if kw in tl:
-                    return itype
-        return None
-
     def extract_casualties(self, text):
         tl = text.lower()
         cats = []
@@ -156,9 +142,8 @@ Message: "{message}"
 
 Output JSON format:
 {{
-  "location": "Extracted location or 'Unknown / Outside Lebanon'",
-  "incident_type": "Choose one of: vehicle_accident, shooting, protest, fire, natural_disaster, airstrike, collapse, pollution, epidemic, medical, explosion, other",
-  "threat_level": "yes or no"
+  "incident_type": "vehicle_accident/shooting/protest/fire/natural_disaster/airstrike/collapse/pollution/epidemic/medical/explosion/other",
+  "threat_level": "yes/no"
 }}
 
 Important:
@@ -199,7 +184,7 @@ def load_existing_matches(path=OUTPUT_FILE):
 
 def save_matches(matches, path=OUTPUT_FILE):
     with open(path, 'w', encoding='utf-8') as f:
-        json.dump(matches, f, ensure_ascii=False, indent=2)
+        json.dump(matches, f, ensure_ascii=False, indent=2, sort_keys=True)
 
 # -----------------------------
 # Deduplication helpers
@@ -241,9 +226,7 @@ async def phi3_worker(matches, existing_ids):
             if (channel_name, msg_id) in existing_ids:
                 continue
 
-            has_kw = any(kw in normalize_arabic(text) for kw in LOCATION_KEYWORDS)
-            location, coordinates = detect_location(text) if has_kw else (None, None)
-
+            location, coordinates = detect_location(text)
             if not location or location.strip().isdigit():
                 continue
 
