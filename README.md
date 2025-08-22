@@ -1,28 +1,64 @@
-Incident Monitor - Starter Project
-==================================
+# Incident Map Starter (Leaflet + Flask)
 
-What is included:
-- backend/
-  - app.py       -> Flask API with endpoints: GET /incidents, GET /incidents/<id>, POST /report
-  - db.json      -> simple JSON database (list of incidents)
-  - requirements.txt
+## What you get
 
-- frontend/
-  - index.html   -> Single-file React + Leaflet frontend (uses CDN libs). Polls /incidents and posts to /report
+- Backend: Flask API serving /api/incidents from backend/data/incidents.json
+- Frontend: Leaflet map with clustering, type filters, search, and optional Lebanon boundary overlay.
+- Sample data: 6 incidents in Lebanon so you can see it working immediately.
 
-Quick start (local development)
--------------------------------
-1. Create a Python virtualenv and install requirements:
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r backend/requirements.txt
+## How to run (Windows)
 
-2. Run the backend:
-   cd backend
-   python app.py
+1. Open Command Prompt and cd to this folder:
+   cd incident-map-starter
 
-3. Open your browser to http://localhost:5000/ (the Flask server serves the frontend)
+2. Create & activate a virtual environment:
+   python -m venv venv
+   venv\Scripts\activate
 
-Notes:
-- This is a prototype. In production, use PostgreSQL/PostGIS and a proper React build (Vite/CRA).
-- The frontend is intentionally simple (CDN + single file) so you can iterate quickly.
+3. Install dependencies:
+   pip install flask flask-cors
+
+4. Start the backend:
+   python backend\app.py
+
+   The app serves the frontend at http://127.0.0.1:5000
+
+5. Open your browser at:
+   http://127.0.0.1:5000
+
+## Replacing sample data with your Telegram pipeline
+
+- Your pipeline should write JSON objects into backend/data/incidents.json
+  with this format (array of objects):
+  [
+  {
+  "id": "unique-id",
+  "type": "accident|fire|protest|roadblock|shooting|explosion|weather|other",
+  "severity": 1-5,
+  "text": "Short description",
+  "city": "City name",
+  "lat": 33.9,
+  "lon": 35.5,
+  "ts": "2025-08-22T18:00:00Z",
+  "source_url": "https://t.me/..."
+  },
+  ...
+  ]
+
+## Lebanon-only map view
+
+- The map is constrained to a Lebanon bounding box so users cannot pan away.
+- (Optional) Export your Lebanon boundary from QGIS as GeoJSON and overwrite
+  frontend/lebanon.geojson to draw the outline. No extra configuration needed.
+
+## Tips
+
+- The map auto-refreshes every 30 seconds. Click "Refresh" for manual refresh.
+- Use the Type checkboxes and the search box to filter what you see.
+- Circle size reflects severity; color reflects type.
+
+## Common issues
+
+- If the page is blank, check the browser console (F12) for errors.
+- If /api/incidents returns 0 items, verify backend/data/incidents.json exists
+  and is valid JSON.
