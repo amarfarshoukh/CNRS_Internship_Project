@@ -40,16 +40,18 @@ def get_point_coordinates(inc):
     Uses coordinates if available, otherwise city lookup.
     """
     coords = inc.get("coordinates")
-    if coords and isinstance(coords, list) and len(coords) > 0:
-        # Take first point if nested
-        first_point = coords[0]
-        while isinstance(first_point[0], list):  # handle polygons
-            first_point = first_point[0]
-        return [first_point[0][1], first_point[0][0]]  # lat, lon
+    if coords and isinstance(coords, list):
+        # Handle single point or polygon
+        point = coords
+        while isinstance(point[0], list):
+            point = point[0]
+        # If still a list of 2 floats, return [lat, lon]
+        if len(point) >= 2 and isinstance(point[0], (int, float)) and isinstance(point[1], (int, float)):
+            return [point[1], point[0]]  # convert [lon, lat] -> [lat, lon]
+    # Fallback to city lookup
     elif inc.get("location") and inc["location"] in city_coords:
         return city_coords[inc["location"]]
-    else:
-        return None
+    return None
 
 def load_incidents():
     global geojson_cache
