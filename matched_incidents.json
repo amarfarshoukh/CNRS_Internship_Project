@@ -7693,5 +7693,39 @@
       "casualties": [],
       "summary": "جولة لوزيرة الشؤون الإجتماعية في طرابلس#LBCINewshttps://t.co/vev92rlsvY\n https://twitter.com/LBCI_NEWS/status/1958139264736108770\nAugust 20, 2025 at 03:09PM"
     }
+  },
+  {
+    "incident_type": "explosion",
+    "location": "بيروت",
+    "coordinates": [
+      35.4995749,
+      33.8718663
+    ],
+    "channel": "testingammoura",
+    "message_id": 3,
+    "date": "2025-08-22 20:44:11+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "حادث في بيروت"
+    }
+  },
+  {
+    "incident_type": "siege",
+    "location": "الحدث",
+    "coordinates": [
+      35.5260296,
+      33.8397375
+    ],
+    "channel": "lebanonNewsNow",
+    "message_id": 207722,
+    "date": "2025-08-22 20:44:41+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏🚨 ورد الآن / إسرائيل تتحضر لهجوم \"قوي\" على مواقع حوثية في اليمن (الحدث) \n\n @lebanonNewsNow"
+    }
   }
 ]

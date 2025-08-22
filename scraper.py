@@ -6,6 +6,7 @@ import subprocess
 from telethon import TelegramClient, events
 from telethon.tl.types import Channel
 import qrcode
+import ast
 
 # -----------------------------
 # CONFIG
@@ -16,6 +17,7 @@ OLLAMA_MODEL = "phi3:mini"
 MAX_NUMBER_LEN = 6
 api_id = 20976159
 api_hash = '41bca65c99c9f4fb21ed627cc8f19ad8'
+PHI3_TIMEOUT = 60
 
 LOCATION_KEYWORDS = [
     "في", "في منطقة", "في حي", "في بلدة", "بالقرب من", "عند", "جنوب", "شمال", "شرق", "غرب"
@@ -152,7 +154,7 @@ IK = IncidentKeywords()
 # -----------------------------
 # Phi3 async worker
 # -----------------------------
-async def query_phi3_json(message: str):
+def query_phi3_json(message: str):
     prompt = f"""
 You are an incident analysis assistant.
 Task: Analyze the following incident report and return ONLY valid JSON.
@@ -170,25 +172,33 @@ Important:
 - Only return incidents that concern Lebanon.
 - Respond with JSON only.
 """
-    loop = asyncio.get_running_loop()
-    def run_subprocess():
-        try:
-            res = subprocess.run(
-                ["ollama", "run", OLLAMA_MODEL],
-                input=prompt.encode("utf-8"),
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                timeout=60
-            )
-            text = res.stdout.decode("utf-8", errors="ignore").strip()
-            m = re.search(r"\{.*?\}", text, flags=re.DOTALL)
-            if m:
-                return json.loads(m.group())
-            return None
-        except Exception as e:
-            print("Phi3 call failed:", e)
-            return None
-    return await loop.run_in_executor(None, run_subprocess)
+    try:
+        res = subprocess.run(
+            ["ollama", "run", OLLAMA_MODEL],
+            input=prompt.encode("utf-8"),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=PHI3_TIMEOUT
+        )
+        text = res.stdout.decode("utf-8", errors="ignore").strip()
+        
+        # Attempt to extract JSON-like object
+        m = re.search(r"\{.*?\}", text, flags=re.DOTALL)
+        if m:
+            json_str = m.group()
+            try:
+                return json.loads(json_str)  # first attempt
+            except json.JSONDecodeError:
+                # fallback: convert single quotes to double quotes safely
+                try:
+                    return ast.literal_eval(json_str)
+                except:
+                    print("Phi3 returned invalid JSON:", json_str)
+                    return None
+        return None
+    except Exception as e:
+        print("Phi3 call failed:", e)
+        return None
 
 # -----------------------------
 # Load/save matches
