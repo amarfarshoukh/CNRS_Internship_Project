@@ -10,8 +10,7 @@ import qrcode
 # -----------------------------
 # CONFIG
 # -----------------------------
-CITIES_JSON = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output\gis_osm_places_a_free_1.json"
-ROADS_JSON = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output\gis_osm_roads_free_1.json"
+GEOJSON_FOLDER = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output"
 OUTPUT_FILE = "matched_incidents.json"
 OLLAMA_MODEL = "phi3:mini"
 MAX_NUMBER_LEN = 6
@@ -38,54 +37,55 @@ def normalize_arabic(text: str) -> str:
     text = text.replace('ة', 'ه')
     text = re.sub(r"[يى]", "ي", text)
     text = re.sub(r"[^\w\s\u0600-\u06FF]", " ", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    return text
+    return re.sub(r"\s+", " ", text).strip()
 
 def is_arabic(text: str) -> bool:
     return bool(re.search(r'[\u0600-\u06FF]', text))
 
 # -----------------------------
-# Load locations from JSON with coordinates (custom structure)
+# Load all GeoJSON locations from folder
 # -----------------------------
 def extract_centroid(coords):
-    """
-    Accepts coordinates as a list containing one polygon ring (list of [lon, lat]).
-    Returns centroid [lon, lat].
-    """
-    if not coords or not isinstance(coords, list) or not coords[0]:
+    if not coords:
         return None
-    ring = coords[0]
-    lon = sum([p[0] for p in ring]) / len(ring)
-    lat = sum([p[1] for p in ring]) / len(ring)
+    if isinstance(coords[0], list):
+        points = coords[0] if isinstance(coords[0][0], list) else coords
+    else:
+        points = [coords]
+    lon = sum([p[0] for p in points]) / len(points)
+    lat = sum([p[1] for p in points]) / len(points)
     return [lon, lat]
 
-def load_geojson_locations(geojson_file):
-    """
-    Loads Arabic location names with coordinates from your custom JSON structure.
-    Returns: {normalized_name: {"original": name, "coordinates": [lon, lat]}}
-    Supports a file containing a list of dicts with 'name' and 'coordinates'.
-    """
-    if not os.path.exists(geojson_file):
+def load_geojson_file(file_path):
+    if not os.path.exists(file_path):
         return {}
-    with open(geojson_file, 'r', encoding='utf-8') as f:
+    with open(file_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
-    features = data if isinstance(data, list) else [data]
+    features = data.get('features', data) if isinstance(data, dict) else data
     norm_map = {}
     for item in features:
-        name = item.get('name')
-        coords = item.get('coordinates')
-        if name and is_arabic(name) and coords:
+        props = item.get('properties', item) if isinstance(item, dict) else item
+        name = props.get('name') or item.get('name')
+        coords = item.get('geometry', {}).get('coordinates') if 'geometry' in item else item.get('coordinates')
+        if name and coords and is_arabic(name):
             try:
                 centroid = extract_centroid(coords)
             except Exception:
                 centroid = None
-            name_norm = normalize_arabic(name)
-            norm_map[name_norm] = {"original": name, "coordinates": centroid}
+            norm_map[normalize_arabic(name)] = {"original": name, "coordinates": centroid}
     return norm_map
 
-CITIES_MAP = load_geojson_locations(CITIES_JSON)
-ROADS_MAP = load_geojson_locations(ROADS_JSON)
-ALL_LOCATIONS = {**CITIES_MAP, **ROADS_MAP}
+def load_all_geojson_folder(folder_path):
+    all_map = {}
+    for file in os.listdir(folder_path):
+        if file.lower().endswith('.json'):
+            file_path = os.path.join(folder_path, file)
+            locations = load_geojson_file(file_path)
+            all_map.update(locations)
+    return all_map
+
+ALL_LOCATIONS = load_all_geojson_folder(GEOJSON_FOLDER)
+print(f"Loaded {len(ALL_LOCATIONS)} Arabic locations from GeoJSON folder")
 
 # -----------------------------
 # Location detection
@@ -267,7 +267,7 @@ async def phi3_worker(matches, existing_ids):
                 }
             }
 
-            # Deduplicate on incident_type, location, and date (date string up to day)
+            # Deduplicate
             date_prefix = record["date"][:10]
             similar_records = [
                 m for m in matches
@@ -321,17 +321,18 @@ async def get_my_channels(client):
 # -----------------------------
 async def main():
     client = TelegramClient('session', api_id, api_hash)
-    await client.connect()
+    await client.start()  # handles connection & authorization
     await qr_login(client)
     channels = await get_my_channels(client)
-    print(f"Monitoring {len(channels)} channels...")
+    channel_ids = [c.id for c in channels]
+    print(f"Monitoring {len(channel_ids)} channels...")
 
     matches = load_existing_matches()
     existing_ids = {(m.get('channel'), m.get('message_id')) for m in matches}
 
     asyncio.create_task(phi3_worker(matches, existing_ids))
 
-    @client.on(events.NewMessage(chats=channels))
+    @client.on(events.NewMessage(chats=channel_ids))
     async def handler(event):
         await message_queue.put(event)
 
