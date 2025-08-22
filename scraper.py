@@ -48,32 +48,53 @@ def is_arabic(text: str) -> bool:
 # -----------------------------
 # Load locations from JSON with coordinates
 # -----------------------------
+def extract_centroid(coords):
+    """
+    Accepts GeoJSON geometry coordinates (Polygon, LineString, Point) and returns centroid [lon, lat]
+    """
+    if not coords:
+        return None
+    # Polygon: [[[lon, lat], ...]]
+    if isinstance(coords[0], list):
+        if isinstance(coords[0][0], list):  # Polygon
+            points = coords[0]
+        else:  # LineString
+            points = coords
+    else:  # Point
+        points = [coords]
+    lon = sum([p[0] for p in points]) / len(points)
+    lat = sum([p[1] for p in points]) / len(points)
+    return [lon, lat]
+
 def load_geojson_locations(geojson_file):
     """
     Loads Arabic location names with coordinates from JSON.
     Returns: {normalized_name: {"original": name, "coordinates": [lon, lat]}}
+    Supports features with geometry as polygons, lines, or points.
     """
     if not os.path.exists(geojson_file):
         return {}
-    
+
     with open(geojson_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
-    
+
+    # Accept both FeatureCollection or plain array
+    features = data.get('features', data) if isinstance(data, dict) else data
+
     norm_map = {}
-    for item in data:
-        name = item.get('name')
-        coords = item.get('coordinates')  # polygon: [[[lon, lat], ...]]
+    for item in features:
+        # Handle GeoJSON Feature or dict-like
+        props = item.get('properties', item)
+        geometry = item.get('geometry', {})
+        name = props.get('name') or item.get('name')
+        coords = geometry.get('coordinates') if geometry else item.get('coordinates')
         if name and is_arabic(name) and coords:
             try:
-                first_ring = coords[0]  # outer ring
-                lon = sum([p[0] for p in first_ring]) / len(first_ring)
-                lat = sum([p[1] for p in first_ring]) / len(first_ring)
-                coords_point = [lon, lat]
+                centroid = extract_centroid(coords)
             except Exception:
-                coords_point = None
-
+                centroid = None
             name_norm = normalize_arabic(name)
-            norm_map[name_norm] = {"original": name, "coordinates": coords_point}
+            norm_map[name_norm] = {"original": name, "coordinates": centroid}
     return norm_map
 
 CITIES_MAP = load_geojson_locations(CITIES_JSON)
@@ -90,6 +111,10 @@ def detect_location_from_map(text_norm):
         for i in range(len(words) - len(loc_words) + 1):
             if words[i:i+len(loc_words)] == loc_words:
                 return loc_data["original"], loc_data["coordinates"]
+            # Optionally, use fuzzy matching
+            # window = " ".join(words[i:i+len(loc_words)])
+            # if fuzz.ratio(window, loc_norm) > 90:
+            #     return loc_data["original"], loc_data["coordinates"]
     return None, None
 
 def detect_location(text):
@@ -191,7 +216,7 @@ def load_existing_matches(path=OUTPUT_FILE):
         try:
             with open(path, 'r', encoding='utf-8') as f:
                 return json.load(f)
-        except:
+        except Exception:
             return []
     return []
 
@@ -260,14 +285,24 @@ async def phi3_worker(matches, existing_ids):
                 }
             }
 
+            # Deduplicate on incident_type, location, and date (date string up to day)
+            date_prefix = record["date"][:10]
             similar_records = [
                 m for m in matches
-                if m.get('incident_type') == record['incident_type'] and m.get('location') == record['location']
+                if m.get('incident_type') == record['incident_type']
+                and m.get('location') == record['location']
+                and m.get('date', '')[:10] == date_prefix
             ]
             if similar_records:
                 similar_records.append(record)
                 best_record = select_best_message(similar_records)
-                matches[:] = [m for m in matches if not (m.get('incident_type') == record['incident_type'] and m.get('location') == record['location'])]
+                matches[:] = [
+                    m for m in matches if not (
+                        m.get('incident_type') == record['incident_type']
+                        and m.get('location') == record['location']
+                        and m.get('date', '')[:10] == date_prefix
+                    )
+                ]
                 matches.append(best_record)
             else:
                 matches.append(record)
