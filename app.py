@@ -11,88 +11,56 @@ CORS(app)
 INCIDENTS_FILE = "matched_incidents.json"
 reload_interval = 10  # seconds
 
-geojson_cache = {"type": "FeatureCollection", "features": []}
+# Shared variable to store loaded incidents
+incident_cache = []
 
-# Incident type colors
+# Map incident types to colors
 INCIDENT_COLORS = {
+    "fire": "red",
+    "protest": "purple",
     "vehicle_accident": "orange",
     "shooting": "red",
-    "protest": "purple",
-    "fire": "red",
-    "natural_disaster": "brown",
+    "natural_disaster": "blue",
     "airstrike": "black",
-    "collapse": "gray",
+    "collapse": "brown",
     "pollution": "green",
-    "epidemic": "yellow",
-    "medical": "blue",
-    "explosion": "darkred",
+    "epidemic": "pink",
+    "medical": "yellow",
+    "explosion": "gray",
     "other": "white"
 }
 
-# Helper to safely get [lat, lon]
-def get_point_coordinates(inc):
-    coords = inc.get("coordinates")
-    if coords and isinstance(coords, (list, tuple)):
-        try:
-            # flatten nested arrays if needed
-            point = coords
-            while isinstance(point[0], list):
-                point = point[0]
-            if len(point) >= 2 and all(isinstance(c, (int, float)) for c in point[:2]):
-                # convert [lon, lat] -> [lat, lon] for Leaflet
-                return [point[1], point[0]]
-        except Exception:
-            return None
-    return None
-
 def load_incidents():
-    global geojson_cache
+    global incident_cache
     while True:
         if os.path.exists(INCIDENTS_FILE):
             try:
                 with open(INCIDENTS_FILE, "r", encoding="utf-8") as f:
                     incidents = json.load(f)
-
-                features = []
+                # Add color based on incident_type and keep coordinates
                 for inc in incidents:
-                    coords = get_point_coordinates(inc)
-                    if not coords:
-                        continue
-
-                    incident_type = inc.get("incident_type", "other")
-                    color = INCIDENT_COLORS.get(incident_type, "white")
-
-                    features.append({
-                        "type": "Feature",
-                        "geometry": {
-                            "type": "Point",
-                            "coordinates": coords
-                        },
-                        "properties": {
-                            "incident_type": incident_type,
-                            "color": color,
-                            "location": inc.get("location"),
-                            "channel": inc.get("channel"),
-                            "date": inc.get("date"),
-                            "threat_level": inc.get("threat_level"),
-                            "details": inc.get("details")
-                        }
-                    })
-
-                geojson_cache = {"type": "FeatureCollection", "features": features}
+                    inc["color"] = INCIDENT_COLORS.get(inc.get("incident_type", "other"), "white")
+                    # Ensure coordinates exist and are properly formatted
+                    if "coordinates" not in inc:
+                        inc["coordinates"] = []
+                incident_cache = incidents
             except Exception as e:
                 print(f"Error loading incidents: {e}")
         time.sleep(reload_interval)
 
+# Start background thread to reload incidents
 threading.Thread(target=load_incidents, daemon=True).start()
 
 @app.route("/incidents", methods=["GET"])
 def get_incidents():
-    return jsonify(geojson_cache)
+    """
+    Returns the latest incidents with coordinates and color for Leaflet.
+    """
+    return jsonify({"incidents": incident_cache})
 
 @app.route("/")
 def index():
-    return "Leaflet Map Backend Running. Use /incidents to fetch data."
+    return "Incident Monitor Backend Running. Use /incidents to fetch data."
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
