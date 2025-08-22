@@ -4,27 +4,44 @@ import json
 import os
 
 app = Flask(__name__)
-CORS(app)  # Allow cross-origin requests for your frontend
+CORS(app)  # Allow requests from your frontend
 
-# Path to your incidents GeoJSON
-INCIDENTS_FILE = "geojson_output/incidents.geojson"
+# Path to your processed incident file
+INCIDENTS_FILE = "matched_incidents.json"
 
 @app.route("/incidents", methods=["GET"])
 def get_incidents():
     """
-    Returns all incidents in GeoJSON format for Leaflet map.
+    Returns all incidents in GeoJSON-like format for Leaflet map.
     """
     if not os.path.exists(INCIDENTS_FILE):
         return jsonify({"type": "FeatureCollection", "features": []})
 
     with open(INCIDENTS_FILE, "r", encoding="utf-8") as f:
-        data = json.load(f)
+        incidents = json.load(f)
 
-    # Ensure it's a proper FeatureCollection
-    if data.get("type") != "FeatureCollection":
-        return jsonify({"type": "FeatureCollection", "features": []})
+    # Convert incidents to GeoJSON features
+    features = []
+    for inc in incidents:
+        coords = inc.get("coordinates")
+        if coords and isinstance(coords, (list, tuple)) and len(coords) == 2:
+            features.append({
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": coords  # [lng, lat]
+                },
+                "properties": {
+                    "incident_type": inc.get("incident_type"),
+                    "location": inc.get("location"),
+                    "channel": inc.get("channel"),
+                    "date": inc.get("date"),
+                    "threat_level": inc.get("threat_level"),
+                    "details": inc.get("details")
+                }
+            })
 
-    return jsonify(data)
+    return jsonify({"type": "FeatureCollection", "features": features})
 
 @app.route("/")
 def index():
