@@ -3,10 +3,10 @@ import json
 import os
 import re
 import subprocess
+import ast
 from telethon import TelegramClient, events
 from telethon.tl.types import Channel
 import qrcode
-import ast
 
 # -----------------------------
 # CONFIG
@@ -20,9 +20,7 @@ api_hash = '41bca65c99c9f4fb21ed627cc8f19ad8'
 PHI3_TIMEOUT = 60
 
 LOCATION_KEYWORDS = [
-    "في", "في منطقة", "في حي", "في بلدة", "في شارع",
-    "بالقرب من", "قرب", "قرب مدينة", "قرب شارع", "عند",
-    "جنوب", "شمال", "شرق", "غرب"
+    "في", "في منطقة", "في حي", "في بلدة", "بالقرب من", "عند", "جنوب", "شمال", "شرق", "غرب"
 ]
 
 # -----------------------------
@@ -40,14 +38,13 @@ def normalize_arabic(text: str) -> str:
     text = re.sub(r"[ئ]", "ي", text)
     text = text.replace('ة', 'ه')
     text = re.sub(r"[يى]", "ي", text)
-    text = re.sub(r"[^\w\s\u0600-\u06FF]", " ", text)
     return re.sub(r"\s+", " ", text).strip()
 
 def is_arabic(text: str) -> bool:
     return bool(re.search(r'[\u0600-\u06FF]', text))
 
 # -----------------------------
-# Load all GeoJSON locations
+# Load GeoJSON locations
 # -----------------------------
 def extract_centroid(coords):
     if not coords:
@@ -154,25 +151,33 @@ class IncidentKeywords:
 IK = IncidentKeywords()
 
 # -----------------------------
-# Phi3 worker
+# Phi3 JSON query (fixed)
 # -----------------------------
 def query_phi3_json(message: str):
     prompt = f"""
-You are an incident analysis assistant.
-Task: Analyze the following incident report and return ONLY valid JSON.
+You are a highly accurate Arabic incident analysis assistant.
+Analyze the following incident report (Arabic only) and return ONLY valid JSON.
 
 Message: "{message}"
 
 Output JSON format:
 {{
-  "location": "Extracted location or 'Unknown / Outside Lebanon'",
-  "incident_type": "Choose one of: vehicle_accident, shooting, protest, fire, natural_disaster, airstrike, collapse, pollution, epidemic, medical, explosion, other",
-  "threat_level": "yes or no"
+  "location": "Extracted location inside Lebanon, or 'Unknown / Outside Lebanon'",
+  "incident_type": "vehicle_accident, shooting, protest, fire, natural_disaster, airstrike, collapse, pollution, epidemic, medical, explosion, other",
+  "threat_level": "yes or no",
+  "numbers_found": ["list all numeric values in the report relevant to the incident"],
+  "casualties": ["killed", "injured", "missing"]
 }}
 
-Important:
-- Only return incidents that concern Lebanon.
-- Respond with JSON ONLY. Do not add any explanation.
+Rules:
+- Only consider incidents inside Lebanon.
+- Detect incident type using Arabic keywords first.
+- Extract numbers and casualties (Arabic keywords: قتيل, جريح, مفقود, etc.).
+- Never include text outside JSON.
+- Use double quotes.
+- If no Lebanese location, set location to 'Unknown / Outside Lebanon'.
+
+Respond ONLY with JSON.
 """
     try:
         res = subprocess.run(
@@ -183,7 +188,7 @@ Important:
             timeout=PHI3_TIMEOUT
         )
         text = res.stdout.decode("utf-8", errors="ignore").strip()
-        m = re.search(r"\{.*?\}", text, flags=re.DOTALL)
+        m = re.search(r"\{.*\}", text, flags=re.DOTALL)
         if m:
             json_str = m.group()
             try:
@@ -216,7 +221,7 @@ def save_matches(matches, path=OUTPUT_FILE):
         json.dump(matches, f, ensure_ascii=False, indent=2)
 
 # -----------------------------
-# Deduplication helpers
+# Deduplication
 # -----------------------------
 def select_best_message(records):
     records.sort(key=lambda m: (
@@ -227,7 +232,7 @@ def select_best_message(records):
     return records[0]
 
 # -----------------------------
-# Main Phi3 async worker
+# Phi3 worker queue
 # -----------------------------
 message_queue = asyncio.Queue()
 
@@ -257,8 +262,8 @@ async def phi3_worker(matches, existing_ids):
                 continue
 
             threat_level = phi3_res.get("threat_level", "yes")
-            numbers = IK.extract_numbers(text)
-            casualties = IK.extract_casualties(text)
+            numbers = phi3_res.get("numbers_found") or IK.extract_numbers(text)
+            casualties = phi3_res.get("casualties") or IK.extract_casualties(text)
             summary = text[:300] + ("..." if len(text) > 300 else "")
 
             record = {
@@ -306,7 +311,7 @@ async def phi3_worker(matches, existing_ids):
             message_queue.task_done()
 
 # -----------------------------
-# Telegram login / channels
+# Telegram login
 # -----------------------------
 async def qr_login(client):
     if not await client.is_user_authorized():
@@ -330,7 +335,7 @@ async def get_my_channels(client):
 # -----------------------------
 async def main():
     client = TelegramClient('session', api_id, api_hash)
-    await client.start()
+    await client.start()  # handles connection & authorization
     await qr_login(client)
     channels = await get_my_channels(client)
     channel_ids = [c.id for c in channels]
