@@ -8147,5 +8147,50 @@
       ],
       "summary": "‏🚨 ورد الآن / وزير الصحة بإقليم دارفور للجزيرة: عدد المصابين بالكوليرا في الإقليم تجاوز 7 آلاف وعدد الوفيات بلغ 400 \n\n @lebanonNewsNow"
     }
+  },
+  {
+    "incident_type": "عن بكرة",
+    "location": "الجنوب",
+    "coordinates": [
+      35.5098953,
+      33.8521276
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143716,
+    "date": "2025-08-24 16:08:11+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "735597"
+      ],
+      "casualties": [],
+      "summary": "\"قرى الجنوب ستمسح عن بكرة أبيها إلى الأبد\".. مخطط خطير يحضر للبنان: إليكم المعلومات والتفاصيل!\nhttps://lbdb.co/735597"
+    }
+  },
+  {
+    "incident_type": "unspecified abduction of military personnel involving explosives",
+    "location": "صيدا",
+    "coordinates": [
+      35.3780338,
+      33.5618345
+    ],
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214988,
+    "date": "2025-08-24 16:16:56+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "5",
+        "3",
+        "24",
+        "2025",
+        "07",
+        "15"
+      ],
+      "casualties": [
+        "missing"
+      ],
+      "summary": "تعاني من الزهايمر.. قوى الأمن تعمّم صورة مفقودة في صيدا ⬇️https://t.co/lSeJfQ5ZH3\n https://twitter.com/ALJADEEDNEWS/status/1959650819726586364\nAugust 24, 2025 at 07:15PM"
+    }
   }
 ]

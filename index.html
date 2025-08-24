@@ -39,8 +39,9 @@
       padding: 6px 10px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer;
     }
     .controls input[type="text"] { flex: 1; min-width: 160px; }
-    .controls select { flex: 1; min-width: 160px; }
-    #filter-container { display: flex; gap: 6px; align-items: center; margin-top: 6px; }
+    #filter-container { display: flex; gap: 4px; align-items: center; margin-top: 6px; }
+    #filter-select { flex: 0 0 120px; padding: 6px; border-radius: 8px; border: 1px solid #ddd; background: #fff; }
+    #show-all, #none-btn { flex: 0 0 80px; padding: 6px; border-radius: 8px; border: 1px solid #ddd; background: #fff; cursor: pointer; }
     .footer { font-size: 12px; color: #444; margin-top: 12px; }
   </style>
 </head>
@@ -52,15 +53,16 @@
 
       <div class="controls">
         <button id="refresh">Refresh</button>
-        <button id="select-all">Select all</button>
-        <button id="select-none">None</button>
         <input id="search" type="text" placeholder="Search text/city…" />
       </div>
 
       <div class="section-title">Filter by type</div>
       <div id="filter-container">
-        <select id="filter-select"></select>
+        <select id="filter-select">
+          <option value="" disabled selected>Filter by type</option>
+        </select>
         <button id="show-all">Show All</button>
+        <button id="none-btn">None</button>
       </div>
 
       <div class="section-title">Legend</div>
@@ -86,7 +88,6 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// Incident type icons
 const TYPE_ICONS = {
   vehicle_accident: "C:/Users/user/OneDrive - Lebanese University/Documents/GitHub/Incident_Project/icons/caraccident.png",
   shooting: "C:/Users/user/OneDrive - Lebanese University/Documents/GitHub/Incident_Project/icons/shooting.png",
@@ -105,12 +106,13 @@ const TYPE_ICONS = {
 };
 
 const ALL_TYPES = Object.keys(TYPE_ICONS);
-let activeTypes = new Set([...ALL_TYPES]); // default: show all
+let activeTypes = new Set([...ALL_TYPES]); // default all
 let searchTerm = '';
 const cluster = L.markerClusterGroup().addTo(map);
 const filterSelect = document.getElementById('filter-select');
-const legendDiv = document.getElementById('legend');
 const showAllBtn = document.getElementById('show-all');
+const noneBtn = document.getElementById('none-btn');
+const legendDiv = document.getElementById('legend');
 let allItems = [];
 
 // Populate dropdown
@@ -121,22 +123,28 @@ ALL_TYPES.forEach(t => {
   filterSelect.appendChild(opt);
 });
 
-// Initialize dropdown to first type (optional)
-filterSelect.value = ALL_TYPES[0];
-
-// Handle selection change
+// Dropdown change
 filterSelect.addEventListener('change', () => {
-  activeTypes = new Set([filterSelect.value]);
+  const selected = filterSelect.value;
+  if (selected) activeTypes = new Set([selected]);
   render();
 });
 
 // Show All button
 showAllBtn.addEventListener('click', () => {
   activeTypes = new Set([...ALL_TYPES]);
+  filterSelect.value = ""; 
   render();
 });
 
-// Build legend
+// None button
+noneBtn.addEventListener('click', () => {
+  activeTypes.clear();
+  filterSelect.value = ""; 
+  render();
+});
+
+// Legend
 ALL_TYPES.forEach(t => {
   const row = document.createElement('div');
   row.style.display = 'flex';
@@ -145,15 +153,7 @@ ALL_TYPES.forEach(t => {
   legendDiv.appendChild(row);
 });
 
-// Buttons
-document.getElementById('select-all').onclick = () => {
-  activeTypes = new Set([...ALL_TYPES]);
-  render();
-};
-document.getElementById('select-none').onclick = () => {
-  activeTypes.clear();
-  render();
-};
+// Refresh and search
 document.getElementById('refresh').onclick = () => refresh();
 document.getElementById('search').addEventListener('input', e => {
   searchTerm = e.target.value.toLowerCase().trim();
@@ -188,6 +188,7 @@ function markerFor(item) {
 
 function matchesFilters(item) {
   if (!item.coordinates || item.coordinates.length !== 2) return false;
+  if (activeTypes.size === 0) return false; 
   if (!activeTypes.has(item.incident_type || 'other')) return false;
   if (searchTerm) {
     const hay = (item.details?.summary || '') + ' ' + (item.city || '') + ' ' + (item.incident_type || '');
@@ -222,18 +223,17 @@ async function refresh() {
       date: i.date,
       channel: i.channel
     }));
-    console.log("Loaded incidents:", allItems.length);
     render();
   } catch(e) {
     console.error('Failed to load incidents:', e);
   }
 }
 
-// On load, show all by default
+// Default: show all incidents
 activeTypes = new Set([...ALL_TYPES]);
 
 refresh();
 setInterval(refresh, 30000);
-</script>
+  </script>
 </body>
 </html>
