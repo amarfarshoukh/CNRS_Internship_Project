@@ -84,28 +84,32 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    const TYPE_COLORS = {
-      fire: "red",
-      protest: "purple",
-      vehicle_accident: "orange",
-      shooting: "red",
-      natural_disaster: "blue",
-      airstrike: "black",
-      collapse: "brown",
-      pollution: "green",
-      epidemic: "pink",
-      medical: "yellow",
-      explosion: "gray",
-      other: "white"
-    };
+  
+  const TYPE_COLORS = {
+    vehicle_accident: "orange",
+    shooting: "darkred",
+    protest: "purple",
+    fire: "red",
+    earthquake: "brown",
+    flood: "blue",
+    tree_down: "green",
+    airstrike: "black",
+    collapse: "saddlebrown",
+    pollution: "darkgreen",
+    epidemic: "pink",
+    medical: "yellow",
+    explosion: "gray",
+    other: "white"
+  };
 
-    const ALL_TYPES = Object.keys(TYPE_COLORS);
-    let activeTypes = new Set(ALL_TYPES);
-    let searchTerm = '';
-    const cluster = L.markerClusterGroup().addTo(map);
-    const filtersDiv = document.getElementById('filters');
-    const legendDiv = document.getElementById('legend');
-    let allItems = [];
+  const ALL_TYPES = Object.keys(TYPE_COLORS);
+  let activeTypes = new Set(ALL_TYPES);
+  let searchTerm = '';
+  const cluster = L.markerClusterGroup().addTo(map);
+  const filtersDiv = document.getElementById('filters');
+  const legendDiv = document.getElementById('legend');
+  let allItems = [];
+
 
     // Build filter checkboxes and legend
     ALL_TYPES.forEach(t => {
