@@ -8325,28 +8325,6 @@
   },
   {
     "incident_type": "other",
-    "location": "بعبدا",
-    "coordinates": [
-      35.5445655,
-      33.8335501
-    ],
-    "channel": "-1001344300120",
-    "message_id": 214993,
-    "date": "2025-08-24 17:16:24+00:00",
-    "threat_level": "yes",
-    "details": {
-      "numbers_found": [
-        "24",
-        "2025",
-        "08",
-        "10"
-      ],
-      "casualties": [],
-      "summary": "زوار بعبدا نقلاً عن الرئيس عون للجديد: لبنان قام بما عليه والطابة الآن في الملعب الاسرائيلي على الأميركيين تحديداً مسؤولية الضغط لتنفذ اسرائيل الانسحاب ووقف الغارات@josephinedeeb\n https://twitter.com/ALJADEEDNEWS/status/1959664626104443382\nAugust 24, 2025 at 08:10PM"
-    }
-  },
-  {
-    "incident_type": "other",
     "location": "المنازل",
     "coordinates": [
       36.2797343,
@@ -8491,23 +8469,6 @@
   },
   {
     "incident_type": "other",
-    "location": "البترون",
-    "coordinates": [
-      35.6588567,
-      34.2548879
-    ],
-    "channel": "testingammoura",
-    "message_id": 59,
-    "date": "2025-08-24 17:29:27+00:00",
-    "threat_level": "yes",
-    "details": {
-      "numbers_found": [],
-      "casualties": [],
-      "summary": "حادث في البترون"
-    }
-  },
-  {
-    "incident_type": "other",
     "location": "الساعة",
     "coordinates": [
       35.5045586,
@@ -8521,6 +8482,45 @@
       "numbers_found": [],
       "casualties": [],
       "summary": "‌‏مصدر رفيع في الخارجية الأميركية لـmtv: حتى الساعة لا يوجد أي تاريخ رسمي بشأن موعد التصويت على التمديد لـ\"اليونيفيل\""
+    }
+  },
+  {
+    "incident_type": "other",
+    "location": "بعبدا",
+    "coordinates": [
+      35.5445655,
+      33.8335501
+    ],
+    "channel": "-1001344300120",
+    "message_id": 214993,
+    "date": "2025-08-24 17:16:24+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "24",
+        "2025",
+        "08",
+        "10"
+      ],
+      "casualties": [],
+      "summary": "زوار بعبدا نقلاً عن الرئيس عون للجديد: لبنان قام بما عليه والطابة الآن في الملعب الاسرائيلي على الأميركيين تحديداً مسؤولية الضغط لتنفذ اسرائيل الانسحاب ووقف الغارات@josephinedeeb\n https://twitter.com/ALJADEEDNEWS/status/1959664626104443382\nAugust 24, 2025 at 08:10PM"
+    }
+  },
+  {
+    "incident_type": "other",
+    "location": "البترون",
+    "coordinates": [
+      35.6588567,
+      34.2548879
+    ],
+    "channel": "testingammoura",
+    "message_id": 60,
+    "date": "2025-08-24 17:40:03+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "حادث في البترون\n"
     }
   }
 ]
