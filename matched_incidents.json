@@ -3446,5 +3446,22 @@
       "casualties": [],
       "summary": "حادث في البترون"
     }
+  },
+  {
+    "incident_type": "حادثة",
+    "location": "البترون",
+    "coordinates": [
+      35.6588567,
+      34.2548879
+    ],
+    "channel": "testingammoura",
+    "message_id": 65,
+    "date": "2025-08-24 18:00:26+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "حادث في البترون"
+    }
   }
 ]
