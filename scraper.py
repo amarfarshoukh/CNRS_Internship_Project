@@ -267,7 +267,6 @@ async def phi3_worker(matches, existing_ids):
             msg_id = event.id
 
             if (channel_name, msg_id) in existing_ids:
-                message_queue.task_done()
                 continue  # skip already processed messages
 
             # --- Location detection
@@ -277,7 +276,6 @@ async def phi3_worker(matches, existing_ids):
                 # fallback: try detect without keywords
                 location, coordinates = detect_location_from_map(normalize_arabic(text))
             if not location or not coordinates:
-                message_queue.task_done()
                 continue  # skip if no valid location
 
             # --- Incident type detection
@@ -294,7 +292,6 @@ async def phi3_worker(matches, existing_ids):
                     incident_types = []
 
             if not incident_types:
-                message_queue.task_done()
                 continue  # skip if still no incident type
 
             # --- Extract numbers and casualties
@@ -318,15 +315,15 @@ async def phi3_worker(matches, existing_ids):
                     }
                 }
 
-                # --- Skip duplicates only by message_id
                 if not any(m.get("message_id") == msg_id for m in matches):
                     matches.append(record)
                     print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
-                    save_matches(matches)  # save immediately
+                    save_matches(matches)
 
             existing_ids.add((channel_name, msg_id))
         finally:
-            message_queue.task_done()
+            message_queue.task_done()  # only here
+
 
 
 # -----------------------------
