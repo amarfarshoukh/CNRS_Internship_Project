@@ -3378,85 +3378,15 @@
     }
   },
   {
-    "incident_type": "armed protest involving Hezbollah and the Israeli Army",
-    "location": "القصر",
-    "coordinates": [
-      35.479022,
-      33.6423116
-    ],
-    "channel": "lebanonNewsNow",
-    "message_id": 207876,
-    "date": "2025-08-24 14:48:58+00:00",
-    "threat_level": "yes",
-    "details": {
-      "numbers_found": [],
-      "casualties": [],
-      "summary": "‏🚨 ورد الآن / الجيش الإسرائيلي: القصر الرئاسي اليمني داخل المجمع العسكري في صنعاء تدار منه الأنشطة العسكرية لقوات الحوثيين \n\n @lebanonNewsNow"
-    }
-  },
-  {
-    "incident_type": "Loss of livestrande animal sighting without identification",
-    "location": "صيدا",
-    "coordinates": [
-      35.3780338,
-      33.5618345
-    ],
-    "channel": "bintjbeilnews",
-    "message_id": 143200,
-    "date": "2025-08-24 14:48:32+00:00",
-    "threat_level": "yes",
-    "details": {
-      "numbers_found": [
-        "76639"
-      ],
-      "casualties": [],
-      "summary": "تعاني من الزهايمر.. الهام خروز غادرت منزلها الكائن في صيدا ولم تعُد، لمن يعرف عنها شيئًا!\nhttps://bintjbeil.org/post/76639/"
-    }
-  },
-  {
-    "incident_type": "terrorist attacks and attempted lootings of security measures",
-    "location": "غزة",
-    "coordinates": [
-      35.8276513,
-      33.6711831
-    ],
-    "channel": "lebanonNewsNow",
-    "message_id": 207880,
-    "date": "2025-08-24 15:15:26+00:00",
-    "threat_level": "yes",
-    "details": {
-      "numbers_found": [],
-      "casualties": [],
-      "summary": "‏🚨 ورد الآن / وزارة الداخلية في غزة: نحذر من مخططات التهجير وإفراغ محافظتي غزة والشمال تحت وقع المجازر والتجويع \n\n @lebanonNewsNow"
-    }
-  },
-  {
-    "incident_type": "Electromagnetic Pulse Attack",
+    "incident_type": "vehicle_accident",
     "location": "البترون",
     "coordinates": [
       35.6588567,
       34.2548879
     ],
     "channel": "testingammoura",
-    "message_id": 64,
-    "date": "2025-08-24 17:56:37+00:00",
-    "threat_level": "yes",
-    "details": {
-      "numbers_found": [],
-      "casualties": [],
-      "summary": "حادث في البترون"
-    }
-  },
-  {
-    "incident_type": "حادثة",
-    "location": "البترون",
-    "coordinates": [
-      35.6588567,
-      34.2548879
-    ],
-    "channel": "testingammoura",
-    "message_id": 65,
-    "date": "2025-08-24 18:00:26+00:00",
+    "message_id": 68,
+    "date": "2025-08-24 18:04:19+00:00",
     "threat_level": "yes",
     "details": {
       "numbers_found": [],
