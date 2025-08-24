@@ -7790,5 +7790,94 @@
       ],
       "summary": "حادث في بيروت"
     }
+  },
+  {
+    "incident_type": "حادثة",
+    "location": "بيروت",
+    "coordinates": [
+      35.4995749,
+      33.8718663
+    ],
+    "channel": "testingammoura",
+    "message_id": 38,
+    "date": "2025-08-24 11:48:55+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "حادث في بيروت"
+    }
+  },
+  {
+    "incident_type": "مشكل",
+    "location": "بشامون",
+    "coordinates": [
+      35.5315831,
+      33.7819483
+    ],
+    "channel": "testingammoura",
+    "message_id": 43,
+    "date": "2025-08-24 11:52:08+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "مشكل في بشامون"
+    }
+  },
+  {
+    "incident_type": "fire",
+    "location": "بشامون",
+    "coordinates": [
+      35.5315831,
+      33.7819483
+    ],
+    "channel": "testingammoura",
+    "message_id": 44,
+    "date": "2025-08-24 11:52:54+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [
+        "injured"
+      ],
+      "summary": "جريح في بشامون اثر حريق هائل"
+    }
+  },
+  {
+    "incident_type": "explosion",
+    "location": "بيروت",
+    "coordinates": [
+      35.4995749,
+      33.8718663
+    ],
+    "channel": "testingammoura",
+    "message_id": 46,
+    "date": "2025-08-24 11:54:45+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "انفجار في بيروت"
+    }
+  },
+  {
+    "incident_type": "Unofficial raid and unautCTs",
+    "location": "القاع",
+    "coordinates": [
+      36.4800435,
+      34.3408227
+    ],
+    "channel": "lebanonnews2",
+    "message_id": 87383,
+    "date": "2025-08-24 12:05:15+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "🔴🇱🇧دورية من مديرية المخابرات تقفل عدة معابر وطرقات غير شرعية في منطقة مشاريع القاع تستخدم لتهريب الأشخاص والمحروقات\n\n\nhttps://telegram.me/lebanonnews2"
+    }
   }
 ]
