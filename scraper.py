@@ -253,23 +253,21 @@ async def phi3_worker(matches, existing_ids):
             msg_id = event.id
 
             if (channel_name, msg_id) in existing_ids:
-                message_queue.task_done()
-                continue
+                continue  # no task_done here, finally will handle it
 
             # --- Location detection
             has_kw = any(kw in normalize_arabic(text) for kw in LOCATION_KEYWORDS)
             location, coordinates = detect_location(text) if has_kw else (None, None)
             if not location or not coordinates:
-                message_queue.task_done()
                 continue
 
             # --- Incident type detection
             incident_types = find_incident_types(text, IK.incident_keywords)
 
             if not incident_types:
+                # fallback to Phi3
                 phi3_res = query_phi3_json(text)
                 if not phi3_res:
-                    message_queue.task_done()
                     continue
                 itype = phi3_res.get("incident_type")
                 if itype and itype != "other":
@@ -279,7 +277,6 @@ async def phi3_worker(matches, existing_ids):
                         incident_types = [itype]
 
             if not incident_types:
-                message_queue.task_done()
                 continue
 
             # --- Common fields
@@ -295,7 +292,7 @@ async def phi3_worker(matches, existing_ids):
                     "channel": channel_name,
                     "message_id": msg_id,
                     "date": str(event.date),
-                    "threat_level": "yes",
+                    "threat_level": "yes",  # default, or override with Phi3 if available
                     "details": {
                         "numbers_found": numbers,
                         "casualties": casualties,
@@ -303,7 +300,7 @@ async def phi3_worker(matches, existing_ids):
                     }
                 }
 
-                # --- Deduplication
+                # --- Deduplicate
                 date_prefix = record["date"][:10]
                 similar_records = [
                     m for m in matches
@@ -311,6 +308,7 @@ async def phi3_worker(matches, existing_ids):
                     and m.get('location') == record['location']
                     and m.get('date', '')[:10] == date_prefix
                 ]
+
                 if similar_records:
                     similar_records.append(record)
                     best_record = select_best_message(similar_records)
@@ -331,7 +329,7 @@ async def phi3_worker(matches, existing_ids):
             save_matches(matches)
 
         finally:
-            message_queue.task_done()
+            message_queue.task_done()  # only here!
 
 # -----------------------------
 # Telegram login
