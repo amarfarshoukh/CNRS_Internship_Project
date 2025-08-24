@@ -7967,5 +7967,28 @@
       "casualties": [],
       "summary": "هاشم شدد على أهمية التوافق في مقاربة أي مسألة وطنيةhttps://t.co/w1gpLhVrZ6\n https://twitter.com/MTVLebanonNews/status/1959591432785949067\nAugust 24, 2025 at 03:19PM"
     }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "مجمع",
+    "coordinates": [
+      35.82592206363636,
+      34.44748477272727
+    ],
+    "channel": "-1001273314564",
+    "message_id": 279220,
+    "date": "2025-08-24 13:22:19+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "14",
+        "24",
+        "2025",
+        "04",
+        "19"
+      ],
+      "casualties": [],
+      "summary": "لقناة 14 الإسرائيلية: القصف استهدف موقعاً عسكرياً في مجمع القصر الرئاسي بصنعاء ومخازن وقود ومحطتي كهرباء\n https://twitter.com/MTVLebanonNews/status/1959606605550637306\nAugust 24, 2025 at 04:19PM"
+    }
   }
 ]

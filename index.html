@@ -146,13 +146,13 @@
     // Create circle marker for each incident
     function markerFor(item) {
       if (!item.coordinates || item.coordinates.length !== 2) return null;
-      const lat = item.coordinates[1];
-      const lon = item.coordinates[0];
+      const lat = item.coordinates[0]; // Correct latitude
+      const lon = item.coordinates[1]; // Correct longitude
       const marker = L.circleMarker([lat, lon], {
-        radius: 10,
+        radius: 15, // larger circle
         color: item.color || TYPE_COLORS[item.incident_type] || "#666",
         fillColor: item.color || TYPE_COLORS[item.incident_type] || "#666",
-        fillOpacity: 1,
+        fillOpacity: 0.9,
         weight: 2
       });
       const popupHtml = `
@@ -182,7 +182,7 @@
       const shown = [];
 
       allItems.forEach(it => {
-        if (matchesFilters(it) && it.coordinates && it.coordinates.length === 2) {
+        if (matchesFilters(it)) {
           const m = markerFor(it);
           if (m) cluster.addLayer(m);
           shown.push(it);
