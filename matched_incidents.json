@@ -8514,13 +8514,30 @@
       34.2548879
     ],
     "channel": "testingammoura",
-    "message_id": 60,
-    "date": "2025-08-24 17:40:03+00:00",
+    "message_id": 61,
+    "date": "2025-08-24 17:45:23+00:00",
     "threat_level": "yes",
     "details": {
       "numbers_found": [],
       "casualties": [],
-      "summary": "حادث في البترون\n"
+      "summary": "حادث في البترون\n\n"
+    }
+  },
+  {
+    "incident_type": "other",
+    "location": "غزة",
+    "coordinates": [
+      35.8276513,
+      33.6711831
+    ],
+    "channel": "lebanonNewsNow",
+    "message_id": 207891,
+    "date": "2025-08-24 17:48:08+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏🚨 ورد الآن / رئيس الأركان لنتنياهو: يمكن للجيش احتلال غزة لكن هذه العملية من شأنها أن تعرض حياة المختطفين للخطر \n\n @lebanonNewsNow"
     }
   }
 ]

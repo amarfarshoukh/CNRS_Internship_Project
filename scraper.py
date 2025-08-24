@@ -155,16 +155,20 @@ IK = IncidentKeywords()
 # -----------------------------
 # Incident detection helper (multi)
 # -----------------------------
+# -----------------------------
+# Incident detection helper (multi) - updated
+# -----------------------------
 def find_incident_types(text, incident_keywords):
     norm_text = normalize_arabic(text)
     found = []
     for inc_type, keywords in incident_keywords.items():
-        if any(kw in norm_text for kw in keywords):
-            found.append(inc_type)
+        for kw in keywords:
+            if normalize_arabic(kw) in norm_text:
+                found.append(inc_type)
     return list(set(found))
 
 # -----------------------------
-# Robust Phi3 JSON Extractor
+# Robust Phi3 JSON Extractor - updated
 # -----------------------------
 def robust_json_extract(text):
     text = re.sub(r'```json|```', '', text).strip()
@@ -176,17 +180,25 @@ def robust_json_extract(text):
         print("Could not find JSON object in:", text)
         return None
     json_str = text[start:end+1]
+    # remove comments or trailing commas
     json_str = re.sub(r'//.*', '', json_str)
     json_str = re.sub(r',(?![^{}]*\})[^\n]*', ',', json_str)
-    json_str = '\n'.join([line for line in json_str.splitlines() if ':' in line or '}' in line or '{' in line])
     try:
         data = json.loads(json_str)
+        # Always make incident_type a list
+        itype = data.get("incident_type")
+        if itype:
+            if not isinstance(itype, list):
+                data["incident_type"] = [itype]
+        else:
+            data["incident_type"] = []
         if "threat_level" in data and data["threat_level"] not in ["yes", "no"]:
             data["threat_level"] = "yes"
         return data
     except Exception:
         print("Phi3 returned invalid JSON after cleanup:", json_str)
         return None
+
 
 # -----------------------------
 # Phi3 JSON query
@@ -241,11 +253,11 @@ def select_best_message(records):
     ), reverse=True)
     return records[0]
 
+
 # -----------------------------
-# Phi3 worker queue (multi-incident)
+# Phi3 worker queue (multi-incident) - updated
 # -----------------------------
 message_queue = asyncio.Queue()
-
 async def phi3_worker(matches, existing_ids):
     while True:
         event = await message_queue.get()
@@ -255,12 +267,17 @@ async def phi3_worker(matches, existing_ids):
             msg_id = event.id
 
             if (channel_name, msg_id) in existing_ids:
+                message_queue.task_done()
                 continue  # skip already processed messages
 
             # --- Location detection
             has_kw = any(kw in normalize_arabic(text) for kw in LOCATION_KEYWORDS)
             location, coordinates = detect_location(text) if has_kw else (None, None)
             if not location or not coordinates:
+                # fallback: try detect without keywords
+                location, coordinates = detect_location_from_map(normalize_arabic(text))
+            if not location or not coordinates:
+                message_queue.task_done()
                 continue  # skip if no valid location
 
             # --- Incident type detection
@@ -269,16 +286,15 @@ async def phi3_worker(matches, existing_ids):
             if not incident_types:
                 # fallback to Phi3 if no keywords found
                 phi3_res = query_phi3_json(text)
-                if not phi3_res:
-                    continue
-                itype = phi3_res.get("incident_type")
-                if itype and itype != "other":
-                    if isinstance(itype, list):
-                        incident_types = itype
-                    else:
-                        incident_types = [itype]
+                if phi3_res:
+                    incident_types = phi3_res.get("incident_type", [])
+                    if not isinstance(incident_types, list):
+                        incident_types = [incident_types]
+                else:
+                    incident_types = []
 
             if not incident_types:
+                message_queue.task_done()
                 continue  # skip if still no incident type
 
             # --- Extract numbers and casualties
@@ -294,7 +310,7 @@ async def phi3_worker(matches, existing_ids):
                     "channel": channel_name,
                     "message_id": msg_id,
                     "date": str(event.date),
-                    "threat_level": "yes",  # default, can override with Phi3 if needed
+                    "threat_level": "yes",
                     "details": {
                         "numbers_found": numbers,
                         "casualties": casualties,
@@ -302,16 +318,15 @@ async def phi3_worker(matches, existing_ids):
                     }
                 }
 
-                # --- Only skip duplicates by message_id
+                # --- Skip duplicates only by message_id
                 if not any(m.get("message_id") == msg_id for m in matches):
                     matches.append(record)
                     print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
                     save_matches(matches)  # save immediately
 
             existing_ids.add((channel_name, msg_id))
-
         finally:
-            message_queue.task_done()  # ensure queue task is marked done
+            message_queue.task_done()
 
 
 # -----------------------------
