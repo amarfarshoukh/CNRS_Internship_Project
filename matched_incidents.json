@@ -7879,5 +7879,69 @@
       "casualties": [],
       "summary": "🔴🇱🇧دورية من مديرية المخابرات تقفل عدة معابر وطرقات غير شرعية في منطقة مشاريع القاع تستخدم لتهريب الأشخاص والمحروقات\n\n\nhttps://telegram.me/lebanonnews2"
     }
+  },
+  {
+    "incident_type": "Escalating War Conflict with Implications for Israel and Palestine Border Situations",
+    "location": "غزة",
+    "coordinates": [
+      35.8276513,
+      33.6711831
+    ],
+    "channel": "LBCI_NEWS",
+    "message_id": 251912,
+    "date": "2025-08-24 12:08:16+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "24",
+        "2025",
+        "03",
+        "03"
+      ],
+      "casualties": [],
+      "summary": "أكسيوس: مسؤولون أميركيون يقولون إنه في ظل استمرار الحرب في غزة فإن لإسرائيل مصلحة في تهدئة الأوضاع على الحدود مع سوريا ولبنان والتوصل إلى ترتيبات جديدة مع الدولتين\n https://twitter.com/LBCI_NEWS/status/1959587408846229734\nAugust 24, 2025 at 03:03PM"
+    }
+  },
+  {
+    "incident_type": "Security checkpoint blockade by private security firm",
+    "location": "السلام",
+    "coordinates": [
+      35.35133376,
+      33.37979982
+    ],
+    "channel": "LBCI_NEWS",
+    "message_id": 251913,
+    "date": "2025-08-24 12:08:17+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "49",
+        "24",
+        "2025",
+        "03",
+        "05"
+      ],
+      "casualties": [],
+      "summary": "زيلينسكي: السلام في أوكرانيا يتحقق عبر ضمانات أمنية تمنع أي هجوم من أي دولة#LBCINews https://t.co/VkazTDe49k\n https://twitter.com/LBCI_NEWS/status/1959587764061474983\nAugust 24, 2025 at 03:05PM"
+    }
+  },
+  {
+    "incident_type": "عرقلة",
+    "location": "السلام",
+    "coordinates": [
+      35.35133376,
+      33.37979982
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143678,
+    "date": "2025-08-24 12:16:55+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "735523"
+      ],
+      "casualties": [],
+      "summary": "مفاوضات السلام مع أوكرانيا... لافروف يتهم الغرب بالعرقلة\n\nhttps://lbdb.co/735523"
+    }
   }
 ]

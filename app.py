@@ -37,24 +37,28 @@ def load_incidents():
             try:
                 with open(INCIDENTS_FILE, "r", encoding="utf-8") as f:
                     incidents = json.load(f)
-                # Add color based on incident_type and keep coordinates
+                # Add color based on incident_type and fix coordinates
                 for inc in incidents:
                     inc["color"] = INCIDENT_COLORS.get(inc.get("incident_type", "other"), "white")
-                    # Ensure coordinates exist and are properly formatted
-                    if "coordinates" not in inc:
+                    coords = inc.get("coordinates")
+                    if coords and isinstance(coords, list) and len(coords) == 2:
+                        # Leaflet expects [lat, lon]
+                        lon, lat = coords
+                        inc["coordinates"] = [lat, lon]
+                    else:
                         inc["coordinates"] = []
                 incident_cache = incidents
             except Exception as e:
                 print(f"Error loading incidents: {e}")
         time.sleep(reload_interval)
 
-# Start background thread to reload incidents
+# Start background thread
 threading.Thread(target=load_incidents, daemon=True).start()
 
 @app.route("/incidents", methods=["GET"])
 def get_incidents():
     """
-    Returns the latest incidents with coordinates and color for Leaflet.
+    Returns latest incidents with coordinates and color for Leaflet.
     """
     return jsonify({"incidents": incident_cache})
 
