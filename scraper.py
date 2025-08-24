@@ -151,64 +151,51 @@ class IncidentKeywords:
 IK = IncidentKeywords()
 
 # -----------------------------
-# Helper: check for incident keywords
+# Incident detection helper (multi)
 # -----------------------------
-def find_incident_type(text, incident_keywords):
+def find_incident_types(text, incident_keywords):
     norm_text = normalize_arabic(text)
+    found = []
     for inc_type, keywords in incident_keywords.items():
-        for kw in keywords:
-            if kw in norm_text:
-                return inc_type
-    return None
+        if any(kw in norm_text for kw in keywords):
+            found.append(inc_type)
+    return list(set(found))
 
 # -----------------------------
 # Robust Phi3 JSON Extractor
 # -----------------------------
 def robust_json_extract(text):
-    # Remove markdown code block markers
     text = re.sub(r'```json|```', '', text).strip()
-    # Remove triple quotes if present
     text = re.sub(r'^"{3,}', '', text).strip()
     text = re.sub(r'"{3,}$', '', text).strip()
-    # Remove any lines that start with // (comments)
-    lines = text.splitlines()
-    lines = [line for line in lines if not line.strip().startswith("//")]
-    text = "\n".join(lines)
-    # Find the first and last curly brace
     start = text.find('{')
     end = text.rfind('}')
-    if start != -1 and end != -1 and end > start:
-        json_str = text[start:end+1]
-        try:
-            return json.loads(json_str)
-        except Exception:
-            try:
-                # fallback: safely evaluate literal JSON-like dict
-                return ast.literal_eval(json_str)
-            except Exception as e:
-                print("Phi3 returned invalid JSON after cleanup:", json_str)
-                return None
-    print("Could not find JSON object in:", text)
-    return None
+    if start == -1 or end == -1 or end <= start:
+        print("Could not find JSON object in:", text)
+        return None
+    json_str = text[start:end+1]
+    json_str = re.sub(r'//.*', '', json_str)
+    json_str = re.sub(r',(?![^{}]*\})[^\n]*', ',', json_str)
+    json_str = '\n'.join([line for line in json_str.splitlines() if ':' in line or '}' in line or '{' in line])
+    try:
+        data = json.loads(json_str)
+        if "threat_level" in data and data["threat_level"] not in ["yes", "no"]:
+            data["threat_level"] = "yes"
+        return data
+    except Exception:
+        print("Phi3 returned invalid JSON after cleanup:", json_str)
+        return None
 
 # -----------------------------
-# Phi3 JSON query (strict prompt)
+# Phi3 JSON query
 # -----------------------------
 def query_phi3_json(message: str):
     prompt = f"""
 You are an incident analysis assistant.
-Return ONLY valid JSON. Do NOT include any explanations, comments, or markdown (no code blocks, no // comments, no extra notes).
-Just output a single JSON object like:
+Return ONLY valid JSON. Do NOT include any explanations.
 {{"location": ..., "incident_type": ..., "threat_level": ..., "casualties": [...], "numbers": [...]}}
 
 Message: "{message}"
-
-Rules:
-- Only consider incidents inside Lebanon
-- Detect incident type using Arabic keywords first; if detected, keep it
-- Never include explanations or any extra text outside JSON
-- Always use double quotes for keys and string values
-- If location cannot be determined in Lebanon, use "Unknown / Outside Lebanon"
 """
 
     try:
@@ -253,7 +240,7 @@ def select_best_message(records):
     return records[0]
 
 # -----------------------------
-# Phi3 worker queue
+# Phi3 worker queue (multi-incident)
 # -----------------------------
 message_queue = asyncio.Queue()
 
@@ -266,74 +253,82 @@ async def phi3_worker(matches, existing_ids):
             msg_id = event.id
 
             if (channel_name, msg_id) in existing_ids:
+                message_queue.task_done()
                 continue
 
+            # --- Location detection
             has_kw = any(kw in normalize_arabic(text) for kw in LOCATION_KEYWORDS)
             location, coordinates = detect_location(text) if has_kw else (None, None)
-
             if not location or not coordinates:
+                message_queue.task_done()
                 continue
 
-            # Priority: check incident_keywords first
-            incident_type = find_incident_type(text, IK.incident_keywords)
+            # --- Incident type detection
+            incident_types = find_incident_types(text, IK.incident_keywords)
 
-            if incident_type:
-                # Use extracted incident_type, no Phi3 call
-                threat_level = "yes"  # Or implement your own logic if needed
-            else:
-                # Fallback to Phi3 for incident type extraction
+            if not incident_types:
                 phi3_res = query_phi3_json(text)
                 if not phi3_res:
+                    message_queue.task_done()
                     continue
-                incident_type = phi3_res.get("incident_type")
-                if not incident_type or incident_type == "other":
-                    continue
-                threat_level = phi3_res.get("threat_level", "yes")
+                itype = phi3_res.get("incident_type")
+                if itype and itype != "other":
+                    if isinstance(itype, list):
+                        incident_types = itype
+                    else:
+                        incident_types = [itype]
 
+            if not incident_types:
+                message_queue.task_done()
+                continue
+
+            # --- Common fields
             numbers = IK.extract_numbers(text)
             casualties = IK.extract_casualties(text)
             summary = text[:300] + ("..." if len(text) > 300 else "")
 
-            record = {
-                "incident_type": incident_type,
-                "location": location,
-                "coordinates": coordinates,
-                "channel": channel_name,
-                "message_id": msg_id,
-                "date": str(event.date),
-                "threat_level": threat_level,
-                "details": {
-                    "numbers_found": numbers,
-                    "casualties": casualties,
-                    "summary": summary
+            for incident_type in incident_types:
+                record = {
+                    "incident_type": incident_type,
+                    "location": location,
+                    "coordinates": coordinates,
+                    "channel": channel_name,
+                    "message_id": msg_id,
+                    "date": str(event.date),
+                    "threat_level": "yes",
+                    "details": {
+                        "numbers_found": numbers,
+                        "casualties": casualties,
+                        "summary": summary
+                    }
                 }
-            }
 
-            # Deduplicate
-            date_prefix = record["date"][:10]
-            similar_records = [
-                m for m in matches
-                if m.get('incident_type') == record['incident_type']
-                and m.get('location') == record['location']
-                and m.get('date', '')[:10] == date_prefix
-            ]
-            if similar_records:
-                similar_records.append(record)
-                best_record = select_best_message(similar_records)
-                matches[:] = [
-                    m for m in matches if not (
-                        m.get('incident_type') == record['incident_type']
-                        and m.get('location') == record['location']
-                        and m.get('date', '')[:10] == date_prefix
-                    )
+                # --- Deduplication
+                date_prefix = record["date"][:10]
+                similar_records = [
+                    m for m in matches
+                    if m.get('incident_type') == record['incident_type']
+                    and m.get('location') == record['location']
+                    and m.get('date', '')[:10] == date_prefix
                 ]
-                matches.append(best_record)
-            else:
-                matches.append(record)
+                if similar_records:
+                    similar_records.append(record)
+                    best_record = select_best_message(similar_records)
+                    matches[:] = [
+                        m for m in matches if not (
+                            m.get('incident_type') == record['incident_type']
+                            and m.get('location') == record['location']
+                            and m.get('date', '')[:10] == date_prefix
+                        )
+                    ]
+                    matches.append(best_record)
+                else:
+                    matches.append(record)
+
+                print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
 
             existing_ids.add((channel_name, msg_id))
             save_matches(matches)
-            print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
 
         finally:
             message_queue.task_done()
