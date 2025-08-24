@@ -7943,5 +7943,29 @@
       "casualties": [],
       "summary": "مفاوضات السلام مع أوكرانيا... لافروف يتهم الغرب بالعرقلة\n\nhttps://lbdb.co/735523"
     }
+  },
+  {
+    "incident_type": "National Significance",
+    "location": "هاشم",
+    "coordinates": [
+      35.4841087,
+      33.8320857
+    ],
+    "channel": "MTVLebanonNews",
+    "message_id": 279199,
+    "date": "2025-08-24 12:22:42+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "1",
+        "6",
+        "24",
+        "2025",
+        "03",
+        "19"
+      ],
+      "casualties": [],
+      "summary": "هاشم شدد على أهمية التوافق في مقاربة أي مسألة وطنيةhttps://t.co/w1gpLhVrZ6\n https://twitter.com/MTVLebanonNews/status/1959591432785949067\nAugust 24, 2025 at 03:19PM"
+    }
   }
 ]

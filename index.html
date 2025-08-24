@@ -79,7 +79,6 @@
     const map = L.map('map', { minZoom: 7, maxZoom: 18 }).setView([33.9, 35.86], 8);
     const lebanonBounds = L.latLngBounds([[32.8, 34.9], [34.9, 36.9]]);
     map.setMaxBounds(lebanonBounds);
-    map.on('drag', () => map.panInsideBounds(lebanonBounds, { animate: true }));
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
@@ -108,6 +107,7 @@
     const legendDiv = document.getElementById('legend');
     let allItems = [];
 
+    // Build filter checkboxes and legend
     ALL_TYPES.forEach(t => {
       const id = `filter-${t}`;
       const label = document.createElement('label');
@@ -143,15 +143,17 @@
       render();
     });
 
+    // Create circle marker for each incident
     function markerFor(item) {
-      if (!item.coordinates || !item.coordinates.length) return null;
+      if (!item.coordinates || item.coordinates.length !== 2) return null;
       const lat = item.coordinates[1];
       const lon = item.coordinates[0];
       const marker = L.circleMarker([lat, lon], {
-        radius: 7,
+        radius: 10,
         color: item.color || TYPE_COLORS[item.incident_type] || "#666",
-        fillOpacity: 0.8,
-        weight: 1
+        fillColor: item.color || TYPE_COLORS[item.incident_type] || "#666",
+        fillOpacity: 1,
+        weight: 2
       });
       const popupHtml = `
         <div style="min-width:220px">
@@ -166,7 +168,7 @@
     }
 
     function matchesFilters(item) {
-      if (!item.coordinates || !item.coordinates.length) return false;
+      if (!item.coordinates || item.coordinates.length !== 2) return false;
       if (!activeTypes.has(item.incident_type || 'other')) return false;
       if (searchTerm) {
         const hay = (item.details?.summary || '') + ' ' + (item.city || '') + ' ' + (item.incident_type || '');
@@ -178,16 +180,17 @@
     function render() {
       cluster.clearLayers();
       const shown = [];
+
       allItems.forEach(it => {
-        if (matchesFilters(it)) {
+        if (matchesFilters(it) && it.coordinates && it.coordinates.length === 2) {
           const m = markerFor(it);
           if (m) cluster.addLayer(m);
           shown.push(it);
         }
       });
+
       document.getElementById('last-updated').textContent =
         `${shown.length} shown / ${allItems.length} total — ${new Date().toLocaleTimeString()}`;
-      map.fitBounds(lebanonBounds);
     }
 
     async function refresh() {
@@ -203,6 +206,7 @@
           channel: i.channel,
           color: i.color
         }));
+        console.log("Loaded incidents:", allItems.length);
         render();
       } catch(e) {
         console.error('Failed to load incidents:', e);
