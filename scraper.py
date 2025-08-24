@@ -122,7 +122,7 @@ class IncidentKeywords:
             'earthquake': ['زلزال','زلازل','هزة','هزات','هزة أرضية','هزات أرضية','رجفة','رجفات','رجفة أرضية','رجفات أرضية','اهتزاز','اهتزازات','ارتجاج','ارتجاجات','ارتعاش أرضي','ارتجاف الأرض','انشقاق الأرض','تشقق الأرض','صدع أرضي','شروخ أرضية'],
             'flood': ['فيضان','فيضانات','طوفان','طوفانات','تسونامي','سيول','سيل','السيول','سيول جارفة','فيضانات جارفة','غمر مائي','تدفق مائي','ارتفاع منسوب المياه','غرق الشوارع','غرق الطرقات','غرق المنازل','انفجار سد','انهيار سد','أمطار غزيرة','غزارة الأمطار','تراكم مياه','تجميع مياه','برك مياه','بحيرات مؤقتة','غمر الأراضي الزراعية','كارثة مائية'],
             'tree_down': ['انهيار','انهيارات','انهيار أرضي','انهيارات أرضية','سقوط صخور','انزلاق صخور','انزلاق تربة','انزلاقات تربة','انهيار جبلي','انهيارات جبلية','سقوط شجر','سقوط أشجار','اقتلاع شجرة','اقتلاع أشجار','اقتلاع جذور','عاصفة','عواصف','عاصفة رعدية','عواصف رعدية','عاصفة ثلجية','عواصف ثلجية','عاصفة مطرية','عواصف مطرية','عاصفة هوائية','عواصف هوائية','عاصفة ترابية','عواصف ترابية','رياح قوية','عواصف رملية','إعصار','أعاصير','إعصار مدمر','إعصار قوي','عاصفة مدارية','حرائق غابات','حريق غابة','جفاف','موجة جفاف','تساقط الصخور','انحدار صخري','موجة عاتية','موجة رياح','عاصفة قوية','عاصفة مدمرة'],
-           'airstrike': ['مسيرة', 'طيران', 'حربي', 'طيران حربي', 'غارة', 'غارة جوية', 'قصف', 'قصف جوي', 'قصف صاروخي', 'قصف مدفعي', 'صاروخ', 'صواريخ', 'قنبلة', 'قنابل', 'طائرة', 'طائرات', 'مقاتلة', 'مقاتلات', 'قصف بالطائرات', 'ضربة جوية', 'هجوم جوي', 'تفجير جوي', 'غارة جوية إسرائيلية', 'غارة إسرائيلية', 'سلاح الجو', 'ضربة صاروخية', 'هجوم صاروخي', 'قذيفة', 'قذائف'],
+            'airstrike': ['مسيرة', 'طيران', 'حربي', 'طيران حربي', 'غارة', 'غارة جوية', 'قصف', 'قصف جوي', 'قصف صاروخي', 'قصف مدفعي', 'صاروخ', 'صواريخ', 'قنبلة', 'قنابل', 'طائرة', 'طائرات', 'مقاتلة', 'مقاتلات', 'قصف بالطائرات', 'ضربة جوية', 'هجوم جوي', 'تفجير جوي', 'غارة جوية إسرائيلية', 'غارة إسرائيلية', 'سلاح الجو', 'ضربة صاروخية', 'هجوم صاروخي', 'قذيفة', 'قذائف'],
             'collapse': ['انهيار', 'انهيار مبنى', 'انهيارات', 'سقوط', 'سقوط مبنى', 'سقوط مبانٍ', 'سقوط جدار', 'سقوط سقف', 'انهيار سقف', 'انهيار جدار', 'انهيار منزل', 'انهيار عمارة', 'انهيار بناء', 'انهيار طريق', 'انهيار جسر', 'انهيار أرضي', 'هبوط أرضي', 'تصدع', 'تصدعات'],
             'pollution': ['اعتداء', 'بيئي', 'اعتداء بيئي', 'تلوث', 'تعدي', 'تعدي على البيئة', 'تسريب', 'نفطي', 'تسريب نفطي', 'تلوث المياه', 'تلوث الهواء', 'تلوث نفايات', 'مكب', 'مكب عشوائي', 'مياه ملوثة', 'صرف صحي', 'مجارير', 'دخان', 'دخان سام', 'نفايات', 'تسرب مواد كيميائية', 'تسريب مواد سامة', 'تلوث صناعي', 'تلوث زراعي', 'مياه آسنة', 'صرف صناعي', 'تسرب نفط', 'تسرب وقود', 'تسرب غاز'],
             'epidemic': ['وباء', 'تفشي', 'تفشي وباء', 'انتشار وباء', 'تفشي مرض', 'مرض معد', 'أمراض معدية', 'إصابة جماعية', 'إصابات جماعية', 'عدوى', 'انتشار عدوى', 'حالات عدوى', 'حجر صحي', 'حالة وبائية', 'حالات وبائية', 'حالة طوارئ صحية', 'حجر صحي جماعي', 'انتشار مرض'],
@@ -255,7 +255,8 @@ async def phi3_worker(matches, existing_ids):
             msg_id = event.id
 
             if (channel_name, msg_id) in existing_ids:
-                continue  # no task_done here, finally will handle it
+                # Already processed → skip
+                continue
 
             # --- Location detection
             has_kw = any(kw in normalize_arabic(text) for kw in LOCATION_KEYWORDS)
@@ -265,26 +266,29 @@ async def phi3_worker(matches, existing_ids):
 
             # --- Incident type detection
             incident_types = find_incident_types(text, IK.incident_keywords)
-
             if not incident_types:
-                # fallback to Phi3
                 phi3_res = query_phi3_json(text)
-                if not phi3_res:
-                    continue
-                itype = phi3_res.get("incident_type")
-                if itype and itype != "other":
-                    if isinstance(itype, list):
-                        incident_types = itype
-                    else:
+                if phi3_res:
+                    itype = phi3_res.get("incident_type")
+                    if isinstance(itype, str):
                         incident_types = [itype]
+                    elif isinstance(itype, list):
+                        incident_types = itype
 
             if not incident_types:
                 continue
+
+            # --- Normalize incident types
+            allowed_types = set(IK.incident_keywords.keys()) | {"other"}
+            incident_types = [itype.strip().lower() for itype in incident_types]
+            incident_types = [itype if itype in allowed_types else "other" for itype in incident_types]
 
             # --- Common fields
             numbers = IK.extract_numbers(text)
             casualties = IK.extract_casualties(text)
             summary = text[:300] + ("..." if len(text) > 300 else "")
+
+            new_records = []
 
             for incident_type in incident_types:
                 record = {
@@ -294,7 +298,7 @@ async def phi3_worker(matches, existing_ids):
                     "channel": channel_name,
                     "message_id": msg_id,
                     "date": str(event.date),
-                    "threat_level": "yes",  # default, or override with Phi3 if available
+                    "threat_level": "yes",
                     "details": {
                         "numbers_found": numbers,
                         "casualties": casualties,
@@ -302,7 +306,7 @@ async def phi3_worker(matches, existing_ids):
                     }
                 }
 
-                # --- Deduplicate
+                # Deduplication
                 date_prefix = record["date"][:10]
                 similar_records = [
                     m for m in matches
@@ -325,13 +329,16 @@ async def phi3_worker(matches, existing_ids):
                 else:
                     matches.append(record)
 
+                new_records.append(record)
                 print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
 
-            existing_ids.add((channel_name, msg_id))
-            save_matches(matches)
+            if new_records:
+                existing_ids.add((channel_name, msg_id))
+                save_matches(matches)   # ✅ only save when something was added
 
         finally:
-            message_queue.task_done()  # only here!
+            message_queue.task_done()
+
 
 # -----------------------------
 # Telegram login

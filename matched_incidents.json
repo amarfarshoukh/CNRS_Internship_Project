@@ -8383,5 +8383,65 @@
       "casualties": [],
       "summary": "مصادر دبلوماسية للجديد: المنطقة الصناعية ستكون عبارة عن مجموعة مشاريع سياحية وصناعية وصحية ينتعش من خلالها الجنوب اقتصادياً@josephinedeeb\n https://twitter.com/ALJADEEDNEWS/status/1959666201757696060\nAugust 24, 2025 at 08:16PM"
     }
+  },
+  {
+    "incident_type": "نزهة",
+    "location": "البترون",
+    "coordinates": [
+      35.6588567,
+      34.2548879
+    ],
+    "channel": "testingammoura",
+    "message_id": 56,
+    "date": "2025-08-24 17:25:04+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "حادث في البترون"
+    }
+  },
+  {
+    "incident_type": "explosion",
+    "location": "بعلبك",
+    "coordinates": [
+      36.2117096,
+      34.009653
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143724,
+    "date": "2025-08-24 17:25:54+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "735611"
+      ],
+      "casualties": [],
+      "summary": "\"ليبانون ديبايت\": مصدر مختص يوضح أن الهزة التي شعر بها سكان بعلبك وضواحيها ناجمة عن تفجير صخري في منطقة الجمالية، نافياً صحة الشائعات المتداولة\nhttps://lbdb.co/735611"
+    }
+  },
+  {
+    "incident_type": "terrorist attack involving a car and explosives on beaches",
+    "location": "بيروت",
+    "coordinates": [
+      35.4995749,
+      33.8718663
+    ],
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214999,
+    "date": "2025-08-24 17:26:41+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "4",
+        "0",
+        "24",
+        "2025",
+        "08",
+        "25"
+      ],
+      "casualties": [],
+      "summary": "برّاك على مَرمى حجر، والسفير \"الجوّال\" بين الساحات استقرَّ به المقامُ اليوم في تل أبيب، قبلَ عودتِه إلى بيروت حاملاً في حقيبتِه \"صخرة سيزيف\" الذي عاقبَهُ إلهُ الموت بأن يَحمِلَ صخرةً من أسفلِ الجبل إلى أعلاه، فإذا وَصلَ إلى القمة تَدحرجت إلى الوادي.. فيعود ويرفعُها إلى القمة.. https://t.co/XD4xLvPg0..."
+    }
   }
 ]
