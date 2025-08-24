@@ -8265,5 +8265,24 @@
       "casualties": [],
       "summary": "علقوا على صخرة في عمشيت... ما مصيرهم؟https://t.co/pDOdL91SM2\n https://twitter.com/MTVLebanonNews/status/1959656900926070965\nAugust 24, 2025 at 07:39PM"
     }
+  },
+  {
+    "incident_type": "Security Alerts and Demonstrations in Tripoli",
+    "location": "غزة",
+    "coordinates": [
+      35.8276513,
+      33.6711831
+    ],
+    "channel": "lebanonnews2",
+    "message_id": 87393,
+    "date": "2025-08-24 16:57:35+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "🔴عضو المكتب السياسي لأنصار الله، محمد البخيتي: عمليات الإسناد لإخواننا في غزة مستمرة رغم أي تضحيات\n\nالضربات الصهيونية لن تؤثر بموقفنا وسنقابل التصعيد بالتصعيد\n\n\n\nhttps://telegram.me/lebanonnews2"
+    }
   }
 ]

@@ -270,13 +270,21 @@ async def phi3_worker(matches, existing_ids):
                 # fallback to Phi3
                 phi3_res = query_phi3_json(text)
                 if not phi3_res:
-                    continue
-                itype = phi3_res.get("incident_type")
-                if itype and itype != "other":
-                    if isinstance(itype, list):
-                        incident_types = itype
-                    else:
-                        incident_types = [itype]
+                    continue  # skip non-incident
+
+                raw_type = phi3_res.get("incident_type", "").lower().strip()
+                allowed_types = set(IK.incident_keywords.keys())
+
+                if raw_type in allowed_types:
+                    incident_types = [raw_type]
+                elif raw_type:
+                    incident_types = ["other"]  # new but still an incident
+                else:
+                    continue  # not an incident → skip
+
+            # Ensure always a list
+            if isinstance(incident_types, str):
+                incident_types = [incident_types]
 
             if not incident_types:
                 continue
@@ -332,6 +340,7 @@ async def phi3_worker(matches, existing_ids):
 
         finally:
             message_queue.task_done()  # only here!
+
 
 # -----------------------------
 # Telegram login
