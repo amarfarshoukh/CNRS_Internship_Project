@@ -255,7 +255,7 @@ async def phi3_worker(matches, existing_ids):
             msg_id = event.id
 
             if (channel_name, msg_id) in existing_ids:
-                continue  # no task_done here, finally will handle it
+                continue  # already processed
 
             # --- Location detection
             has_kw = any(kw in normalize_arabic(text) for kw in LOCATION_KEYWORDS)
@@ -270,25 +270,25 @@ async def phi3_worker(matches, existing_ids):
                 # fallback to Phi3
                 phi3_res = query_phi3_json(text)
                 if not phi3_res:
-                    continue  # skip non-incident
+                    continue
+                itype = phi3_res.get("incident_type")
+                if itype:
+                    if isinstance(itype, list):
+                        incident_types = itype
+                    else:
+                        incident_types = [itype]
 
-                raw_type = str(phi3_res.get("incident_type", "")).lower().strip()
-                allowed_types = set(IK.incident_keywords.keys())
-
-                if raw_type in allowed_types:
-                    incident_types = [raw_type]
-                elif raw_type:  
-                    # if Phi3 says it's an incident but not in our list → classify as "other"
-                    incident_types = ["other"]
-                else:
-                    continue  # not an incident → skip
-
-            # Ensure always a list
+            # Ensure list
             if isinstance(incident_types, str):
                 incident_types = [incident_types]
 
-            # --- Only allow incident_types that are in our schema or "other"
-            incident_types = [itype for itype in incident_types if itype in IK.incident_keywords or itype == "other"]
+            # --- Normalize & validate incident types
+            incident_types = [itype.strip().lower() for itype in incident_types]
+
+            allowed_types = set(IK.incident_keywords.keys()) | {"other"}
+
+            # Replace unknowns with "other"
+            incident_types = [itype if itype in allowed_types else "other" for itype in incident_types]
 
             if not incident_types:
                 continue
@@ -306,7 +306,7 @@ async def phi3_worker(matches, existing_ids):
                     "channel": channel_name,
                     "message_id": msg_id,
                     "date": str(event.date),
-                    "threat_level": "yes",  # default, or override with Phi3 if available
+                    "threat_level": "yes",  # default
                     "details": {
                         "numbers_found": numbers,
                         "casualties": casualties,
@@ -314,7 +314,7 @@ async def phi3_worker(matches, existing_ids):
                     }
                 }
 
-                # --- Deduplicate (same type/location/day)
+                # --- Deduplicate
                 date_prefix = record["date"][:10]
                 similar_records = [
                     m for m in matches
@@ -340,7 +340,7 @@ async def phi3_worker(matches, existing_ids):
                 print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
 
             existing_ids.add((channel_name, msg_id))
-            save_matches(matches)
+            save_matches(matches)  # <-- should now always save
 
         finally:
             message_queue.task_done()  # only here!
