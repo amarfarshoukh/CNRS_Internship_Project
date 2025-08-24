@@ -151,6 +151,17 @@ class IncidentKeywords:
 IK = IncidentKeywords()
 
 # -----------------------------
+# Helper: check for incident keywords
+# -----------------------------
+def find_incident_type(text, incident_keywords):
+    norm_text = normalize_arabic(text)
+    for inc_type, keywords in incident_keywords.items():
+        for kw in keywords:
+            if kw in norm_text:
+                return inc_type
+    return None
+
+# -----------------------------
 # Robust Phi3 JSON Extractor
 # -----------------------------
 def robust_json_extract(text):
@@ -263,17 +274,24 @@ async def phi3_worker(matches, existing_ids):
             if not location or not coordinates:
                 continue
 
-            phi3_res = query_phi3_json(text)
-            if not phi3_res:
-                continue
+            # Priority: check incident_keywords first
+            incident_type = find_incident_type(text, IK.incident_keywords)
 
-            incident_type = phi3_res.get("incident_type")
-            if not incident_type or incident_type == "other":
-                continue
+            if incident_type:
+                # Use extracted incident_type, no Phi3 call
+                threat_level = "yes"  # Or implement your own logic if needed
+            else:
+                # Fallback to Phi3 for incident type extraction
+                phi3_res = query_phi3_json(text)
+                if not phi3_res:
+                    continue
+                incident_type = phi3_res.get("incident_type")
+                if not incident_type or incident_type == "other":
+                    continue
+                threat_level = phi3_res.get("threat_level", "yes")
 
-            threat_level = phi3_res.get("threat_level", "yes")
-            numbers = phi3_res.get("numbers") or IK.extract_numbers(text)
-            casualties = phi3_res.get("casualties") or IK.extract_casualties(text)
+            numbers = IK.extract_numbers(text)
+            casualties = IK.extract_casualties(text)
             summary = text[:300] + ("..." if len(text) > 300 else "")
 
             record = {

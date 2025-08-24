@@ -7769,5 +7769,26 @@
       ],
       "summary": "التحكم المروري: جريح في انقلاب سيارة على أوتوستراد الرميلة باتجاه الدامور ودراج من مفرزة سير بعبدا يعمل على المعالجة https://t.co/YbTZQOFJy0\n https://twitter.com/MTVLebanonNews/status/1958998004490543598\nAugust 23, 2025 at 12:01AM"
     }
+  },
+  {
+    "incident_type": "Protest/unrest incident",
+    "location": "بيروت",
+    "coordinates": [
+      35.4995749,
+      33.8718663
+    ],
+    "channel": "testingammoura",
+    "message_id": 32,
+    "date": "2025-08-24 11:30:03+00:00",
+    "threat_level": "Moderate to High (based on historical context of protests in the city)",
+    "details": {
+      "numbers_found": [
+        3
+      ],
+      "casualties": [
+        "Minor injuries reported"
+      ],
+      "summary": "حادث في بيروت"
+    }
   }
 ]
