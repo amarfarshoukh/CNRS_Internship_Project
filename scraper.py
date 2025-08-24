@@ -337,7 +337,7 @@ async def get_my_channels(client):
 # -----------------------------
 async def main():
     client = TelegramClient('session', api_id, api_hash)
-    await client.start()  # handles connection & authorization
+    await client.start()
     await qr_login(client)
     channels = await get_my_channels(client)
     channel_ids = [c.id for c in channels]
@@ -361,3 +361,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+    
