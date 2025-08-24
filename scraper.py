@@ -272,19 +272,23 @@ async def phi3_worker(matches, existing_ids):
                 if not phi3_res:
                     continue  # skip non-incident
 
-                raw_type = phi3_res.get("incident_type", "").lower().strip()
+                raw_type = str(phi3_res.get("incident_type", "")).lower().strip()
                 allowed_types = set(IK.incident_keywords.keys())
 
                 if raw_type in allowed_types:
                     incident_types = [raw_type]
-                elif raw_type:
-                    incident_types = ["other"]  # new but still an incident
+                elif raw_type:  
+                    # if Phi3 says it's an incident but not in our list → classify as "other"
+                    incident_types = ["other"]
                 else:
                     continue  # not an incident → skip
 
             # Ensure always a list
             if isinstance(incident_types, str):
                 incident_types = [incident_types]
+
+            # --- Only allow incident_types that are in our schema or "other"
+            incident_types = [itype for itype in incident_types if itype in IK.incident_keywords or itype == "other"]
 
             if not incident_types:
                 continue
@@ -310,7 +314,7 @@ async def phi3_worker(matches, existing_ids):
                     }
                 }
 
-                # --- Deduplicate
+                # --- Deduplicate (same type/location/day)
                 date_prefix = record["date"][:10]
                 similar_records = [
                     m for m in matches
