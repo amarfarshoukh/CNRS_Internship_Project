@@ -151,28 +151,53 @@ class IncidentKeywords:
 IK = IncidentKeywords()
 
 # -----------------------------
-# Phi3 JSON query (fixed)
+# Robust Phi3 JSON Extractor
+# -----------------------------
+def robust_json_extract(text):
+    # Remove markdown code block markers
+    text = re.sub(r'```json|```', '', text).strip()
+    # Remove triple quotes if present
+    text = re.sub(r'^"{3,}', '', text).strip()
+    text = re.sub(r'"{3,}$', '', text).strip()
+    # Remove any lines that start with // (comments)
+    lines = text.splitlines()
+    lines = [line for line in lines if not line.strip().startswith("//")]
+    text = "\n".join(lines)
+    # Find the first and last curly brace
+    start = text.find('{')
+    end = text.rfind('}')
+    if start != -1 and end != -1 and end > start:
+        json_str = text[start:end+1]
+        try:
+            return json.loads(json_str)
+        except Exception:
+            try:
+                # fallback: safely evaluate literal JSON-like dict
+                return ast.literal_eval(json_str)
+            except Exception as e:
+                print("Phi3 returned invalid JSON after cleanup:", json_str)
+                return None
+    print("Could not find JSON object in:", text)
+    return None
+
+# -----------------------------
+# Phi3 JSON query (strict prompt)
 # -----------------------------
 def query_phi3_json(message: str):
     prompt = f"""
-You are a strict Arabic incident analysis assistant.
-Return ONLY valid JSON with these fields:
-- "location": Lebanese location or "Unknown / Outside Lebanon"
-- "incident_type": one of ["vehicle_accident", "shooting", "protest", "fire", "natural_disaster", "airstrike", "collapse", "pollution", "epidemic", "medical", "explosion", "other"]
-- "threat_level": "yes" or "no"
-- "casualties": array of Arabic keywords (e.g., قتيل, جريح, مفقود), or empty array if none
-- "numbers": array of numbers found, or empty array if none
+You are an incident analysis assistant.
+Return ONLY valid JSON. Do NOT include any explanations, comments, or markdown (no code blocks, no // comments, no extra notes).
+Just output a single JSON object like:
+{{"location": ..., "incident_type": ..., "threat_level": ..., "casualties": [...], "numbers": [...]}}
 
 Message: "{message}"
 
 Rules:
 - Only consider incidents inside Lebanon
 - Detect incident type using Arabic keywords first; if detected, keep it
-- Never include explanations or extra text outside JSON
-- Always use double quotes
+- Never include explanations or any extra text outside JSON
+- Always use double quotes for keys and string values
 - If location cannot be determined in Lebanon, use "Unknown / Outside Lebanon"
-
-Respond ONLY with JSON.
 """
 
     try:
@@ -184,24 +209,7 @@ Respond ONLY with JSON.
             timeout=PHI3_TIMEOUT
         )
         text = res.stdout.decode("utf-8", errors="ignore").strip()
-
-        # Extract JSON from the output
-        m = re.search(r"\{.*\}", text, flags=re.DOTALL)
-        if m:
-            json_str = m.group()
-            try:
-                return json.loads(json_str)  # primary attempt
-            except json.JSONDecodeError:
-                # fallback: safely evaluate literal JSON-like dict
-                try:
-                    return ast.literal_eval(json_str)
-                except:
-                    print("Phi3 returned invalid JSON:", json_str)
-                    return None
-        else:
-            print("Phi3 did not return JSON:", text)
-            return None
-
+        return robust_json_extract(text)
     except Exception as e:
         print("Phi3 call failed:", e)
         return None
@@ -264,7 +272,7 @@ async def phi3_worker(matches, existing_ids):
                 continue
 
             threat_level = phi3_res.get("threat_level", "yes")
-            numbers = phi3_res.get("numbers_found") or IK.extract_numbers(text)
+            numbers = phi3_res.get("numbers") or IK.extract_numbers(text)
             casualties = phi3_res.get("casualties") or IK.extract_casualties(text)
             summary = text[:300] + ("..." if len(text) > 300 else "")
 
@@ -361,4 +369,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-    
