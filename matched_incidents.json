@@ -8192,5 +8192,78 @@
       ],
       "summary": "تعاني من الزهايمر.. قوى الأمن تعمّم صورة مفقودة في صيدا ⬇️https://t.co/lSeJfQ5ZH3\n https://twitter.com/ALJADEEDNEWS/status/1959650819726586364\nAugust 24, 2025 at 07:15PM"
     }
+  },
+  {
+    "incident_type": "Disappearance of security forces",
+    "location": "صيدا",
+    "coordinates": [
+      35.3780338,
+      33.5618345
+    ],
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214989,
+    "date": "2025-08-24 16:21:14+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "5",
+        "947",
+        "24",
+        "2025",
+        "07",
+        "17"
+      ],
+      "casualties": [
+        "missing"
+      ],
+      "summary": "تعاني من الزهايمر.. قوى الأمن تعمّم صورة مفقودة في صيدا ⬇️https://t.co/lSeJfQ5rRv https://t.co/lDVL947IND\n https://twitter.com/ALJADEEDNEWS/status/1959651220752130238\nAugust 24, 2025 at 07:17PM"
+    }
+  },
+  {
+    "incident_type": "Rescue operation after a woman fell into the sea in Sidon.",
+    "location": "السيدة",
+    "coordinates": [
+      35.6753941,
+      33.8923457
+    ],
+    "channel": "-1001273314564",
+    "message_id": 279237,
+    "date": "2025-08-24 16:27:36+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "8",
+        "24",
+        "2025",
+        "07",
+        "26"
+      ],
+      "casualties": [],
+      "summary": "بعد فقدانها في صيدا... العثور على السيدة إلهام خروزhttps://t.co/VHnkhO8Hon\n https://twitter.com/MTVLebanonNews/status/1959653541439816132\nAugust 24, 2025 at 07:26PM"
+    }
+  },
+  {
+    "incident_type": "هندسة",
+    "location": "صخرة",
+    "coordinates": [
+      35.9205023,
+      34.3606036
+    ],
+    "channel": "MTVLebanonNews",
+    "message_id": 279238,
+    "date": "2025-08-24 16:42:12+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "91",
+        "2",
+        "24",
+        "2025",
+        "07",
+        "39"
+      ],
+      "casualties": [],
+      "summary": "علقوا على صخرة في عمشيت... ما مصيرهم؟https://t.co/pDOdL91SM2\n https://twitter.com/MTVLebanonNews/status/1959656900926070965\nAugust 24, 2025 at 07:39PM"
+    }
   }
 ]
