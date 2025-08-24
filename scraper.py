@@ -255,40 +255,36 @@ async def phi3_worker(matches, existing_ids):
             msg_id = event.id
 
             if (channel_name, msg_id) in existing_ids:
-                # Already processed → skip
-                continue
+                continue  # skip already processed messages
 
             # --- Location detection
             has_kw = any(kw in normalize_arabic(text) for kw in LOCATION_KEYWORDS)
             location, coordinates = detect_location(text) if has_kw else (None, None)
             if not location or not coordinates:
-                continue
+                continue  # skip if no valid location
 
             # --- Incident type detection
             incident_types = find_incident_types(text, IK.incident_keywords)
+
             if not incident_types:
+                # fallback to Phi3 if no keywords found
                 phi3_res = query_phi3_json(text)
-                if phi3_res:
-                    itype = phi3_res.get("incident_type")
-                    if isinstance(itype, str):
-                        incident_types = [itype]
-                    elif isinstance(itype, list):
+                if not phi3_res:
+                    continue
+                itype = phi3_res.get("incident_type")
+                if itype and itype != "other":
+                    if isinstance(itype, list):
                         incident_types = itype
+                    else:
+                        incident_types = [itype]
 
             if not incident_types:
-                continue
+                continue  # skip if still no incident type
 
-            # --- Normalize incident types
-            allowed_types = set(IK.incident_keywords.keys()) | {"other"}
-            incident_types = [itype.strip().lower() for itype in incident_types]
-            incident_types = [itype if itype in allowed_types else "other" for itype in incident_types]
-
-            # --- Common fields
+            # --- Extract numbers and casualties
             numbers = IK.extract_numbers(text)
             casualties = IK.extract_casualties(text)
             summary = text[:300] + ("..." if len(text) > 300 else "")
-
-            new_records = []
 
             for incident_type in incident_types:
                 record = {
@@ -298,7 +294,7 @@ async def phi3_worker(matches, existing_ids):
                     "channel": channel_name,
                     "message_id": msg_id,
                     "date": str(event.date),
-                    "threat_level": "yes",
+                    "threat_level": "yes",  # default, can override with Phi3 if needed
                     "details": {
                         "numbers_found": numbers,
                         "casualties": casualties,
@@ -306,38 +302,16 @@ async def phi3_worker(matches, existing_ids):
                     }
                 }
 
-                # Deduplication
-                date_prefix = record["date"][:10]
-                similar_records = [
-                    m for m in matches
-                    if m.get('incident_type') == record['incident_type']
-                    and m.get('location') == record['location']
-                    and m.get('date', '')[:10] == date_prefix
-                ]
-
-                if similar_records:
-                    similar_records.append(record)
-                    best_record = select_best_message(similar_records)
-                    matches[:] = [
-                        m for m in matches if not (
-                            m.get('incident_type') == record['incident_type']
-                            and m.get('location') == record['location']
-                            and m.get('date', '')[:10] == date_prefix
-                        )
-                    ]
-                    matches.append(best_record)
-                else:
+                # --- Only skip duplicates by message_id
+                if not any(m.get("message_id") == msg_id for m in matches):
                     matches.append(record)
+                    print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
+                    save_matches(matches)  # save immediately
 
-                new_records.append(record)
-                print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
-
-            if new_records:
-                existing_ids.add((channel_name, msg_id))
-                save_matches(matches)   # ✅ only save when something was added
+            existing_ids.add((channel_name, msg_id))
 
         finally:
-            message_queue.task_done()
+            message_queue.task_done()  # ensure queue task is marked done
 
 
 # -----------------------------
