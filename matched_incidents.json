@@ -3606,24 +3606,5 @@
       "casualties": [],
       "summary": "أخبار جديدة في البترون: حريق"
     }
-  },
-  {
-    "incident_type": "Striking without permission and disobedience of commands",
-    "location": "بلا",
-    "coordinates": [
-      35.8918324,
-      34.2652671
-    ],
-    "channel": "lebanondebate",
-    "message_id": 143785,
-    "date": "2025-08-25 06:29:11+00:00",
-    "threat_level": "yes",
-    "details": {
-      "numbers_found": [
-        "735715"
-      ],
-      "casualties": [],
-      "summary": "لا سلام بلا حياد أوكرانيا وخروجها من الناتو موسكو تجدد شروطها"
-    }
   }
 ]
