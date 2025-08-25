@@ -3666,5 +3666,46 @@
       "casualties": [],
       "summary": "أمل و حزب الله : وقفة احتجاجية في رياض الصلح الأربعاء تأكيدا لمكانة المقاومة وسلاحهاLBCINews August 25, 2025 at 10:06AM"
     }
+  },
+  {
+    "incident_type": "protest",
+    "location": "وزارة المالية",
+    "coordinates": [
+      35.50367928,
+      33.89585272
+    ],
+    "channel": "testingammoura",
+    "message_id": 82,
+    "date": "2025-08-25 07:30:15+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "احتجاجات قرب وزارة المالية"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "ALJADEED_NEWS",
+    "message_id": 215033,
+    "date": "2025-08-25 07:31:20+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "55",
+        "7",
+        "25",
+        "2025",
+        "10",
+        "23"
+      ],
+      "casualties": [],
+      "summary": "خيام النازحين تتكدس على الشاطىء وسط القصف المتواصل فيديو يظهر تكدس خيام النازحين على شاطئ بحر مدينة غزة، مع استمرار قصف ونسف الجيش الإسرائيلي للأحياء السكنية في المدينة. أخبارالجديد August 25, 2025 at 10:23AM"
+    }
   }
 ]

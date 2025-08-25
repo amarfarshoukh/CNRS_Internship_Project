@@ -122,7 +122,7 @@ def detect_location(text):
     text_norm = normalize_arabic(text)
     words = text_norm.split()
 
-    # --- Try full multi-word map matches first
+    # --- Step 1: Multi-word location matches
     for loc_norm, loc_data in ALL_LOCATIONS.items():
         loc_words = loc_norm.split()
         if len(loc_words) > 1:  # multi-word only
@@ -130,13 +130,13 @@ def detect_location(text):
                 if words[i:i+len(loc_words)] == loc_words:
                     return loc_data["original"], loc_data["coordinates"]
 
-    # --- Then try single-word map matches if no multi-word matched
+    # --- Step 2: Single-word location matches (only if no multi-word matched)
     for loc_norm, loc_data in ALL_LOCATIONS.items():
         loc_words = loc_norm.split()
         if len(loc_words) == 1 and loc_words[0] in words:
             return loc_data["original"], loc_data["coordinates"]
 
-    # --- Finally fallback to keywords (optional)
+    # --- Optional fallback: keyword-based detection
     for kw in LOCATION_KEYWORDS:
         if kw in text_norm:
             for loc_norm, loc_data in ALL_LOCATIONS.items():
@@ -144,7 +144,6 @@ def detect_location(text):
                     return loc_data["original"], loc_data["coordinates"]
 
     return None, None
-
 
 # -----------------------------
 # Incident keywords
