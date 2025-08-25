@@ -114,32 +114,35 @@ def detect_location_from_map(text_norm):
                 return loc_data["original"], loc_data["coordinates"]
     return None, None
 
-
 def detect_location(text):
     """
-    Detect location strictly from the map first (multi-word preferred),
-    fallback to LOCATION_KEYWORDS only if no map match is found.
-    Returns: (original_location_name, coordinates) or (None, None)
+    Strict map-first location detection.
+    Only accept full matches of multi-word locations from the map.
     """
     text_norm = normalize_arabic(text)
-    
-    # --- 1. Try to match multi-word locations from the map
     words = text_norm.split()
+
+    # --- Try full multi-word map matches first
     for loc_norm, loc_data in ALL_LOCATIONS.items():
         loc_words = loc_norm.split()
-        for i in range(len(words) - len(loc_words) + 1):
-            if words[i:i+len(loc_words)] == loc_words:
-                return loc_data["original"], loc_data["coordinates"]
+        if len(loc_words) > 1:  # multi-word only
+            for i in range(len(words) - len(loc_words) + 1):
+                if words[i:i+len(loc_words)] == loc_words:
+                    return loc_data["original"], loc_data["coordinates"]
 
-    # --- 2. Fallback: check for general LOCATION_KEYWORDS in text
+    # --- Then try single-word map matches if no multi-word matched
+    for loc_norm, loc_data in ALL_LOCATIONS.items():
+        loc_words = loc_norm.split()
+        if len(loc_words) == 1 and loc_words[0] in words:
+            return loc_data["original"], loc_data["coordinates"]
+
+    # --- Finally fallback to keywords (optional)
     for kw in LOCATION_KEYWORDS:
         if kw in text_norm:
-            # If keyword found, try to match map again
             for loc_norm, loc_data in ALL_LOCATIONS.items():
                 if loc_norm.startswith(kw) or kw in loc_norm:
                     return loc_data["original"], loc_data["coordinates"]
 
-    # --- 3. Nothing found
     return None, None
 
 
