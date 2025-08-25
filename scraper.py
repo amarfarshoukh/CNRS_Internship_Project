@@ -191,10 +191,9 @@ IK = IncidentKeywords()
 # -----------------------------
 # Incident detection helper (multi)
 # -----------------------------
-# -----------------------------
-# Incident detection helper (multi) - updated
-# -----------------------------
 def find_incident_types(text, incident_keywords):
+    if not text:
+        return []
     norm_text = normalize_arabic(text)
     found = []
     for inc_type, keywords in incident_keywords.items():
@@ -204,9 +203,12 @@ def find_incident_types(text, incident_keywords):
     return list(set(found))
 
 # -----------------------------
-# Robust Phi3 JSON Extractor - updated
+# Robust Phi3 JSON Extractor
 # -----------------------------
 def robust_json_extract(text):
+    if not text:
+        return None
+        
     text = re.sub(r'```json|```', '', text).strip()
     text = re.sub(r'^"{3,}', '', text).strip()
     text = re.sub(r'"{3,}$', '', text).strip()
@@ -218,7 +220,7 @@ def robust_json_extract(text):
     json_str = text[start:end+1]
     # remove comments or trailing commas
     json_str = re.sub(r'//.*', '', json_str)
-    json_str = re.sub(r',(?![^{}]*\})[^\n]*', ',', json_str)
+    json_str = re.sub(r',\s*([}\]])', r'\1', json_str)  # Remove trailing commas
     try:
         data = json.loads(json_str)
         # Always make incident_type a list
@@ -231,15 +233,17 @@ def robust_json_extract(text):
         if "threat_level" in data and data["threat_level"] not in ["yes", "no"]:
             data["threat_level"] = "yes"
         return data
-    except Exception:
-        print("Phi3 returned invalid JSON after cleanup:", json_str)
+    except Exception as e:
+        print(f"Phi3 returned invalid JSON after cleanup: {json_str}, error: {e}")
         return None
-
 
 # -----------------------------
 # Phi3 JSON query
 # -----------------------------
 def query_phi3_json(message: str):
+    if not message:
+        return None
+        
     prompt = f"""
 You are an incident analysis assistant.
 Return ONLY valid JSON. Do NOT include any explanations.
@@ -270,31 +274,34 @@ def load_existing_matches(path=OUTPUT_FILE):
         try:
             with open(path, 'r', encoding='utf-8') as f:
                 return json.load(f)
-        except Exception:
+        except Exception as e:
+            print(f"Error loading existing matches: {e}")
             return []
     return []
 
 def save_matches(matches, path=OUTPUT_FILE):
-    with open(path, 'w', encoding='utf-8') as f:
-        json.dump(matches, f, ensure_ascii=False, indent=2)
+    try:
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(matches, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"Error saving matches: {e}")
 
 # -----------------------------
 # Deduplication
 # -----------------------------
 def select_best_message(records):
+    if not records:
+        return None
     records.sort(key=lambda m: (
-        len(m['details'].get('numbers_found', [])) +
-        len(m['details'].get('casualties', [])) +
-        len(m['details'].get('summary', ''))
+        len(m.get('details', {}).get('numbers_found', [])) +
+        len(m.get('details', {}).get('casualties', [])) +
+        len(m.get('details', {}).get('summary', ''))
     ), reverse=True)
     return records[0]
 
-
 # -----------------------------
-# Phi3 worker queue (multi-incident) - updated
+# Clean summary helper
 # -----------------------------
-message_queue = asyncio.Queue()
-# --- Add this helper at the top of your file ---
 def clean_summary(text: str) -> str:
     if not text:
         return ""
@@ -315,13 +322,15 @@ def clean_summary(text: str) -> str:
 
     return text
 
+# -----------------------------
+# Phi3 worker queue (multi-incident)
+# -----------------------------
+message_queue = asyncio.Queue()
 
-# --- Updated phi3_worker ---
-# --- Updated robust phi3_worker ---
 async def phi3_worker(matches, existing_ids):
     while True:
-        event = await message_queue.get()
         try:
+            event = await message_queue.get()
             text = event.raw_text or ""
             channel_name = (
                 event.chat.username if event.chat and getattr(event.chat, 'username', None)
@@ -330,6 +339,7 @@ async def phi3_worker(matches, existing_ids):
             msg_id = event.id
 
             if (channel_name, msg_id) in existing_ids:
+                message_queue.task_done()
                 continue  # skip already processed messages
 
             # --- Location detection using your map first
@@ -372,7 +382,6 @@ async def phi3_worker(matches, existing_ids):
                                     loc_candidates.append(loc_val)
 
                         # Strict Phi3 location validation: only accept if text mentions it
-                       
                         for loc in loc_candidates:
                             loc_norm = normalize_arabic(loc)
                             if loc_norm in ALL_LOCATIONS:
@@ -391,6 +400,7 @@ async def phi3_worker(matches, existing_ids):
             # --- Skip if no incident type or valid map location
             if not incident_types or not location or not coordinates:
                 print(f"[SKIP] {text[:50]}... (no valid incident/location)")
+                message_queue.task_done()
                 continue
 
             # --- Extract numbers and casualties
@@ -427,6 +437,8 @@ async def phi3_worker(matches, existing_ids):
 
             existing_ids.add((channel_name, msg_id))
 
+        except Exception as e:
+            print(f"Error processing message: {e}")
         finally:
             message_queue.task_done()
 
@@ -464,7 +476,10 @@ async def main():
     matches = load_existing_matches()
     existing_ids = {(m.get('channel'), m.get('message_id')) for m in matches}
 
-    asyncio.create_task(phi3_worker(matches, existing_ids))
+    # Start multiple workers for better performance
+    workers = []
+    for _ in range(3):  # Start 3 workers
+        workers.append(asyncio.create_task(phi3_worker(matches, existing_ids)))
 
     @client.on(events.NewMessage(chats=channel_ids))
     async def handler(event):
@@ -472,10 +487,19 @@ async def main():
 
     print("Started monitoring. Waiting for new messages...")
     try:
-        while True:
-            await asyncio.sleep(1)
+        await asyncio.gather(*workers)
+    except asyncio.CancelledError:
+        print("Shutting down...")
     finally:
+        # Cancel all worker tasks
+        for worker in workers:
+            worker.cancel()
+        # Wait for all tasks to complete
+        await asyncio.gather(*workers, return_exceptions=True)
         await client.disconnect()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("Interrupted by user")
