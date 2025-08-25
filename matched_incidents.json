@@ -3533,6 +3533,23 @@
     }
   },
   {
+    "incident_type": "pollution",
+    "location": "الهرمل",
+    "coordinates": [
+      36.3889577,
+      34.3973279
+    ],
+    "channel": "testingammoura",
+    "message_id": 78,
+    "date": "2025-08-25 06:19:59+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "اعتداء بيئي في الهرمل ... ووزارة الزراعة تتحرك"
+    }
+  },
+  {
     "incident_type": "vehicle_accident",
     "location": "جديدة",
     "coordinates": [
@@ -3571,6 +3588,42 @@
       "numbers_found": [],
       "casualties": [],
       "summary": "اعتداء بيئي في الهرمل... ووزارة الزراعة تتحرك"
+    }
+  },
+  {
+    "incident_type": "fire",
+    "location": "البترون",
+    "coordinates": [
+      35.6588567,
+      34.2548879
+    ],
+    "channel": "testingammoura",
+    "message_id": 81,
+    "date": "2025-08-25 06:27:57+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "أخبار جديدة في البترون: حريق"
+    }
+  },
+  {
+    "incident_type": "Striking without permission and disobedience of commands",
+    "location": "بلا",
+    "coordinates": [
+      35.8918324,
+      34.2652671
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143785,
+    "date": "2025-08-25 06:29:11+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "735715"
+      ],
+      "casualties": [],
+      "summary": "لا سلام بلا حياد أوكرانيا وخروجها من الناتو موسكو تجدد شروطها"
     }
   }
 ]
