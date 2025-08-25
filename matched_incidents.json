@@ -3514,5 +3514,63 @@
       ],
       "summary": "ورد الآن التحكم المروري: إنقلاب سيارة على أوتوستراد الرميلة باتجاه الدامور نتج عنه جريح ودراج من مفرزة سير بعبدا يعمل على المعالجة"
     }
+  },
+  {
+    "incident_type": "pollution",
+    "location": "الهرمل",
+    "coordinates": [
+      36.3889577,
+      34.3973279
+    ],
+    "channel": "testingammoura",
+    "message_id": 76,
+    "date": "2025-08-25 06:19:32+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "اعتداء بيئي في الهرمل"
+    }
+  },
+  {
+    "incident_type": "pollution",
+    "location": "الهرمل",
+    "coordinates": [
+      36.3889577,
+      34.3973279
+    ],
+    "channel": "testingammoura",
+    "message_id": 78,
+    "date": "2025-08-25 06:19:59+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "اعتداء بيئي في الهرمل ... ووزارة الزراعة تتحرك"
+    }
+  },
+  {
+    "incident_type": "vehicle_accident",
+    "location": "جديدة",
+    "coordinates": [
+      35.8981976,
+      34.3654824
+    ],
+    "channel": "ALJADEED_NEWS",
+    "message_id": 215027,
+    "date": "2025-08-25 06:21:40+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "0",
+        "7",
+        "25",
+        "2025",
+        "09",
+        "18"
+      ],
+      "casualties": [],
+      "summary": "جولة جديدة من المحادثات الإيرانية - الأوروبية في جنيف August 25, 2025 at 09:18AM"
+    }
   }
 ]

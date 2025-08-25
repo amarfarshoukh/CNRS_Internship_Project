@@ -104,13 +104,16 @@ print(f"Loaded {len(ALL_LOCATIONS)} Arabic locations from GeoJSON folder")
 # Location detection
 # -----------------------------
 def detect_location_from_map(text_norm):
-    words = text_norm.split()
+    # Remove punctuation around words for robust matching
+    words = re.sub(r'[^\wء-ي]+', ' ', text_norm).split()
+    
     for loc_norm, loc_data in ALL_LOCATIONS.items():
-        loc_words = loc_norm.split()
+        loc_words = re.sub(r'[^\wء-ي]+', ' ', loc_norm).split()
         for i in range(len(words) - len(loc_words) + 1):
             if words[i:i+len(loc_words)] == loc_words:
                 return loc_data["original"], loc_data["coordinates"]
     return None, None
+
 
 def detect_location(text):
     text_norm = normalize_arabic(text)
