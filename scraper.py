@@ -298,76 +298,85 @@ async def phi3_worker(matches, existing_ids):
         event = await message_queue.get()
         try:
             text = event.raw_text or ""
-            channel_name = event.chat.username if getattr(event.chat, 'username', None) else str(event.chat_id)
+            channel_name = (
+                event.chat.username if event.chat and getattr(event.chat, 'username', None)
+                else str(event.chat_id)
+            )
             msg_id = event.id
 
             if (channel_name, msg_id) in existing_ids:
-                continue
+                continue  # skip already processed messages
 
-            # --- Detect location from map first
+            # --- Location detection using your map first
             location, coordinates = detect_location(text)
 
-            # --- Incident type keywords
+            # --- Incident type detection (keywords first)
             incident_types = find_incident_types(text, IK.incident_keywords)
 
-            # --- Fallback to Phi3 if needed
+            # --- Fallback to Phi3 if keywords fail
+            phi3_res = None
             if not incident_types or not location:
                 phi3_res = query_phi3_json(text)
-                if phi3_res:
-                    # Incident type
+
+                # --- Incident type from Phi3
+                if not incident_types and phi3_res:
                     itype = phi3_res.get("incident_type")
-                    if itype:
+                    if itype and itype != "other":
                         if isinstance(itype, list):
                             incident_types = [i for i in itype if i != "other"]
                         else:
-                            incident_types = [itype] if itype != "other" else []
+                            incident_types = [itype]
 
-                    # Location fallback
-                    if not location:
-                        location = phi3_res.get("location")
-                        coordinates = phi3_res.get("coordinates")
+                # --- Location from Phi3 but only if exists in your map
+                if not location and phi3_res:
+                    phi3_loc = phi3_res.get("location")
+                    if phi3_loc:
+                        loc_norm = normalize_arabic(phi3_loc)
+                        if loc_norm in ALL_LOCATIONS:
+                            location = ALL_LOCATIONS[loc_norm]["original"]
+                            coordinates = ALL_LOCATIONS[loc_norm]["coordinates"]
 
-            # --- Skip only if still no location
-            if not location:
-                print(f"[SKIP] No location found: {text[:50]}...")
+            # --- Skip if no incident type or no valid location
+            if not incident_types or not location or not coordinates:
+                print(f"[SKIP] {text[:50]}... (no valid incident/location)")
                 continue
 
-            # --- Default "other" incident if none
-            if not incident_types:
-                incident_types = ["other"]
-
-            # --- Extract numbers/casualties
+            # --- Extract numbers and casualties
             numbers = IK.extract_numbers(text)
             casualties = IK.extract_casualties(text)
+
+            # --- Clean summary
             summary = clean_summary(text)
             if len(summary) > 300:
                 summary = summary[:300] + "..."
 
             for incident_type in incident_types:
-                incident = {
+                record = {
                     "incident_type": incident_type,
                     "location": location,
-                    "coordinates": coordinates or [],
+                    "coordinates": coordinates,
                     "channel": channel_name,
                     "message_id": msg_id,
                     "date": str(event.date),
-                    "threat_level": "yes" if incident_type != "other" else "no",
+                    "threat_level": "yes",  # default, can override with Phi3 if needed
                     "details": {
                         "numbers_found": numbers,
                         "casualties": casualties,
                         "summary": summary
                     }
                 }
-                if (channel_name, msg_id) not in existing_ids:
-                    matches.append(incident)
-                    save_matches(matches)
+
+                # --- Only skip duplicates by message_id
+                if not any(m.get("message_id") == msg_id for m in matches):
+                    matches.append(record)
                     print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
+                    save_matches(matches)  # save immediately
 
             existing_ids.add((channel_name, msg_id))
 
         finally:
+            # Ensure task_done is called exactly once per queue item
             message_queue.task_done()
-
 
 
 
