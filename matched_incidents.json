@@ -1,5 +1,1594 @@
 [
   {
+    "incident_type": "fire",
+    "location": "Gaza City, Gaza Strip/Occupied Palestinian Territory",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33322,
+    "date": "2025-08-18 15:15:40+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏رويترز: حماس أبلغت الوسطاء بموافقتها على أحدث مقترح لوقف إطلاق النار في غزة"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "العربية",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33323,
+    "date": "2025-08-18 16:26:14+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏رئيس حزب القوات اللبنانية سمير جعجع لـ\"العربية\": أتمنى تجاوب حزب الله مع حصر السلاح لتجنب اللجوء للقوة"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "بيروت",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33324,
+    "date": "2025-08-18 16:52:58+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏مصادر دبلوماسية للجديد: باراك وأورتاغس غادرا بيروت الى تل أبيب حيث سيتباحثان في الخطوات التي ستقوم بها اسرائيل مقابل استكمال الخطوات اللبنانية"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "جديد",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33325,
+    "date": "2025-08-18 17:01:05+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏معلومات الجديد: رئيس الجمهورية أصر على ضرورة تطمين البيئة الشيعية لاسيما بعد الازمة السياسية التي سببتها قرارات الحكومة الاخيرة"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "جديد",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33326,
+    "date": "2025-08-18 17:05:09+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏معلومات الجديد: قائد الجيش حريص على المؤسسة العسكرية ولن يدخلها في الازمات السياسية أو المذهبية لذلك سينجز الخطة ويحولها الى مجلس الوزراء على ان تطبق بعد حصول اجماع سياسي عليها"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "جديد",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33327,
+    "date": "2025-08-18 17:07:11+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏مصادر مقربة من الحزب للجديد: الحوار هو السبيل الوحيد للوصول الى الاستقرار في البلاد"
+    }
+  },
+  {
+    "incident_type": "roadblock",
+    "location": "Rosetta",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33329,
+    "date": "2025-08-18 19:09:10+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏ترامب: سنتوصل إلى حل للأزمة الروسية - الأوكرانية اليوم"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "جديد",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33331,
+    "date": "2025-08-19 08:27:10+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏مصدر حكومي لـ\" الجديد\": برّاك تعهّد أمس للرؤساء الثلاثة بالضغط على اسرائيل لتنفيذ بنود الورقة ولبنان ينتظر الرد بشأن ذلك"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "ماسا",
+    "channel": "lebanondebate",
+    "message_id": 142625,
+    "date": "2025-08-19 09:01:10+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "733797",
+        "2",
+        "733819",
+        "733825",
+        "733824",
+        "733806",
+        "733790"
+      ],
+      "casualties": [],
+      "summary": "مأساة في الزوق… عشرينية لقيت مصرعها تحت عجلات شاحنة!\nhttps://lbdb.co/733797\n\nفترة صعبة جداً سيمر بها لبنان... وخياران خطيران بعد 2 أيلول!\nhttps://lbdb.co/733819\n\nمستقبل أولادكم على المحك… الصرخة تعلو والاحتجاجات بدأت: هل تتحرّك الوزارة؟\nhttps://lbdb.co/733825\n\n\"فشلت في ضبط حزب الله\"... ساعر يطالب وا..."
+    }
+  },
+  {
+    "incident_type": "explosion",
+    "location": "Beirut, Lebanon",
+    "channel": "lebanondebate",
+    "message_id": 142626,
+    "date": "2025-08-19 09:04:07+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "733832"
+      ],
+      "casualties": [],
+      "summary": "\"حلّ مستدام يُغني عن اليونيفيل\"... خبير عسكري يكشف عن التهديد الحقيقي!\n\nhttps://lbdb.co/733832"
+    }
+  },
+  {
+    "incident_type": "other/conflict-related event not specified but suggested due to implications of international relations affecting government/public safety within mentioned locations",
+    "location": "Gaza Strip, Gaza City or West Bank areas affected by escalating tensions between Israel and Hamas as reported in the news mentioning Lebanon",
+    "channel": "lebanonNewsNow",
+    "message_id": 207220,
+    "date": "2025-08-19 09:09:02+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏🚨 ورد الآن / المتحدث باسم مفوضية الأمم المتحدة لحقوق الإنسان: كمية الإمدادات التي سمحت إسرائيل بإدخالها إلى غزة أقل بكثير مما هو مطلوب \n\n @lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "بعبدا",
+    "channel": "LBCI_NEWS",
+    "message_id": 251288,
+    "date": "2025-08-19 08:58:40+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "9",
+        "8",
+        "7",
+        "19",
+        "2025",
+        "11",
+        "53"
+      ],
+      "casualties": [],
+      "summary": "عطية من قصر بعبدا: لمست من الرئيس عون تفاؤلًا بالمرحلة المقبلة#LBCINews https://t.co/Z9x8TO7vRF\n https://twitter.com/LBCI_NEWS/status/1957727552232890711\nAugust 19, 2025 at 11:53AM"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "أنا",
+    "channel": "lebanonNewsNow",
+    "message_id": 207222,
+    "date": "2025-08-19 09:15:13+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏🚨 ورد الآن / زيلينسكي: نعمل على ملف الضمانات الأمنية والتنسيق مع القادة مستمرّ \n\n @lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "أنا",
+    "channel": "MTVLebanoNews",
+    "message_id": 38336,
+    "date": "2025-08-19 09:16:13+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏زيلينسكي: نعمل على ملف الضمانات الأمنية والتنسيق مع القادة مستمر"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "بان",
+    "channel": "lebanondebate",
+    "message_id": 142628,
+    "date": "2025-08-19 09:16:57+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "مراسل \"ليبانون ديبايت\": تتعرض اطراف بلدة كفرشوبا لإطلاق الرصاص مصدره موقع الجيش الاسرائيلي في السماقة"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "بيروت",
+    "channel": "LBCI_NEWS",
+    "message_id": 251290,
+    "date": "2025-08-19 09:18:48+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "36",
+        "19",
+        "2025",
+        "12",
+        "17"
+      ],
+      "casualties": [],
+      "summary": "وزارة الداخلية تُحدّد توقيت سير الشاحنات في محافظات بيروت جبل لبنان والبقاع #LBCINews https://t.co/u36IDlmRyn\n https://twitter.com/LBCI_NEWS/status/1957733741083640222\nAugust 19, 2025 at 12:17PM"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "جنوب",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33332,
+    "date": "2025-08-19 09:20:38+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏أ ف ب: مشروع القرار الذي تقدمت به فرنسا للتمديد لليونيفيل يتضمّن فقرة حول عزم مجلس الأمن العمل لانسحاب هذه القوة الأممية لتصبح الحكومة اللبنانية الضامن الوحيد للأمن في جنوب لبنان"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "جنوب",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214572,
+    "date": "2025-08-19 09:21:31+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "19",
+        "2025",
+        "12",
+        "19"
+      ],
+      "casualties": [],
+      "summary": "أ ف ب: مشروع القرار الذي تقدمت به فرنسا للتمديد لليونيفيل يتضمّن فقرة حول عزم مجلس الأمن العمل لانسحاب هذه القوة الأممية لتصبح الحكومة اللبنانية الضامن الوحيد للأمن في جنوب لبنان\n https://twitter.com/ALJADEEDNEWS/status/1957734088774689123\nAugust 19, 2025 at 12:19PM"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "Lebanon",
+    "channel": "LBCI_NEWS",
+    "message_id": 251291,
+    "date": "2025-08-19 09:23:25+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "0",
+        "9",
+        "85",
+        "19",
+        "2025",
+        "12",
+        "22"
+      ],
+      "casualties": [],
+      "summary": "نتانياهو: رئيس الوزراء الأستراليّ سياسيّ ضعيف خان إسرائيل #LBCINews https://t.co/0o9F85Eqfc\n https://twitter.com/LBCI_NEWS/status/1957734815496646698\nAugust 19, 2025 at 12:22PM"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "أنا",
+    "channel": "lebanondebate",
+    "message_id": 142630,
+    "date": "2025-08-19 09:23:39+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "733837"
+      ],
+      "casualties": [],
+      "summary": "الناتو يقفل باب العضوية أمام أوكرانيا ويلوّح بضمانات بديلة\nhttps://lbdb.co/733837"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "أده",
+    "channel": "lebanonNewsNow",
+    "message_id": 207223,
+    "date": "2025-08-19 09:26:52+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏🚨 ورد الآن / زعيم المعارضة الإسرائيلية: مواجهة نتنياهو تقوي قادة العالم الديمقراطي لأنه الشخصية الأكثر سمية في عالم السياسة \n\n @lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "أنا",
+    "channel": "lebanonNewsNow",
+    "message_id": 207224,
+    "date": "2025-08-19 09:28:55+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏🚨 ورد الآن / بلومبرغ عن مصادر: الضمانات الأمنية ستركز على تعزيز القوات الأوكرانية وقدراتها العسكرية دون قيود \n\n @lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "جديد",
+    "channel": "lebanondebate",
+    "message_id": 142633,
+    "date": "2025-08-19 09:32:25+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "3",
+        "5"
+      ],
+      "casualties": [],
+      "summary": "بلومبرغ عن وثائق: البنتاغون يخطط لإنفاق نحو 3.5 مليار دولار لتجديد مخزوناته عقب العمليات الإسرائيلية المتكررة"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "جديد",
+    "channel": "lebanonNewsNow",
+    "message_id": 207225,
+    "date": "2025-08-19 09:33:02+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "3",
+        "5"
+      ],
+      "casualties": [],
+      "summary": "‏🚨 ورد الآن / بلومبرغ عن وثائق: البنتاغون يخطط لإنفاق نحو ٣.٥ مليار دولار لتجديد مخزوناته عقب العمليات الإسرائيلية المتكررة \n\n @lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "فيه",
+    "channel": "MTVLebanoNews",
+    "message_id": 38337,
+    "date": "2025-08-19 09:35:05+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏المريضة هيلدا عياش أو غزالة بحاجة إلى دم من فئة O+ في مستشفى أوتيل ديو. للتبرع الرجاء الاتصال على الرقم 76873466"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "دبل",
+    "channel": "lebanondebate",
+    "message_id": 142634,
+    "date": "2025-08-19 09:36:16+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "733838"
+      ],
+      "casualties": [],
+      "summary": "أزمة دبلوماسية... نتنياهو يهاجم نظيره الأسترالي: \"سياسي ضعيف خان إسرائيل وتخلى عن اليهود\"\n\nhttps://lbdb.co/733838"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "أده",
+    "channel": "lebanondebate",
+    "message_id": 142635,
+    "date": "2025-08-19 09:37:18+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "13",
+        "30",
+        "3",
+        "35"
+      ],
+      "casualties": [],
+      "summary": "\"القناة 13\" الإسرائيلية: المالية تقترح زيادة ميزانية الدفاع 30 مليار شيكل وخفض 3.35% من ميزانيات الوزارات الأخرى"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "فيه",
+    "channel": "MTVLebanonNews",
+    "message_id": 278604,
+    "date": "2025-08-19 09:37:33+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "92",
+        "2",
+        "19",
+        "2025",
+        "12",
+        "35"
+      ],
+      "casualties": [],
+      "summary": "المريضة هيلدا عياش أو غزالة بحاجة إلى دم من فئة O+ في مستشفى أوتيل ديو. للتبرع الرجاء الاتصال على الرقم 76873466 https://t.co/cD92QYcn2e\n https://twitter.com/MTVLebanonNews/status/1957738160353358059\nAugust 19, 2025 at 12:35PM"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "أده",
+    "channel": "lebanonNewsNow",
+    "message_id": 207226,
+    "date": "2025-08-19 09:38:19+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "13",
+        "30",
+        "3",
+        "35"
+      ],
+      "casualties": [],
+      "summary": "‏🚨 ورد الآن / القناة 13 الإسرائيلية: المالية تقترح زيادة ميزانية الدفاع 30 مليار شيكل وخفض 3.35% من ميزانيات الوزارات الأخرى \n\n @lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "شمال",
+    "channel": "lebanondebate",
+    "message_id": 142636,
+    "date": "2025-08-19 09:38:19+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "63",
+        "733840"
+      ],
+      "casualties": [],
+      "summary": "ابن الـ63 عاماً ضحية رصاصة غدر... الحزن والخوف يلفّ بلدة شمالية!\n\nhttps://lbdb.co/733840"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "جنوب",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33333,
+    "date": "2025-08-19 09:43:35+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏وزير الخارجية الإسرائيلي يقدم طلبًا الى نظيره الأميركي لإنهاء مهمة اليونفيل فورًا بذريعة فشلها بمنع تمركز \"حزب الله\" جنوب الليطاني"
+    }
+  },
+  {
+    "incident_type": "explosion",
+    "location": "بعلبك",
+    "channel": "MTVLebanoNews",
+    "message_id": 38338,
+    "date": "2025-08-19 09:46:41+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏سماع اصوت قذائف وانفجارات عند السلسلة الشرقية مصدرها حقول رماية للجيش اللبناني في الطيبة شرقي بعلبك حيث تقوم قوة من فرقة الهندسة بتفجير أسلحة وذخائر غير منفجرة"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "جنوب",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214574,
+    "date": "2025-08-19 09:46:43+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "19",
+        "2025",
+        "12",
+        "42"
+      ],
+      "casualties": [],
+      "summary": "وزير الخارجية الإسرائيلي يقدم طلبًا الى نظيره الأميركي لإنهاء مهمة اليونفيل فورًا بذريعة فشلها بمنع تمركز \"حزب الله\" جنوب الليطاني\n https://twitter.com/ALJADEEDNEWS/status/1957740024763494689\nAugust 19, 2025 at 12:42PM"
+    }
+  },
+  {
+    "incident_type": "explosion",
+    "location": "بعلبك",
+    "channel": "lebanondebate",
+    "message_id": 142638,
+    "date": "2025-08-19 09:47:14+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "مراسل \"ليبانون ديبايت\": تسمع اصوت قذائف وانفجارات على السلسلة الشرقية مصدرها حقول رماية الجيش اللبناني في الطيبة شرقي بعلبك حيث تقوم قوة من فرقة الهندسة بتفجير اسلحة وذخائر غير منفجرة"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "دورس",
+    "channel": "lebanondebate",
+    "message_id": 142640,
+    "date": "2025-08-19 09:51:05+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "مراسل \"ليبانون ديبايت\": تحلق طاىرة استطلاع اسرائيلية فوق سهل البقاع وفي محيط السلسلتين الشرقية والغربية من مناطق دورس الطيبة مجدلون حوش بردى عين السودا طليا وكفردان"
+    }
+  },
+  {
+    "incident_type": null,
+    "location": "الكبرى",
+    "channel": "MTVLebanoNews",
+    "message_id": 38340,
+    "date": "2025-08-19 09:51:46+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏رئيس الوزراء الأردني: الواقع لا يشير إلى وهم \"إسرائيل الكبرى\" بل إلى إسرائيل المنبوذة والمعزولة"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "إده",
+    "channel": "MTVLebanoNews",
+    "message_id": 38342,
+    "date": "2025-08-19 10:00:56+00:00",
+    "threat_level": "no",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏لافروف: يجب التحضير بعناية لأي اتصالات قد تحدث بين القادة بشأن أوكرانيا"
+    }
+  },
+  {
+    "incident_type": "fire",
+    "location": "ينار",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214576,
+    "date": "2025-08-19 10:02:21+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "22",
+        "7",
+        "19",
+        "2025",
+        "12",
+        "57"
+      ],
+      "casualties": [],
+      "summary": "علي حجازي: خيار المواجهة حُسم وعلينا الاستعداد للسيناريو الأسوأ https://t.co/ItddJJ22i7\n https://twitter.com/ALJADEEDNEWS/status/1957743611258499275\nAugust 19, 2025 at 12:57PM"
+    }
+  },
+  {
+    "incident_type": "medical",
+    "location": "76",
+    "channel": "MTVLebanonNews",
+    "message_id": 278606,
+    "date": "2025-08-19 10:03:14+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "1",
+        "5",
+        "19",
+        "2025",
+        "12",
+        "55"
+      ],
+      "casualties": [],
+      "summary": "المريضة هيلدا عياش أبو غزالة بحاجة إلى دم من فئة O+ في مستشفى أوتيل ديو. للتبرع الرجاء الاتصال على الرقم 76873466 https://t.co/1sUUz5KVOZ\n https://twitter.com/MTVLebanonNews/status/1957743193354822115\nAugust 19, 2025 at 12:55PM"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "غزة",
+    "channel": "MTVLebanoNews",
+    "message_id": 38343,
+    "date": "2025-08-19 10:09:05+00:00",
+    "threat_level": "no",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏نواف سلام من الأردن: إسرائيل من عزلة إلى عزلة في العالم في ظل ما تقوم به من إجراءات في غزة والضفة الغربية"
+    }
+  },
+  {
+    "incident_type": "fire",
+    "location": "شان",
+    "channel": "MTVLebanoNews",
+    "message_id": 38345,
+    "date": "2025-08-19 10:17:19+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏الخارجية القطرية: تسلّمنا ردًّا إيجابيا من حماس بشأن مقترح وقف إطلاق النار ونتمنى أن يكون ردّ إسرائيل سريعاً وإيجابياً"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "\\",
+    "channel": "MTVLebanoNews",
+    "message_id": 38347,
+    "date": "2025-08-19 11:05:22+00:00",
+    "threat_level": "no",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏النائب أشرف ريفي لـmtv: ارتأينا كجبهة سيادية أن نتداعى كي يكون لدينا ردّ مباشر على كلام نعيم قاسم الذي يخوّن الدولة اللبنانية ويدعو إلى النزول للشارع لحرب أهلية وهو يحرك النعرات الطائفية والمذهبية"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "\\",
+    "channel": "MTVLebanoNews",
+    "message_id": 38348,
+    "date": "2025-08-19 11:06:24+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏ريفي لـmtv: نحضّر دعوى قضائية بحق قاسم لأنّنا لن نسمح له بأخذ البلد إلى المهوار"
+    }
+  },
+  {
+    "incident_type": "vehicle_accident",
+    "location": "الدوره",
+    "channel": "MTVLebanoNews",
+    "message_id": 38358,
+    "date": "2025-08-19 11:53:00+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "3"
+      ],
+      "casualties": [],
+      "summary": "‌‏التحكم المروري: تصادم بين ٣ سيارات على المسلك الشرقي لجسر الدورة والأضرار مادية ودراج من مفرزة سير الجديدة يعمل على المعالجة"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "\\",
+    "channel": "MTVLebanoNews",
+    "message_id": 38364,
+    "date": "2025-08-19 12:50:49+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏الخارجية الفلسطينية تطالب بإجراءات دولية ملزمة لوقف استباحة المستوطنين الإسرائيليين للضفة الغربية"
+    }
+  },
+  {
+    "incident_type": "war damage repair funding",
+    "location": "\\",
+    "channel": "MTVLebanoNews",
+    "message_id": 38385,
+    "date": "2025-08-19 17:06:19+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "14",
+        "260000"
+      ],
+      "casualties": [],
+      "summary": "‌‏حنين السيد لـmtv: مبلغ 14 مليون دولار خُصّص لمساعدة 260000 لبناني من متضرّري الحرب"
+    }
+  },
+  {
+    "incident_type": "occupation, military intervention (non-violent control)",
+    "location": "غزة",
+    "channel": "MTVLebanoNews",
+    "message_id": 38392,
+    "date": "2025-08-19 17:49:54+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏مكتب نتنياهو: مبادئ إنهاء الحرب تتضمن سيطرة أمنية إسرائيلية على قطاع غزة وإقامة إدارة مدنية بديلة لا تتبع لحماس ولا للسلطة الفلسطينية"
+    }
+  },
+  {
+    "incident_type": "vehicle_accident",
+    "location": "\\",
+    "channel": "MTVLebanoNews",
+    "message_id": 38398,
+    "date": "2025-08-19 19:29:15+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "50"
+      ],
+      "casualties": [
+        "killed"
+      ],
+      "summary": "‌‏وكالة أجنبية: مقتل أكثر من 50 شخصًا في حادث تصادم حافلة غربي أفغانستان"
+    }
+  },
+  {
+    "incident_type": "fire",
+    "location": "إده",
+    "channel": "MTVLebanoNews",
+    "message_id": 38406,
+    "date": "2025-08-19 21:00:47+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "1974"
+      ],
+      "casualties": [],
+      "summary": "‌‏سانا: الشيباني بحث مع الوفد الإسرائيلي إعادة تفعيل \"اتفاق 1974\" ومراقبة وقف إطلاق النار في السويداء"
+    }
+  },
+  {
+    "incident_type": "vehicle_accident",
+    "location": "\\",
+    "channel": "MTVLebanoNews",
+    "message_id": 38409,
+    "date": "2025-08-20 05:02:00+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "4",
+        "4",
+        "24"
+      ],
+      "casualties": [
+        "injured"
+      ],
+      "summary": "‌‏التحكم المروري: 4 جرحى في 4 حوادث سير خلال الـ 24 ساعة الماضية"
+    }
+  },
+  {
+    "incident_type": "other (explosion)",
+    "location": "76",
+    "channel": "MTVLebanoNews",
+    "message_id": 38414,
+    "date": "2025-08-20 05:40:37+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "76"
+      ],
+      "casualties": [
+        "killed"
+      ],
+      "summary": "‌‏ارتفاع قتلى حادثة تحطم حافلة غربي أفغانستان إلى 76"
+    }
+  },
+  {
+    "incident_type": "collapse",
+    "location": "جبيل",
+    "channel": "lebanonnews2",
+    "message_id": 87214,
+    "date": "2025-08-19 10:49:53+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "🔴سقوط محلقة إسرائيلية على أسطح أحد المنازل في مدينة بنت جبيل\n\nhttps://telegram.me/lebanonnews2"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "\\",
+    "channel": "lebanonnews2",
+    "message_id": 87216,
+    "date": "2025-08-19 11:09:33+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "🔴🇱🇧مداهمة للجيش في الشراونة  حيث سمع أصوات إطلاق نار\n\n\nhttps://telegram.me/lebanonnews2"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "بني حيان",
+    "channel": "lebanonnews2",
+    "message_id": 87217,
+    "date": "2025-08-19 11:34:59+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "🔴 مسير مسلح على علو منخفض في أجواء محيط وادي السلوقي ناحية بني حيان و مركبا\n\n\nhttps://telegram.me/lebanonnews2"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "\\",
+    "channel": "lebanonnews2",
+    "message_id": 87224,
+    "date": "2025-08-19 17:00:37+00:00",
+    "threat_level": "no",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "🔴البطريرك الراعي: كلام الأمين العام لحزب الله نعيم قاسم مزايدة ولا وجود لحرب أهلية وأبناء الطائفة الشيعية سئموا الحرب ويريدون العيش بسلام\n\n\n\nhttps://telegram.me/lebanonnews2"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "ريحا",
+    "channel": "lebanonnews2",
+    "message_id": 87226,
+    "date": "2025-08-19 19:31:50+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "🔴مصادر سياسية: بعد التصريحات الليلة ، الأزمة اللبنانية بدأت تأخذ بعداً طائفياً خطيراً\n\n\nhttps://telegram.me/lebanonnews2"
+    }
+  },
+  {
+    "incident_type": "other (as RPG launch is not a standard category)",
+    "location": "بعلبك",
+    "channel": "lebanonnews2",
+    "message_id": 87236,
+    "date": "2025-08-20 00:19:20+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "🔴 الدوي الذي سمع في بعلبك ناجم عن إطلاق قذيفة RPG.\n\n\nhttps://telegram.me/lebanonnews2"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "هدّ",
+    "channel": "lebanonnews2",
+    "message_id": 87238,
+    "date": "2025-08-20 05:17:22+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "🔴الرئيس بري لبرّاك خلال الاجتماع:\n\"أشرت سابقاً إلى ضرورة أن يقوم لبنان بخطوة، لكنك لم تقدّم لنا شيئاً. لا نجحت في وقف الحرب، ولا استطعت فرض هدنة أسبوعين كنت أنت من تحدّث عنها...اليوم تقول إنه ليس لديك تفويض للضغط على إسرائيل، أي إنك تبلغنا مسبقاً أن كل ما قمنا به أو سنقوم به لن تكون له أي فائدة، وهذ..."
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "غزة",
+    "channel": "lebanonnews2",
+    "message_id": 87240,
+    "date": "2025-08-20 05:36:24+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "🔴إذاعة الجيش الإسرائيلي: وزير الدفاع صدق أمس على خطة الهجوم على مدينة غزة وسيطلق عليها اسم عربات غدعون الثانية\n\n\nhttps://telegram.me/lebanonnews2"
+    }
+  },
+  {
+    "incident_type": "collapse",
+    "location": "جبيل",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33335,
+    "date": "2025-08-19 11:02:18+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏مراسل الجديد: سقوط طائرة درون اسرائيلية على سطح أحد المنازل في مدينة بنت جبيل"
+    }
+  },
+  {
+    "incident_type": "fire",
+    "location": "بعلبك",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33337,
+    "date": "2025-08-19 11:14:39+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏مراسل \"الجديد\": قوة من الجيش اللبناني تداهم حي الشراونة في مدينة بعلبك واطلاق نار"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "\\",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33339,
+    "date": "2025-08-19 12:25:25+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏ترامب: أوروبا مستعدة لإرسال قوات إلى الأراضي الأوكرانية"
+    }
+  },
+  {
+    "incident_type": "other (armed conflict)",
+    "location": "\\",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33343,
+    "date": "2025-08-19 14:07:49+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [
+        "injured",
+        "killed"
+      ],
+      "summary": "‏الدفاع المدني المدني السوري: وفاة رجل لبناني وإصابة زوجته الأردنية وطفليهما بجروح إثر تدهور سيارتهم على طريق درعا دمشق"
+    }
+  },
+  {
+    "incident_type": "none - the report does not mention an incident type as pertaining to Lebanon.",
+    "location": "\\",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33345,
+    "date": "2025-08-19 14:51:27+00:00",
+    "threat_level": "no",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏الخارجية الأميركية: روبيو بحث في اتصال مع نظيره التركي مفاوضات روسيا وأوكرانيا واتفقا على ضرورة إنهاء الحرب"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "\\",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33347,
+    "date": "2025-08-19 15:48:19+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏مسؤولة السياسة الخارجية في الاتحاد الأوروبي: حزمة العقوبات المقبلة ضد موسكو ستكون جاهزة بحلول الشهر المقبل"
+    }
+  },
+  {
+    "incident_type": "security coordination meeting",
+    "location": "بان",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33349,
+    "date": "2025-08-19 16:06:38+00:00",
+    "threat_level": "no",
+    "details": {
+      "numbers_found": [
+        "12"
+      ],
+      "casualties": [],
+      "summary": "‏القناة 12 الاسرائيلية: وزير الشؤون الاستراتيجية رون ديرمر يلتقي الليلة في باريس مع وزير الخارجية السوري أسد الشيباني والمبعوث الأمريكي إلى سوريا توم براك لبحث الترتيبات الأمنية على الحدود بين البلدين"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "\\",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33350,
+    "date": "2025-08-19 16:33:04+00:00",
+    "threat_level": "no",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏الراعي: كلام أمين عام حزب الله مزايدة ولا وجود لحرب أهلية"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "متين",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33365,
+    "date": "2025-08-19 17:22:34+00:00",
+    "threat_level": "no",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏مجلس الوزراء السعودي يرحب بالقمتين اللتين عقدهما ترمب مع بوتين وزيلينسكي وقادة أوروبيين"
+    }
+  },
+  {
+    "incident_type": "fire",
+    "location": "\\",
+    "channel": "AljadeedNewsTV",
+    "message_id": 33368,
+    "date": "2025-08-19 18:09:16+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏البيت الأبيض: حماس وافقت على مقترح وقف إطلاق النار بعد ربط ترامب تحرير الرهائن بتدمير حماس"
+    }
+  },
+  {
+    "incident_type": "medical",
+    "location": "دير القمر",
+    "channel": "lebanondebate",
+    "message_id": 142817,
+    "date": "2025-08-20 06:51:22+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "734102"
+      ],
+      "casualties": [],
+      "summary": "البستاني بعد لقائه عون: استلام مستشفى دير القمر اليوم لصالح وزارة الصحة\n\nhttps://lbdb.co/734102"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "\\",
+    "channel": "LBCI_NEWS",
+    "message_id": 251404,
+    "date": "2025-08-20 06:58:13+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "5",
+        "20",
+        "2025",
+        "09",
+        "48"
+      ],
+      "casualties": [],
+      "summary": "باسيل: لحل شامل يحمي لبنان وتسليم السلاح من دون صدام داخلي #LBCINewshttps://t.co/5RPWTPcRQp\n https://twitter.com/LBCI_NEWS/status/1958058647822410100\nAugust 20, 2025 at 09:48AM"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "\\",
+    "channel": "lebanonNewsNow",
+    "message_id": 207344,
+    "date": "2025-08-20 07:12:22+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "14"
+      ],
+      "casualties": [
+        "injured"
+      ],
+      "summary": "‏🚨 ورد الآن / أوكرانيا: إصابة 14 جراء قصف روسي ليلي على سومي \n\n @lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "غزة",
+    "channel": "MTVLebanoNews",
+    "message_id": 38419,
+    "date": "2025-08-20 07:19:34+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏الخارجية الصينية: نشعر بقلق بالغ إزاء الوضع الحالي في غزة ونأمل في توصّل الأطراف إلى وقف إطلاق نار بأقرب وقت"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "بعبدا",
+    "channel": "LBCI_NEWS",
+    "message_id": 251409,
+    "date": "2025-08-20 07:23:25+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "4",
+        "4",
+        "20",
+        "2025",
+        "10",
+        "19"
+      ],
+      "casualties": [],
+      "summary": "كرامي من بعبدا: إعتماد 4 أيام للتعليم الرسمي إستمرار للإجراء السابق ونعمل على تصحيح أجور الأساتذة #LBCINewshttps://t.co/EHk4hcjRik\n https://twitter.com/LBCI_NEWS/status/1958066237012861285\nAugust 20, 2025 at 10:19AM"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "غزة",
+    "channel": "LBCI_NEWS",
+    "message_id": 251412,
+    "date": "2025-08-20 07:28:25+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "20",
+        "2025",
+        "10",
+        "24"
+      ],
+      "casualties": [],
+      "summary": "مسؤول عسكري إسرائيلي: نتوقع الإنتهاء من خطة الهجوم على مدينة غزة في الأيام المقبلة\n https://twitter.com/LBCI_NEWS/status/1958067681292087529\nAugust 20, 2025 at 10:24AM"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "75",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214659,
+    "date": "2025-08-20 07:31:06+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "158",
+        "20",
+        "2025",
+        "10",
+        "22"
+      ],
+      "casualties": [],
+      "summary": "البابا في لبنان.. والراعي الى القدس؟https://t.co/UPxdRJ158N\n https://twitter.com/ALJADEEDNEWS/status/1958067131049758866\nAugust 20, 2025 at 10:22AM"
+    }
+  },
+  {
+    "incident_type": "armed_conflict",
+    "location": "\\",
+    "channel": "LBCI_NEWS",
+    "message_id": 251413,
+    "date": "2025-08-20 07:33:41+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "60",
+        "63",
+        "3",
+        "20",
+        "2025",
+        "10",
+        "29"
+      ],
+      "casualties": [],
+      "summary": "وزير الدفاع الإسرائيلي يقرّ خطة السيطرة على مدينة ويطلب استدعاء 60 ألف جندي احتياط#LBCINews https://t.co/hpW63f3WjN\n https://twitter.com/LBCI_NEWS/status/1958068786289955143\nAugust 20, 2025 at 10:29AM"
+    }
+  },
+  {
+    "incident_type": "medical",
+    "location": "بعبدا",
+    "channel": "LBCI_NEWS",
+    "message_id": 251415,
+    "date": "2025-08-20 07:38:16+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "20",
+        "2025",
+        "10",
+        "33"
+      ],
+      "casualties": [],
+      "summary": "النائب فريد البستاني من بعبدا: مستشفى دير القمر الحكومي حق الشوفيين على الدولة ويجب أن يفتح هذه السنة\n https://twitter.com/LBCI_NEWS/status/1958069892978020463\nAugust 20, 2025 at 10:33AM"
+    }
+  },
+  {
+    "incident_type": "medical",
+    "location": "بعبدا",
+    "channel": "LBCI_NEWS",
+    "message_id": 251417,
+    "date": "2025-08-20 07:43:05+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "20",
+        "2025",
+        "10",
+        "37"
+      ],
+      "casualties": [],
+      "summary": "النائب فريد البستاني من بعبدا: مستشفى دير القمر ليس مستشفى فريد البستاني بل هو مستشفى حكومي للدولة وفيما الأموال موجودة وتذهب الى غير مستشفيات فلتذهب الى دير القمر لفتح هذا المستشفى\n https://twitter.com/LBCI_NEWS/status/1958070803041222714\nAugust 20, 2025 at 10:37AM"
+    }
+  },
+  {
+    "incident_type": "fire",
+    "location": "بعبدا",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214661,
+    "date": "2025-08-20 07:51:40+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "4",
+        "7",
+        "4",
+        "20",
+        "2025",
+        "10",
+        "47"
+      ],
+      "casualties": [],
+      "summary": "كرامي من بعبدا: 4 أيام تدريس أسبوعيًاhttps://t.co/tIQ7ont4TZ\n https://twitter.com/ALJADEEDNEWS/status/1958073451052208281\nAugust 20, 2025 at 10:47AM"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "\\",
+    "channel": "MTVLebanonNews",
+    "message_id": 278747,
+    "date": "2025-08-20 08:17:52+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "4",
+        "3",
+        "6",
+        "20",
+        "2025",
+        "11",
+        "10"
+      ],
+      "casualties": [],
+      "summary": "قداسة البابا إلى لبنان؟https://t.co/i4g3Zn6vgz\n https://twitter.com/MTVLebanonNews/status/1958079246649139243\nAugust 20, 2025 at 11:10AM"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "\\",
+    "channel": "MTVLebanonNews",
+    "message_id": 278748,
+    "date": "2025-08-20 08:17:53+00:00",
+    "threat_level": "no",
+    "details": {
+      "numbers_found": [
+        "488",
+        "2",
+        "20",
+        "2025",
+        "11",
+        "11"
+      ],
+      "casualties": [],
+      "summary": "لهيب آب \"راجع\"... وأيام حارّة مُقبلة!https://t.co/pn488ZQ2iJ\n https://twitter.com/MTVLebanonNews/status/1958079527705338177\nAugust 20, 2025 at 11:11AM"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "\\",
+    "channel": "MTVLebanonNews",
+    "message_id": 278749,
+    "date": "2025-08-20 08:17:54+00:00",
+    "threat_level": "no",
+    "details": {
+      "numbers_found": [
+        "2",
+        "1",
+        "20",
+        "2025",
+        "11",
+        "14"
+      ],
+      "casualties": [],
+      "summary": "أسبوعان طلبهما الجيش... وحربٌ أهلية يُريدها هؤلاء!https://t.co/rB2IX1ezCp@YoussefRaggi\n https://twitter.com/MTVLebanonNews/status/1958080184520704138\nAugust 20, 2025 at 11:14AM"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "غزة",
+    "channel": "lebanonNewsNow",
+    "message_id": 207354,
+    "date": "2025-08-20 08:18:33+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2026"
+      ],
+      "casualties": [],
+      "summary": "‏🚨 ورد الآن / إعلام إسرائيلي عن مسؤولين بالجيش: من المتوقع استمرار القتال في مدينة غزة حتى 2026 \n\n @lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "\\",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214663,
+    "date": "2025-08-20 08:21:39+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "8",
+        "20",
+        "2025",
+        "11",
+        "18"
+      ],
+      "casualties": [],
+      "summary": "رفع علم الحزب و هتف\" هيا حزب الله\" مغني يمثل أمام المحكمة ⏬https://t.co/8yKQJbAfci\n https://twitter.com/ALJADEEDNEWS/status/1958081170047984009\nAugust 20, 2025 at 11:18AM"
+    }
+  },
+  {
+    "incident_type": "political demonstration",
+    "location": "\\",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214664,
+    "date": "2025-08-20 08:36:38+00:00",
+    "threat_level": "no",
+    "details": {
+      "numbers_found": [
+        "3",
+        "0",
+        "20",
+        "2025",
+        "11",
+        "35"
+      ],
+      "casualties": [],
+      "summary": "الكتائب: الخطاب التحريضي لحزب الله لا يمثّل الشيعة ⏬https://t.co/GMv3S0XgvZ\n https://twitter.com/ALJADEEDNEWS/status/1958085364838449570\nAugust 20, 2025 at 11:35AM"
+    }
+  },
+  {
+    "incident_type": "other (related to GPS jamming in Iran, not Lebanon)",
+    "location": "\\",
+    "channel": "MTVLebanoNews",
+    "message_id": 38428,
+    "date": "2025-08-20 08:37:54+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏إيران: توقف نظام تحديد المواقع GPS بسبب احتمال وجود مسيّرات"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "16",
+    "channel": "LBCI_NEWS",
+    "message_id": 251422,
+    "date": "2025-08-20 08:38:24+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "6",
+        "4",
+        "20",
+        "2025",
+        "11",
+        "34"
+      ],
+      "casualties": [],
+      "summary": "سيزار أبي خليل للـLBCI: نحن مع حصرية السلاح وامتلاك الجيش لهذا السلاح#LBCINews @CesarAbiKhalil https://t.co/c6r4GWdepy\n https://twitter.com/LBCI_NEWS/status/1958085201533231164\nAugust 20, 2025 at 11:34AM"
+    }
+  },
+  {
+    "incident_type": "explosion",
+    "location": "زيتون",
+    "channel": "lebanonNewsNow",
+    "message_id": 207360,
+    "date": "2025-08-20 08:39:57+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏🚨 ورد الآن / الجيش الإسرائيلي: بدء المرحلة التمهيدية لاحتلال غزة من حي الزيتون وجباليا ونجري عمليات برية واسعة \n\n @lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "زيتون",
+    "channel": "MTVLebanoNews",
+    "message_id": 38430,
+    "date": "2025-08-20 08:40:57+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏الجيش الإسرائيلي: بدء المرحلة التمهيدية لاحتلال غزة من حي الزيتون وجباليا ونجري عمليات برية واسعة"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "16",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214667,
+    "date": "2025-08-20 09:36:32+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "64",
+        "5",
+        "9",
+        "20",
+        "2025",
+        "12",
+        "31"
+      ],
+      "casualties": [],
+      "summary": "بعد تقرير \"الجديد\".. حيدر الحسيني بقبضة الأمن!@SamiHatoum64 https://t.co/KSI5OyujY9\n https://twitter.com/ALJADEEDNEWS/status/1958099651615248830\nAugust 20, 2025 at 12:31PM"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "76",
+    "channel": "MTVLebanonNews",
+    "message_id": 278759,
+    "date": "2025-08-20 09:37:44+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "3",
+        "20",
+        "2025",
+        "12",
+        "30"
+      ],
+      "casualties": [
+        "injured"
+      ],
+      "summary": "وسائل إعلام إسرائيلية: إصابة 3 جنود على الأقل في الهجوم الذي تعرّض له موقع للجيش الإسرائيلي في خان يونس حالة أحدهم حرجة\n https://twitter.com/MTVLebanonNews/status/1958099407640920121\nAugust 20, 2025 at 12:30PM"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "غزة",
+    "channel": "lebanonNewsNow",
+    "message_id": 207371,
+    "date": "2025-08-20 09:46:49+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏🚨 ورد الآن / زعيم المعارضة الإسرائيلية يائير لابيد: يعتبر استدعاء قوات الاحتياط لاحتلال غزة وهماً ويشكك في تحقيق الحكومة النصر \n\n @lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "natural_disaster",
+    "location": "بيروت",
+    "channel": "news12345Cnrs",
+    "message_id": 4,
+    "date": "2025-08-20 09:52:15+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "فيضان في بيروت"
+    }
+  },
+  {
+    "incident_type": "medical",
+    "location": "غزة",
+    "channel": "LBCI_NEWS",
+    "message_id": 251441,
+    "date": "2025-08-20 10:43:13+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "269",
+        "112",
+        "20",
+        "2025",
+        "01",
+        "38"
+      ],
+      "casualties": [],
+      "summary": "وزارة الصحة في غزة: ارتفاع عدد شهداء المجاعة وسوء التغذية إلى 269 بينهم 112 طفلا\n https://twitter.com/LBCI_NEWS/status/1958116441301090525\nAugust 20, 2025 at 01:38PM"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "جويا",
+    "channel": "lebanondebate",
+    "message_id": 142847,
+    "date": "2025-08-20 10:48:04+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "10",
+        "734247"
+      ],
+      "casualties": [
+        "killed"
+      ],
+      "summary": "مواجهة عنيفة وجهاً لوجه... مقتل 10 مسلحين في اشتباك مدعوم جوياً بخان يونس\n\nhttps://lbdb.co/734247"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "الحدث",
+    "channel": "lebanonnews2",
+    "message_id": 87242,
+    "date": "2025-08-20 10:52:39+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "7",
+        "4",
+        "2"
+      ],
+      "casualties": [
+        "injured"
+      ],
+      "summary": "🔴الحدث في الشمال\nحادث عملياتي، نتيجة انفجار قنبلة سورية قديمة في جبل الشيخ كان الجنود يتعاملون معها في الموقع. إصابة 7 جنود، بينهم 4 في حالة خطيرة جدًا، وقد نُقل الجنود إلى مستشفى \"زيف\" في صفد\n\n\nhttps://telegram.me/lebanonnews2"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "يارون",
+    "channel": "bintjbeilnews",
+    "message_id": 142946,
+    "date": "2025-08-20 11:09:55+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "الإحـ.. تلال يستهدف منطقة هرمون مقابل بلدتي يارون ورميش بقذيفة مضيئة"
+    }
+  },
+  {
+    "incident_type": "fire",
+    "location": "جبيل",
+    "channel": "ALJADEED_NEWS",
+    "message_id": 214502,
+    "date": "2025-08-18 12:11:43+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "7",
+        "31",
+        "18",
+        "2025",
+        "03",
+        "06"
+      ],
+      "casualties": [],
+      "summary": "لحظة إلقاء قنبلة من درون اسرائيلية في الجنوبوثق الناشط حسين صالح بشريط فيديو لحظة القاء درون اسرائيلية قنبلة صوتية على مقربة منه اثناء مروره بدراجة نارية في بلدة راميا قضاء بنت جبيل جنوب لبنان. وكانت الوكالة الوطنية أفادت في وقت سابق أن مسيرة إسرائيليّة ألقت قنبلة صوتية على https://t.co/7J31spnbBd\n ..."
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "رميش",
+    "channel": "lebanonNewsNow",
+    "message_id": 207379,
+    "date": "2025-08-20 11:22:08+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‏🚨 ورد الآن / العدوّ الإسرائيلي ألقى قنبلة مضيئة في أجواء بلدة رميش \n\n @lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "shooting",
+    "location": "بعلبك",
+    "channel": "LBCI_NEWS",
+    "message_id": 251451,
+    "date": "2025-08-20 11:23:26+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "7",
+        "2",
+        "20",
+        "2025",
+        "02",
+        "19"
+      ],
+      "casualties": [],
+      "summary": "في بعلبك... إتلاف 7 دونمات مزروعة بالحشيشة#LBCINewshttps://t.co/qE2pkAQOmz\n https://twitter.com/LBCI_NEWS/status/1958126752997249267\nAugust 20, 2025 at 02:19PM"
+    }
+  },
+  {
     "incident_type": "protest",
     "location": "طرابلس",
     "coordinates": [
@@ -2019,6 +3608,25 @@
     }
   },
   {
+    "incident_type": "Striking without permission and disobedience of commands",
+    "location": "بلا",
+    "coordinates": [
+      35.8918324,
+      34.2652671
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143785,
+    "date": "2025-08-25 06:29:11+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "735715"
+      ],
+      "casualties": [],
+      "summary": "لا سلام بلا حياد أوكرانيا وخروجها من الناتو موسكو تجدد شروطها"
+    }
+  },
+  {
     "incident_type": "landslides due to heavy rainfall during civil unrest with displaced refugees returning to their camps on shores near a city affected by clashes and floods.",
     "location": "الدفاع المدني",
     "coordinates": [
@@ -2130,6 +3738,53 @@
       ],
       "casualties": [],
       "summary": "مريض بحاجة لوحدتي دم فئة O للتبرع في مركز الصليب الاحمر- جونية للتواصل: 03716370LBCINews August 25, 2025 at 11:27AM"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "صربين",
+    "coordinates": [
+      35.357877,
+      33.1548076
+    ],
+    "channel": "LBCI_NEWS",
+    "message_id": 252017,
+    "date": "2025-08-25 08:38:22+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "25",
+        "2025",
+        "11",
+        "34"
+      ],
+      "casualties": [],
+      "summary": "الوكالة الوطنية للإعلام: مسيرة إسرائيلية نفذت غارة بصاروخ موجه مستهدفة سيارة على طريق بلدة صربين إلا أن الصاروخ لم يصب السيارة واستقر وسط الطريق August 25, 2025 at 11:34AM"
+    }
+  },
+  {
+    "incident_type": "vehicle_accident",
+    "location": "سير الضنية",
+    "coordinates": [
+      36.027292,
+      34.3842283
+    ],
+    "channel": "LBCI_NEWS",
+    "message_id": 252019,
+    "date": "2025-08-25 08:38:24+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "41",
+        "25",
+        "2025",
+        "11",
+        "38"
+      ],
+      "casualties": [
+        "injured"
+      ],
+      "summary": "جريح في انحراف شاحنة عند مدخل سير الضنية LBCINews August 25, 2025 at 11:38AM"
     }
   }
 ]
