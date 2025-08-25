@@ -90,12 +90,20 @@ def load_geojson_file(file_path):
 
 def load_all_geojson_folder(folder_path):
     all_map = {}
+    total_features = 0
     for file in os.listdir(folder_path):
         if file.lower().endswith('.json'):
             file_path = os.path.join(folder_path, file)
             locations = load_geojson_file(file_path)
+            count = len(locations)
+            total_features += count
+            print(f"✅ Loaded {count} Arabic locations from {file}")
             all_map.update(locations)
+    print("====================================")
+    print(f"📊 TOTAL Arabic locations loaded: {total_features}")
+    print("====================================")
     return all_map
+
 
 ALL_LOCATIONS = load_all_geojson_folder(GEOJSON_FOLDER)
 print(f"Loaded {len(ALL_LOCATIONS)} Arabic locations from GeoJSON folder")
