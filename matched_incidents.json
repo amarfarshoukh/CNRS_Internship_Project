@@ -3918,5 +3918,195 @@
       "casualties": [],
       "summary": "استهداف رابيد على طريق عين المزراب - تبنين"
     }
+  },
+  {
+    "incident_type": "Foreign policy statement regarding foreign militants' alleged hijacking of international laws by Palestinian groups from Israel.",
+    "location": "وزارة الخارجية والمغتربين",
+    "coordinates": [
+      35.518647900000005,
+      33.89238388
+    ],
+    "channel": "AljadeedNewsTV",
+    "message_id": 33489,
+    "date": "2025-08-25 08:57:16+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "وزير الخارجية السعودي: العدوان الإسرائيلي ضد الفلسطينيين انتهاك صارخ للقانون الدولي"
+    }
+  },
+  {
+    "incident_type": "medical",
+    "location": "الدفاع المدني",
+    "coordinates": [
+      35.9013299,
+      33.7706049
+    ],
+    "channel": "LBCI_NEWS",
+    "message_id": 252022,
+    "date": "2025-08-25 08:58:09+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "15",
+        "25",
+        "2025",
+        "11",
+        "55"
+      ],
+      "casualties": [],
+      "summary": "الدفاع المدني في غزة يعلن إستشهاد 15 شخصا بينهم أربعة صحافيين في ضربتين إسرائيليتين على مستشفى August 25, 2025 at 11:55AM"
+    }
+  },
+  {
+    "incident_type": "ترفض مشاركة",
+    "location": "وزارة الخارجية والمغتربين",
+    "coordinates": [
+      35.518647900000005,
+      33.89238388
+    ],
+    "channel": "AljadeedNewsTV",
+    "message_id": 33490,
+    "date": "2025-08-25 08:59:17+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "وزير الخارجية السعودي: المملكة ترفض المشاريع الاستيطانية الإسرائيلية"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "مجمع",
+    "coordinates": [
+      35.82592206363636,
+      34.44748477272727
+    ],
+    "channel": "bintjbeilnews",
+    "message_id": 143223,
+    "date": "2025-08-25 08:58:49+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "مقطع فيديو يوثق لحظة استهداف مجمع ناصر الطبي في مدينة خان يونس جنوبي قطاع غزة ما أسفر عن سقوط عدد من الشهـ بينهم أربعة صحفيين على الأقل"
+    }
+  },
+  {
+    "incident_type": "ترفض المشاريع الاستيطانية",
+    "location": "وزارة الخارجية والمغتربين",
+    "coordinates": [
+      35.518647900000005,
+      33.89238388
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143826,
+    "date": "2025-08-25 09:00:42+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "وزير الخارجية السعودي: المملكة ترفض المشاريع الاستيطانية الإسرائيلية"
+    }
+  },
+  {
+    "incident_type": "Urgent plea for international intervention to end the occupation by ISIS/ISIL",
+    "location": "وزارة الخارجية والمغتربين",
+    "coordinates": [
+      35.518647900000005,
+      33.89238388
+    ],
+    "channel": "lebanonNewsNow",
+    "message_id": 207954,
+    "date": "2025-08-25 09:02:20+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "ورد الآن وزير الخارجية السعودي: نطالب المجتمع الدولي بالعمل على إنهاء الاحتلال الإسرائيلي lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "International Armed Attack",
+    "location": "وزارة الخارجية والمغتربين",
+    "coordinates": [
+      35.518647900000005,
+      33.89238388
+    ],
+    "channel": "ALJADEED_NEWS",
+    "message_id": 215051,
+    "date": "2025-08-25 09:02:10+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "25",
+        "2025",
+        "11",
+        "57"
+      ],
+      "casualties": [],
+      "summary": "وزير الخارجية السعودي: العدوان الإسرائيلي ضد الفلسطينيين انتهاك صارخ للقانون الدولي August 25, 2025 at 11:57AM"
+    }
+  },
+  {
+    "incident_type": "تعارض المشاركات",
+    "location": "وزارة الخارجية والمغتربين",
+    "coordinates": [
+      35.518647900000005,
+      33.89238388
+    ],
+    "channel": "ALJADEED_NEWS",
+    "message_id": 215052,
+    "date": "2025-08-25 09:02:11+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "25",
+        "2025",
+        "11",
+        "57"
+      ],
+      "casualties": [],
+      "summary": "وزير الخارجية السعودي: المملكة ترفض المشاريع الاستيطانية الإسرائيلية August 25, 2025 at 11:57AM"
+    }
+  },
+  {
+    "incident_type": "Israeli Airstrike Suspension Plan E1 on Gaza City Center by Hamas Militants",
+    "location": "مجلس النواب",
+    "coordinates": [
+      35.50385237142857,
+      33.89690762857143
+    ],
+    "channel": "lebanonNewsNow",
+    "message_id": 207956,
+    "date": "2025-08-25 09:04:22+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "1"
+      ],
+      "casualties": [],
+      "summary": "ورد الآن ممثل فلسطين بالأمم المتحدة: خطة التوسع الاستيطاني E1 ستعزل القدس عن محيطها الفلسطيني lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "ختم وخطوات تصعيدية",
+    "location": "طرابلس",
+    "coordinates": [
+      35.8348551,
+      34.4373616
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143827,
+    "date": "2025-08-25 09:05:44+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "735760"
+      ],
+      "casualties": [],
+      "summary": "طرابلس على صفيح ساخن خيم وخطوات تصعيدية غير مسبوقة في الأفق!"
+    }
   }
 ]
