@@ -3918,5 +3918,144 @@
       "casualties": [],
       "summary": "ثلاث طائرات مسيرة معادية تحلق في اجواء الضاحية الجنوبية لبيروت"
     }
+  },
+  {
+    "incident_type": "earthquake",
+    "location": "مجلس النواب",
+    "coordinates": [
+      35.50385237142857,
+      33.89690762857143
+    ],
+    "channel": "lebanonnews2",
+    "message_id": 87413,
+    "date": "2025-08-25 09:25:53+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "مصدر عسكري لبناني للحدث: خطة الجيش لنزع سـ.ـلاح حـ ـزب الـ ـله شبه جاهزة"
+    }
+  },
+  {
+    "incident_type": "medical",
+    "location": "خوري",
+    "coordinates": [
+      35.5500903,
+      33.861874
+    ],
+    "channel": "MTVLebanonNews",
+    "message_id": 279292,
+    "date": "2025-08-25 09:37:48+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "3",
+        "25",
+        "2025",
+        "12",
+        "32"
+      ],
+      "casualties": [],
+      "summary": "خوري لـ الحزب : عدم تسليمكم للسلاح يخدم إسرائيل August 25, 2025 at 12:32PM"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "وزارة الداخلية والبدلديّات",
+    "coordinates": [
+      35.48989807777778,
+      33.89505342222222
+    ],
+    "channel": "-1001273314564",
+    "message_id": 279293,
+    "date": "2025-08-25 09:37:49+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "4",
+        "1",
+        "2",
+        "25",
+        "2025",
+        "12",
+        "33"
+      ],
+      "casualties": [],
+      "summary": "فيديو من داخل مجمع ناصر الطبي بعد قصفه August 25, 2025 at 12:33PM"
+    }
+  },
+  {
+    "incident_type": "medical",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143838,
+    "date": "2025-08-25 09:37:52+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "مقررة الأمم المتحدة لحقوق الإنسان بالأراضي الفلسطينية المحتلة: يجب حماية الصحفيين والمستشفيات والأطباء"
+    }
+  },
+  {
+    "incident_type": "explosion",
+    "location": "وزارة الداخلية والبدلديّات",
+    "coordinates": [
+      35.48989807777778,
+      33.89505342222222
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143839,
+    "date": "2025-08-25 09:39:43+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "735770"
+      ],
+      "casualties": [],
+      "summary": "الأمن الروسي يحبط هجوما إرهابيا بعبوة ناسفة مخفية داخل أيقونة"
+    }
+  },
+  {
+    "incident_type": "pollution",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143840,
+    "date": "2025-08-25 09:40:32+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "735771"
+      ],
+      "casualties": [],
+      "summary": "محافظ البقاع يتحرك بعد فيديو تسرب مياه آسنة في نهر البردوني"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143844,
+    "date": "2025-08-25 09:58:59+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "حماس: نتنياهو يؤكد استهتاره بكل القوانين الدولية وتحديه للمجتمع الدولي بتعمده استهداف مستشفى ناصر"
+    }
   }
 ]
