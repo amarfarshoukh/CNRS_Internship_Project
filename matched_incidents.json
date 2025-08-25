@@ -3410,5 +3410,65 @@
       "casualties": [],
       "summary": "‌‏تمشيط بالأسلحة الرشاشة من موقع الجيش الاسرائيلي في رويسات العلم بإتجاه أطراف بلدة كفرشوبا في قضاء حاصبيا"
     }
+  },
+  {
+    "incident_type": "Breaching of State Security Facility by ISIS Cell using the code name 'War'",
+    "location": "مركبا",
+    "coordinates": [
+      35.5162191,
+      33.2339621
+    ],
+    "channel": "testingammoura",
+    "message_id": 71,
+    "date": "2025-08-25 05:51:30+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "25",
+        "2025",
+        "08",
+        "19"
+      ],
+      "casualties": [],
+      "summary": "لوكالة الوطنية للإعلام: قوة إسرائيلية دخلت إلى معمل حرب الواقع على طريق مركبا - عديسة حيث قامت بتفتيشه بدقة ووضعت تحذيرا لصاحب المعمل على الباب August 25, 2025 at 08:19AM"
+    }
+  },
+  {
+    "incident_type": "vehicle_accident",
+    "location": "بعبدا",
+    "coordinates": [
+      35.5445655,
+      33.8335501
+    ],
+    "channel": "testingammoura",
+    "message_id": 74,
+    "date": "2025-08-25 05:53:37+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [
+        "injured"
+      ],
+      "summary": "ورد الآن التحكم المروري: إنقلاب سيارة على أوتوستراد الرميلة باتجاه الدامور نتج عنه جريح ودراج من مفرزة سير بعبدا يعمل على المعالجة"
+    }
+  },
+  {
+    "incident_type": "intimidation leading to potential casualties and difficulty in identifying safe areas for families",
+    "location": "غزة",
+    "coordinates": [
+      35.8276513,
+      33.6711831
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143778,
+    "date": "2025-08-25 05:53:38+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [
+        "killed"
+      ],
+      "summary": "هآرتس عن مصادر: تقديرات لرئيس الأركان بأن دخول مدينة غزة قد يؤدي إلى مقتل الأسرى وصعوبة تحديد أماكن وجود بعضهم"
+    }
   }
 ]
