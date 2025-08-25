@@ -296,6 +296,7 @@ def clean_summary(text: str) -> str:
 
 
 # --- Updated phi3_worker ---
+# --- Updated robust phi3_worker ---
 async def phi3_worker(matches, existing_ids):
     while True:
         event = await message_queue.get()
@@ -316,30 +317,48 @@ async def phi3_worker(matches, existing_ids):
             # --- Incident type detection (keywords first)
             incident_types = find_incident_types(text, IK.incident_keywords)
 
-            # --- Fallback to Phi3 if keywords fail
+            # --- Fallback to Phi3 if keywords fail or location not found
             phi3_res = None
             if not incident_types or not location:
                 phi3_res = query_phi3_json(text)
 
-                # --- Incident type from Phi3
-                if not incident_types and phi3_res:
-                    itype = phi3_res.get("incident_type")
-                    if itype and itype != "other":
-                        if isinstance(itype, list):
-                            incident_types = [i for i in itype if i != "other"]
-                        else:
-                            incident_types = [itype]
+                if phi3_res:
+                    # --- Incident type from Phi3
+                    if not incident_types:
+                        itype = phi3_res.get("incident_type")
+                        if itype and itype != "other":
+                            if isinstance(itype, list):
+                                incident_types = [i for i in itype if i != "other"]
+                            elif isinstance(itype, str):
+                                incident_types = [itype]
 
-                # --- Location from Phi3 but only if exists in your map
-                if not location and phi3_res:
-                    phi3_loc = phi3_res.get("location")
-                    if phi3_loc:
-                        loc_norm = normalize_arabic(phi3_loc)
-                        if loc_norm in ALL_LOCATIONS:
-                            location = ALL_LOCATIONS[loc_norm]["original"]
-                            coordinates = ALL_LOCATIONS[loc_norm]["coordinates"]
+                    # --- Location from Phi3 but strictly filter against map
+                    if not location:
+                        phi3_loc = phi3_res.get("location")
+                        loc_candidates = []
 
-            # --- Skip if no incident type or no valid location
+                        # String
+                        if isinstance(phi3_loc, str):
+                            loc_candidates.append(phi3_loc)
+                        # List
+                        elif isinstance(phi3_loc, list):
+                            loc_candidates.extend([l for l in phi3_loc if isinstance(l, str)])
+                        # Dict
+                        elif isinstance(phi3_loc, dict):
+                            for key in ["city", "town", "location", "name"]:
+                                loc_val = phi3_loc.get(key)
+                                if isinstance(loc_val, str):
+                                    loc_candidates.append(loc_val)
+
+                        # Check candidates against map
+                        for loc in loc_candidates:
+                            loc_norm = normalize_arabic(loc)
+                            if loc_norm in ALL_LOCATIONS:
+                                location = ALL_LOCATIONS[loc_norm]["original"]
+                                coordinates = ALL_LOCATIONS[loc_norm]["coordinates"]
+                                break  # first valid match
+
+            # --- Skip if no incident type or valid map location
             if not incident_types or not location or not coordinates:
                 print(f"[SKIP] {text[:50]}... (no valid incident/location)")
                 continue
@@ -353,6 +372,7 @@ async def phi3_worker(matches, existing_ids):
             if len(summary) > 300:
                 summary = summary[:300] + "..."
 
+            # --- Create records for each incident type
             for incident_type in incident_types:
                 record = {
                     "incident_type": incident_type,
@@ -378,11 +398,7 @@ async def phi3_worker(matches, existing_ids):
             existing_ids.add((channel_name, msg_id))
 
         finally:
-            # Ensure task_done is called exactly once per queue item
             message_queue.task_done()
-
-
-
 
 # -----------------------------
 # Telegram login
