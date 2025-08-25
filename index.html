@@ -42,7 +42,7 @@
       display: none !important;
     }
 
-    /* --- Bot styling (updated) --- */
+    /* Bot styling */
     #ask-btn {
       position: fixed;
       bottom: 20px;
@@ -71,7 +71,7 @@
       z-index: 9999;
       font-family: sans-serif;
       max-height: 420px;
-      overflow: hidden; /* header fixed, content scrolls */
+      overflow: hidden;
     }
     #bot-modal-header {
       padding: 10px;
@@ -95,10 +95,10 @@
     }
     #bot-modal-content {
       padding: 10px;
-      overflow-y: auto;           /* internal scroller */
-      max-height: 360px;          /* right-side scrollbar inside modal */
+      overflow-y: auto;
+      max-height: 360px;
     }
-    .bot-q {
+    .bot-q, .bot-main-q, .bot-sub-btn {
       width: 100%;
       padding: 8px;
       margin: 8px 0 4px 0;
@@ -109,7 +109,7 @@
       text-align: left;
       font-size: 14px;
     }
-    .bot-q:hover { background: #f0f0f0; }
+    .bot-q:hover, .bot-main-q:hover, .bot-sub-btn:hover { background: #f0f0f0; }
 
     .inline-form {
       border: 1px dashed #ddd;
@@ -119,32 +119,14 @@
       background: #fff;
     }
     .inline-form .row { display: grid; grid-template-columns: 1fr; gap: 6px; }
-    .inline-form input, .inline-form select {
-      width: 100%;
-      padding: 6px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    .inline-form button {
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #000;
-      background: #000;
-      color: #fff;
-      cursor: pointer;
-    }
+    .inline-form input, .inline-form select { width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 6px; }
+    .inline-form button { padding: 8px; border-radius: 8px; border: 1px solid #000; background: #000; color: #fff; cursor: pointer; }
     .inline-form button:hover { background: #333; }
 
-    #bot-answer {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #000;
-      padding: 8px;
-      border-top: 1px solid #eee;
-    }
-    .hint {
-      font-size: 12px; color: #666; margin-top: 4px;
-    }
+    #bot-answer { margin-top: 10px; font-size: 14px; color: #000; padding: 8px; border-top: 1px solid #eee; }
+    .hint { font-size: 12px; color: #666; margin-top: 4px; }
+
+    .hidden { display: none; }
   </style>
 </head>
 <body>
@@ -178,52 +160,52 @@
   </div>
 
   <!-- Ask Me Bot -->
-  <button id="ask-btn">Ask me!</button>
-
+  <button id="ask-btn">اسألني!</button>
   <div id="bot-modal">
     <div id="bot-modal-header">
-      Incident Bot
+      روبوت الحوادث
       <button id="bot-close" aria-label="Close">×</button>
     </div>
     <div id="bot-modal-content">
-      <!-- Static quick questions -->
-      <button class="bot-q" data-q="vehicle_today">How many vehicle accidents today?</button>
-      <button class="bot-q" data-q="total_today">How many total incidents today?</button>
-
-      <!-- Questions that reveal inline forms with X placeholders -->
-      <button class="bot-q" data-q="city_all">How many incidents in <b>X</b> (city)?</button>
-      <div class="inline-form hidden" data-form="city_all"></div>
-
-      <button class="bot-q" data-q="city_today">How many incidents in <b>X</b> (city) today?</button>
-      <div class="inline-form hidden" data-form="city_today"></div>
-
-      <button class="bot-q" data-q="type_all">How many <b>X</b> (type) incidents overall?</button>
-      <div class="inline-form hidden" data-form="type_all"></div>
-
-      <button class="bot-q" data-q="type_today">How many <b>X</b> (type) incidents today?</button>
-      <div class="inline-form hidden" data-form="type_today"></div>
-
-      <button class="bot-q" data-q="type_city">How many <b>X</b> (type) incidents in <b>Y</b> (city)?</button>
-      <div class="inline-form hidden" data-form="type_city"></div>
-
-      <button class="bot-q" data-q="range_any">How many incidents between <b>A</b> and <b>B</b> (dates)?</button>
-      <div class="inline-form hidden" data-form="range_any"></div>
-
-      <button class="bot-q" data-q="range_type">How many <b>X</b> (type) incidents between <b>A</b> and <b>B</b>?</button>
-      <div class="inline-form hidden" data-form="range_type"></div>
-
-      <button class="bot-q" data-q="range_city">How many incidents in <b>X</b> (city) between <b>A</b> and <b>B</b>?</button>
-      <div class="inline-form hidden" data-form="range_city"></div>
-
-      <div class="hint">Tip: types include
-        <code>vehicle_accident</code>, <code>shooting</code>, <code>fire</code>, <code>protest</code>, etc.
+      <div class="bot-topic">
+        <button class="bot-main-q">الحوادث اليوم</button>
+        <div class="bot-sub-q hidden">
+          <button class="bot-sub-btn" data-q="vehicle_today">عدد حوادث المركبات اليوم</button>
+          <button class="bot-sub-btn" data-q="total_today">إجمالي الحوادث اليوم</button>
+        </div>
       </div>
 
-      <div id="bot-answer"></div>
+      <div class="bot-topic">
+        <button class="bot-main-q">حسب المدينة</button>
+        <div class="bot-sub-q hidden">
+          <button class="bot-sub-btn" data-q="city_all">عدد الحوادث في مدينة</button>
+          <button class="bot-sub-btn" data-q="city_today">عدد الحوادث اليوم في مدينة</button>
+        </div>
+      </div>
+
+      <div class="bot-topic">
+        <button class="bot-main-q">حسب النوع</button>
+        <div class="bot-sub-q hidden">
+          <button class="bot-sub-btn" data-q="type_all">عدد الحوادث حسب النوع</button>
+          <button class="bot-sub-btn" data-q="type_today">عدد الحوادث اليوم حسب النوع</button>
+          <button class="bot-sub-btn" data-q="type_city">عدد الحوادث حسب النوع والمدينة</button>
+        </div>
+      </div>
+
+      <div class="bot-topic">
+        <button class="bot-main-q">حسب المدة</button>
+        <div class="bot-sub-q hidden">
+          <button class="bot-sub-btn" data-q="range_any">عدد الحوادث بين تاريخين</button>
+          <button class="bot-sub-btn" data-q="range_type">عدد الحوادث حسب النوع بين تاريخين</button>
+          <button class="bot-sub-btn" data-q="range_city">عدد الحوادث في مدينة بين تاريخين</button>
+        </div>
+      </div>
+
+      <div id="bot-answer" style="margin-top:10px;"></div>
     </div>
   </div>
 
-  <!-- Datalists (filled in JS) -->
+  <!-- Datalists -->
   <datalist id="type-options"></datalist>
   <datalist id="city-options"></datalist>
 
@@ -232,7 +214,7 @@
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
   <script>
-    // --- Map and cluster setup ---
+    // === Map setup ===
     const map = L.map('map', { minZoom: 7, maxZoom: 18 }).setView([33.9, 35.86], 8);
     const lebanonBounds = L.latLngBounds([[32.8, 34.9], [34.9, 36.9]]);
     map.setMaxBounds(lebanonBounds);
@@ -275,7 +257,7 @@
     const legendDiv = document.getElementById('legend');
     let allItems = [];
 
-    // Populate dropdown (filter)
+    // Populate dropdown
     ALL_TYPES.forEach(t => {
       const opt = document.createElement('option');
       opt.value = t;
@@ -358,7 +340,6 @@
       }
     }
 
-    // Search + zoom to incidents
     document.getElementById('search').addEventListener('keydown', e => {
       if (e.key === 'Enter') {
         const query = e.target.value.trim().toLowerCase();
@@ -392,251 +373,122 @@
       if (selected) activeTypes = new Set([selected]);
       render();
     });
+    showAllBtn.addEventListener('click', () => { activeTypes = new Set([...ALL_TYPES]); filterSelect.value = ""; render(); });
+    noneBtn.addEventListener('click', () => { activeTypes.clear(); filterSelect.value = ""; render(); });
 
-    showAllBtn.addEventListener('click', () => {
-      activeTypes = new Set([...ALL_TYPES]);
-      filterSelect.value = "";
-      render();
-    });
-
-    noneBtn.addEventListener('click', () => {
-      activeTypes.clear();
-      filterSelect.value = "";
-      render();
-    });
-
-    // Default: show all
+    // Default refresh
     activeTypes = new Set([...ALL_TYPES]);
     document.getElementById('refresh').onclick = () => refresh();
     refresh();
     setInterval(refresh, 30000);
 
-    // --- Bot logic (enhanced) ---
+    // === Bot logic ===
     const askBtn = document.getElementById('ask-btn');
     const modal = document.getElementById('bot-modal');
     const answerDiv = document.getElementById('bot-answer');
     const closeBtn = document.getElementById('bot-close');
 
-    // Fill type datalist from constants
+    askBtn.addEventListener('click', () => modal.style.display = (modal.style.display==='block')?'none':'block');
+    closeBtn.addEventListener('click', () => modal.style.display = 'none');
+
     const typeOptions = document.getElementById('type-options');
-    ALL_TYPES.forEach(t => {
-      const o = document.createElement('option');
-      o.value = t;
-      typeOptions.appendChild(o);
-    });
+    ALL_TYPES.forEach(t => { const o = document.createElement('option'); o.value=t; typeOptions.appendChild(o); });
 
     function updateCityDatalist() {
       const cityOptions = document.getElementById('city-options');
       cityOptions.innerHTML = '';
-      const uniq = [...new Set(allItems.map(i => i.city).filter(Boolean))].sort();
-      uniq.forEach(c => {
-        const o = document.createElement('option');
-        o.value = c;
-        cityOptions.appendChild(o);
+      const uniq = [...new Set(allItems.map(i=>i.city).filter(Boolean))].sort();
+      uniq.forEach(c=>{ const o=document.createElement('option'); o.value=c; cityOptions.appendChild(o); });
+    }
+
+    function todayISO() { return new Date().toISOString().slice(0,10); }
+    const countWhere = pred => allItems.reduce((acc,it)=>acc+(pred(it)?1:0),0);
+
+    document.querySelectorAll('.bot-main-q').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const sub = btn.nextElementSibling;
+        sub.classList.toggle('hidden');
       });
-    }
-
-    function todayISO() {
-      // Keep same behavior as your original code (UTC ISO yyyy-mm-dd)
-      return new Date().toISOString().slice(0,10);
-    }
-
-    askBtn.addEventListener('click', () => {
-      modal.style.display = (modal.style.display === 'block') ? 'none' : 'block';
     });
-    closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
 
-    // Helper: safely count with predicate
-    const countWhere = (pred) => allItems.reduce((acc, it) => acc + (pred(it) ? 1 : 0), 0);
-
-    // Toggle + render inline form for a specific question key
-    function renderInlineForm(key, container) {
-      const h = (html) => { container.innerHTML = html; container.classList.remove('hidden'); };
-
-      if (key === 'city_all') {
-        h(`
-          <div class="row">
-            <input list="city-options" id="if-city-all" placeholder="City (X)">
-            <button id="run-city-all">Run</button>
-          </div>
-        `);
-        document.getElementById('run-city-all').onclick = () => {
-          const city = (document.getElementById('if-city-all').value || '').trim();
-          if (!city) return answerDiv.textContent = 'Please enter a city.';
-          const n = countWhere(i => (i.city||'').toLowerCase() === city.toLowerCase());
-          answerDiv.textContent = `${n} incidents in ${city} (all time)`;
-        };
-      }
-
-      if (key === 'city_today') {
-        h(`
-          <div class="row">
-            <input list="city-options" id="if-city-today" placeholder="City (X)">
-            <button id="run-city-today">Run</button>
-          </div>
-        `);
-        document.getElementById('run-city-today').onclick = () => {
-          const city = (document.getElementById('if-city-today').value || '').trim();
-          if (!city) return answerDiv.textContent = 'Please enter a city.';
-          const t = todayISO();
-          const n = countWhere(i => (i.city||'').toLowerCase() === city.toLowerCase() && (i.date||'').startsWith(t));
-          answerDiv.textContent = `${n} incidents in ${city} today`;
-        };
-      }
-
-      if (key === 'type_all') {
-        h(`
-          <div class="row">
-            <input list="type-options" id="if-type-all" placeholder="Type (X), e.g. fire">
-            <button id="run-type-all">Run</button>
-          </div>
-        `);
-        document.getElementById('run-type-all').onclick = () => {
-          const type = (document.getElementById('if-type-all').value || '').trim();
-          if (!type) return answerDiv.textContent = 'Please enter a type.';
-          const n = countWhere(i => (i.incident_type||'').toLowerCase() === type.toLowerCase());
-          answerDiv.textContent = `${n} "${type}" incidents (all time)`;
-        };
-      }
-
-      if (key === 'type_today') {
-        h(`
-          <div class="row">
-            <input list="type-options" id="if-type-today" placeholder="Type (X), e.g. fire">
-            <button id="run-type-today">Run</button>
-          </div>
-        `);
-        document.getElementById('run-type-today').onclick = () => {
-          const type = (document.getElementById('if-type-today').value || '').trim();
-          if (!type) return answerDiv.textContent = 'Please enter a type.';
-          const t = todayISO();
-          const n = countWhere(i => (i.incident_type||'').toLowerCase() === type.toLowerCase() && (i.date||'').startsWith(t));
-          answerDiv.textContent = `${n} "${type}" incidents today`;
-        };
-      }
-
-      if (key === 'type_city') {
-        h(`
-          <div class="row">
-            <input list="type-options" id="if-type-city" placeholder="Type (X)">
-            <input list="city-options" id="if-city-type" placeholder="City (Y)">
-            <button id="run-type-city">Run</button>
-          </div>
-        `);
-        document.getElementById('run-type-city').onclick = () => {
-          const type = (document.getElementById('if-type-city').value || '').trim();
-          const city = (document.getElementById('if-city-type').value || '').trim();
-          if (!type || !city) return answerDiv.textContent = 'Please enter type and city.';
-          const n = countWhere(i =>
-            (i.incident_type||'').toLowerCase() === type.toLowerCase() &&
-            (i.city||'').toLowerCase() === city.toLowerCase()
-          );
-          answerDiv.textContent = `${n} "${type}" incidents in ${city} (all time)`;
-        };
-      }
-
-      if (key === 'range_any') {
-        h(`
-          <div class="row">
-            <input type="date" id="if-start">
-            <input type="date" id="if-end">
-            <button id="run-range-any">Run</button>
-          </div>
-        `);
-        document.getElementById('run-range-any').onclick = () => {
-          const s = document.getElementById('if-start').value;
-          const e = document.getElementById('if-end').value;
-          if (!s || !e) return answerDiv.textContent = 'Please pick start and end dates.';
-          const n = countWhere(i => (i.date||'') >= s && (i.date||'') <= e);
-          answerDiv.textContent = `${n} incidents between ${s} and ${e}`;
-        };
-      }
-
-      if (key === 'range_type') {
-        h(`
-          <div class="row">
-            <input list="type-options" id="if-type-range" placeholder="Type (X)">
-            <input type="date" id="if-start-t">
-            <input type="date" id="if-end-t">
-            <button id="run-range-type">Run</button>
-          </div>
-        `);
-        document.getElementById('run-range-type').onclick = () => {
-          const type = (document.getElementById('if-type-range').value || '').trim();
-          const s = document.getElementById('if-start-t').value;
-          const e = document.getElementById('if-end-t').value;
-          if (!type || !s || !e) return answerDiv.textContent = 'Please enter type and dates.';
-          const n = countWhere(i =>
-            (i.incident_type||'').toLowerCase() === type.toLowerCase() &&
-            (i.date||'') >= s && (i.date||'') <= e
-          );
-          answerDiv.textContent = `${n} "${type}" incidents between ${s} and ${e}`;
-        };
-      }
-
-      if (key === 'range_city') {
-        h(`
-          <div class="row">
-            <input list="city-options" id="if-city-range" placeholder="City (X)">
-            <input type="date" id="if-start-c">
-            <input type="date" id="if-end-c">
-            <button id="run-range-city">Run</button>
-          </div>
-        `);
-        document.getElementById('run-range-city').onclick = () => {
-          const city = (document.getElementById('if-city-range').value || '').trim();
-          const s = document.getElementById('if-start-c').value;
-          const e = document.getElementById('if-end-c').value;
-          if (!city || !s || !e) return answerDiv.textContent = 'Please enter city and dates.';
-          const n = countWhere(i =>
-            (i.city||'').toLowerCase() === city.toLowerCase() &&
-            (i.date||'') >= s && (i.date||'') <= e
-          );
-          answerDiv.textContent = `${n} incidents in ${city} between ${s} and ${e}`;
-        };
-      }
-    }
-
-    // Wire up static questions + togglers
-    document.querySelectorAll('.bot-q').forEach(btn => {
-      btn.addEventListener('click', () => {
+    // Sub-button handling
+    document.querySelectorAll('.bot-sub-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
         const key = btn.dataset.q;
-        answerDiv.textContent = ''; // reset
-        const form = document.querySelector(`.inline-form[data-form="${key}"]`);
-
-        if (!key) return;
-
-        // Instant answers
-        if (key === 'vehicle_today') {
-          const t = todayISO();
-          const n = countWhere(i => (i.incident_type||'') === 'vehicle_accident' && (i.date||'').startsWith(t));
-          answerDiv.textContent = `${n} vehicle incidents today`;
-          return;
-        }
-        if (key === 'total_today') {
-          const t = todayISO();
-          const n = countWhere(i => (i.date||'').startsWith(t));
-          answerDiv.textContent = `${n} total incidents today`;
-          return;
-        }
-
-        // Toggle form display for input-based questions
-        document.querySelectorAll('.inline-form').forEach(div => {
-          if (div !== form) { div.classList.add('hidden'); div.innerHTML = ''; }
-        });
-
-        if (form.classList.contains('hidden')) {
-          renderInlineForm(key, form);
-        } else {
-          form.classList.add('hidden');
-          form.innerHTML = '';
+        answerDiv.innerHTML = '';
+        if(key==='vehicle_today'){ answerDiv.textContent = `عدد حوادث المركبات اليوم: ${countWhere(i=>i.incident_type==='vehicle_accident' && i.date===todayISO())}`; }
+        else if(key==='total_today'){ answerDiv.textContent = `إجمالي الحوادث اليوم: ${countWhere(i=>i.date===todayISO())}`; }
+        else if(key==='city_all' || key==='city_today' || key==='type_all' || key==='type_today' || key==='type_city' || key==='range_any' || key==='range_type' || key==='range_city'){
+          // Render inline form
+          renderInlineForm(key);
         }
       });
     });
 
-    // Small helper to hide elements via class
-    CSS.registerProperty && (()=>{})(); // no-op, keep CSS simple
-    document.querySelectorAll('.inline-form').forEach(el => el.classList.add('hidden'));
+    function renderInlineForm(key){
+      const div = document.createElement('div');
+      div.className='inline-form';
+      if(key==='city_all'){
+        div.innerHTML = `<div class="row"><label>اختر المدينة</label><input list="city-options" id="city-inp"><button onclick="cityAll()">احسب</button></div>`;
+      } else if(key==='city_today'){
+        div.innerHTML = `<div class="row"><label>اختر المدينة</label><input list="city-options" id="city-inp"><button onclick="cityToday()">احسب</button></div>`;
+      } else if(key==='type_all'){
+        div.innerHTML = `<div class="row"><label>اختر النوع</label><input list="type-options" id="type-inp"><button onclick="typeAll()">احسب</button></div>`;
+      } else if(key==='type_today'){
+        div.innerHTML = `<div class="row"><label>اختر النوع</label><input list="type-options" id="type-inp"><button onclick="typeToday()">احسب</button></div>`;
+      } else if(key==='type_city'){
+        div.innerHTML = `<div class="row"><label>اختر النوع</label><input list="type-options" id="type-inp"><label>اختر المدينة</label><input list="city-options" id="city-inp"><button onclick="typeCity()">احسب</button></div>`;
+      } else if(key==='range_any' || key==='range_type' || key==='range_city'){
+        div.innerHTML = `<div class="row"><label>من تاريخ</label><input type="date" id="from-date"><label>الى تاريخ</label><input type="date" id="to-date">`+
+          (key==='range_type' || key==='range_city'?'<label>اختر النوع</label><input list="type-options" id="type-inp">':'')+
+          (key==='range_city' || key==='range_type'?'<label>اختر المدينة</label><input list="city-options" id="city-inp">':'')+
+          `<button onclick="rangeCalc('${key}')">احسب</button></div>`;
+      }
+      answerDiv.appendChild(div);
+    }
+
+    // Inline form functions
+    window.cityAll = () => {
+      const val = document.getElementById('city-inp')?.value;
+      const n = countWhere(i=>i.city===val);
+      answerDiv.textContent = `عدد الحوادث في ${val}: ${n}`;
+    };
+    window.cityToday = () => {
+      const val = document.getElementById('city-inp')?.value;
+      const n = countWhere(i=>i.city===val && i.date===todayISO());
+      answerDiv.textContent = `عدد الحوادث اليوم في ${val}: ${n}`;
+    };
+    window.typeAll = () => {
+      const val = document.getElementById('type-inp')?.value;
+      const n = countWhere(i=>i.incident_type===val);
+      answerDiv.textContent = `عدد الحوادث من النوع ${val}: ${n}`;
+    };
+    window.typeToday = () => {
+      const val = document.getElementById('type-inp')?.value;
+      const n = countWhere(i=>i.incident_type===val && i.date===todayISO());
+      answerDiv.textContent = `عدد الحوادث اليوم من النوع ${val}: ${n}`;
+    };
+    window.typeCity = () => {
+      const typeVal = document.getElementById('type-inp')?.value;
+      const cityVal = document.getElementById('city-inp')?.value;
+      const n = countWhere(i=>i.incident_type===typeVal && i.city===cityVal);
+      answerDiv.textContent = `عدد الحوادث من النوع ${typeVal} في ${cityVal}: ${n}`;
+    };
+    window.rangeCalc = (key) => {
+      const from = document.getElementById('from-date')?.value;
+      const to = document.getElementById('to-date')?.value;
+      const typeVal = document.getElementById('type-inp')?.value;
+      const cityVal = document.getElementById('city-inp')?.value;
+      const n = countWhere(i=>{
+        if(!i.date) return false;
+        if(i.date<from || i.date>to) return false;
+        if(key==='range_type' && i.incident_type!==typeVal) return false;
+        if(key==='range_city' && i.city!==cityVal) return false;
+        if(key==='range_city' && typeVal && i.incident_type!==typeVal) return false;
+        return true;
+      });
+      answerDiv.textContent = `عدد الحوادث في النطاق الزمني: ${n}`;
+    };
   </script>
 </body>
 </html>

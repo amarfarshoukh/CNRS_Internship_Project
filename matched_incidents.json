@@ -4488,5 +4488,67 @@
       "casualties": [],
       "summary": "تعديل مواعيد بعض رحلات طيران الشرق الأوسط August 25, 2025 at 02:17PM"
     }
+  },
+  {
+    "incident_type": "medical",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "LBCI_NEWS",
+    "message_id": 252058,
+    "date": "2025-08-25 11:23:16+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "5",
+        "1",
+        "25",
+        "2025",
+        "02",
+        "19"
+      ],
+      "casualties": [],
+      "summary": "الجيش الإسرائيلي: سنقود تحقيقا بعد الضربة على مستشفى ناصر في خان يونسLBCINews August 25, 2025 at 02:19PM"
+    }
+  },
+  {
+    "incident_type": "pollution",
+    "location": "الشركة الشرقية للمعادن الثمينة",
+    "coordinates": [
+      35.56257921428571,
+      33.890861435714285
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143874,
+    "date": "2025-08-25 11:23:45+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "29"
+      ],
+      "casualties": [],
+      "summary": "طيران الشرق الأوسط: تعديل جدول مواعيد بعض رحلات يوم 29 آب"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143884,
+    "date": "2025-08-25 11:55:50+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "735814"
+      ],
+      "casualties": [],
+      "summary": "بعد قصفها للمسعفيين والصحافيين... إسرائيل تتأسف!"
+    }
   }
 ]
