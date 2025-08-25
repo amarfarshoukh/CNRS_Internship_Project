@@ -3829,25 +3829,6 @@
     }
   },
   {
-    "incident_type": "collapse",
-    "location": "بنت جبيل",
-    "coordinates": [
-      35.4327933,
-      33.1195382
-    ],
-    "channel": "AljadeedNewsTV",
-    "message_id": 33488,
-    "date": "2025-08-25 08:47:06+00:00",
-    "threat_level": "yes",
-    "details": {
-      "numbers_found": [],
-      "casualties": [
-        "killed"
-      ],
-      "summary": "وزارة الصحة: الغارة الإسرائيلية التي استهدفت رابيد على طريق تبنين قضاء بنت جبيل أدت إلى سقوط شهيد"
-    }
-  },
-  {
     "incident_type": "airstrike",
     "location": "تبنين",
     "coordinates": [
