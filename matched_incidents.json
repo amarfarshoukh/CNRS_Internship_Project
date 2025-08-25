@@ -3470,5 +3470,49 @@
       ],
       "summary": "هآرتس عن مصادر: تقديرات لرئيس الأركان بأن دخول مدينة غزة قد يؤدي إلى مقتل الأسرى وصعوبة تحديد أماكن وجود بعضهم"
     }
+  },
+  {
+    "incident_type": "diplomatic meeting announcement",
+    "location": "المالية",
+    "coordinates": [
+      35.54201784,
+      33.834261240000004
+    ],
+    "channel": "-1001418480303",
+    "message_id": 251988,
+    "date": "2025-08-25 05:58:35+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "0",
+        "2",
+        "0",
+        "25",
+        "2025",
+        "08",
+        "52"
+      ],
+      "casualties": [],
+      "summary": "وزير المالية الألماني في كييف: أوكرانيا تستطيع الاعتماد عليناLBCINews August 25, 2025 at 08:52AM"
+    }
+  },
+  {
+    "incident_type": "vehicle_accident",
+    "location": "بعبدا",
+    "coordinates": [
+      35.5445655,
+      33.8335501
+    ],
+    "channel": "testingammoura",
+    "message_id": 75,
+    "date": "2025-08-25 05:59:22+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [
+        "injured"
+      ],
+      "summary": "ورد الآن التحكم المروري: إنقلاب سيارة على أوتوستراد الرميلة باتجاه الدامور نتج عنه جريح ودراج من مفرزة سير بعبدا يعمل على المعالجة"
+    }
   }
 ]
