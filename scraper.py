@@ -322,60 +322,84 @@ message_queue = asyncio.Queue()
 
 async def phi3_worker(matches, existing_ids):
     while True:
+        event = await message_queue.get()
         try:
-            event = await message_queue.get()
             text = event.raw_text or ""
-            channel_name = event.chat.username if event.chat and getattr(event.chat, 'username', None) else str(event.chat_id)
+            channel_name = (
+                event.chat.username if event.chat and getattr(event.chat, 'username', None)
+                else str(event.chat_id)
+            )
             msg_id = event.id
 
+            # Skip already processed messages
             if (channel_name, msg_id) in existing_ids:
-                message_queue.task_done()
                 continue
 
-            # Map-first location
+            # --- Location detection using map
             location, coordinates = detect_location(text)
-            # Keyword-first incident types
+
+            # --- Incident type detection (keywords first)
             incident_types = find_incident_types(text, IK.incident_keywords)
 
-            # Phi3 fallback
+            # --- Fallback to Phi3 if keywords fail or location not found
+            phi3_res = None
             if not incident_types or not location:
                 phi3_res = query_phi3_json(text)
+
                 if phi3_res:
+                    # --- Incident type from Phi3
                     if not incident_types:
                         itype = phi3_res.get("incident_type")
-                        if itype:
-                            incident_types = [i for i in itype if i != "other"] if isinstance(itype, list) else [itype]
+                        if itype and itype != "other":
+                            if isinstance(itype, list):
+                                incident_types = [i for i in itype if i != "other"]
+                            elif isinstance(itype, str):
+                                incident_types = [itype]
+
+                    # --- Location from Phi3 (strict map validation)
                     if not location:
                         phi3_loc = phi3_res.get("location")
                         loc_candidates = []
-                        if isinstance(phi3_loc, str): loc_candidates.append(phi3_loc)
-                        elif isinstance(phi3_loc, list): loc_candidates.extend([l for l in phi3_loc if isinstance(l, str)])
+
+                        if isinstance(phi3_loc, str):
+                            loc_candidates.append(phi3_loc)
+                        elif isinstance(phi3_loc, list):
+                            loc_candidates.extend([l for l in phi3_loc if isinstance(l, str)])
                         elif isinstance(phi3_loc, dict):
                             for key in ["city", "town", "location", "name"]:
                                 loc_val = phi3_loc.get(key)
-                                if isinstance(loc_val, str): loc_candidates.append(loc_val)
+                                if isinstance(loc_val, str):
+                                    loc_candidates.append(loc_val)
+
                         for loc in loc_candidates:
                             loc_norm = normalize_arabic(loc)
                             if loc_norm in ALL_LOCATIONS:
                                 text_norm = normalize_arabic(text)
                                 loc_words = loc_norm.split()
                                 text_words = text_norm.split()
-                                for i in range(len(text_words)-len(loc_words)+1):
+                                for i in range(len(text_words) - len(loc_words) + 1):
                                     if text_words[i:i+len(loc_words)] == loc_words:
                                         location = ALL_LOCATIONS[loc_norm]["original"]
                                         coordinates = ALL_LOCATIONS[loc_norm]["coordinates"]
                                         break
-                                if location: break
+                                if location:
+                                    break
 
-            # Skip invalid messages
+            # --- Skip if no incident type or valid location
             if not incident_types or not location or not coordinates:
-                message_queue.task_done()
+                print(f"[SKIP] {text[:50]}... (no valid incident/location)")
                 continue
 
+            # --- Extract numbers and casualties
             numbers = IK.extract_numbers(text)
             casualties = IK.extract_casualties(text)
-            summary = clean_summary(text)[:300]
 
+            # --- Clean summary
+            summary = clean_summary(text)
+            if len(summary) > 300:
+                summary = summary[:300] + "..."
+
+            # --- Create records for each incident type
             for incident_type in incident_types:
                 record = {
                     "incident_type": incident_type,
@@ -385,15 +409,26 @@ async def phi3_worker(matches, existing_ids):
                     "message_id": msg_id,
                     "date": str(event.date),
                     "threat_level": "yes",
-                    "details": {"numbers_found": numbers, "casualties": casualties, "summary": summary}
+                    "details": {
+                        "numbers_found": numbers,
+                        "casualties": casualties,
+                        "summary": summary
+                    }
                 }
+
                 if not any(m.get("message_id") == msg_id for m in matches):
                     matches.append(record)
+                    print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
                     save_matches(matches)
 
             existing_ids.add((channel_name, msg_id))
+
+        except Exception as e:
+            print(f"Error processing message: {e}")
+
         finally:
             message_queue.task_done()
+
 
 # -----------------------------
 # Telegram login
