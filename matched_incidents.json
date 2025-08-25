@@ -4465,5 +4465,28 @@
       "casualties": [],
       "summary": "طيران الشرق الأوسط تعلن تعديل جدول مواعيد بعض الرحلات ليوم الجمعة 29 آبLBCINews August 25, 2025 at 02:09PM"
     }
+  },
+  {
+    "incident_type": "pollution",
+    "location": "طيران الشرق الآوسط",
+    "coordinates": [
+      35.4875633,
+      33.8983027
+    ],
+    "channel": "MTVLebanonNews",
+    "message_id": 279303,
+    "date": "2025-08-25 11:22:42+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "4",
+        "25",
+        "2025",
+        "02",
+        "17"
+      ],
+      "casualties": [],
+      "summary": "تعديل مواعيد بعض رحلات طيران الشرق الأوسط August 25, 2025 at 02:17PM"
+    }
   }
 ]
