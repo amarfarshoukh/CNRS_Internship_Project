@@ -3829,25 +3829,6 @@
     }
   },
   {
-    "incident_type": "Governmental Response to Foreign Support for Armed Forces",
-    "location": "جفينور",
-    "coordinates": [
-      35.487057066666665,
-      33.898266299999996
-    ],
-    "channel": "lebanonnews2",
-    "message_id": 87402,
-    "date": "2025-08-25 08:46:20+00:00",
-    "threat_level": "yes",
-    "details": {
-      "numbers_found": [
-        "2"
-      ],
-      "casualties": [],
-      "summary": "مكتب نتنياهو: مستعدون لدعم لبنان في نزع السلاح مكتب نتنياهو: إسرائيل تعترف بالخطوة المهمة التي اتخذتها الحكومة اللبنانية بقيادة رئيس الجمهورية جوزاف عون ورئيس الحكومة نواف سلام"
-    }
-  },
-  {
     "incident_type": "collapse",
     "location": "بنت جبيل",
     "coordinates": [
@@ -3936,6 +3917,25 @@
       ],
       "casualties": [],
       "summary": "طرابلس على صفيح ساخن خيم وخطوات تصعيدية غير مسبوقة في الأفق!"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "الضاحية الجنوبية",
+    "coordinates": [
+      35.4870111,
+      33.8574907
+    ],
+    "channel": "lebanonnews2",
+    "message_id": 87406,
+    "date": "2025-08-25 09:12:17+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "ثلاث طائرات مسيرة معادية تحلق في اجواء الضاحية الجنوبية لبيروت"
     }
   }
 ]
