@@ -115,28 +115,24 @@ def detect_location_from_map(text_norm):
     return None, None
 
 def detect_location(text):
-    """
-    Strict map-first location detection.
-    Only accept full matches of multi-word locations from the map.
-    """
     text_norm = normalize_arabic(text)
     words = text_norm.split()
 
-    # --- Step 1: Multi-word location matches
+    # Step 1: Multi-word location matches
     for loc_norm, loc_data in ALL_LOCATIONS.items():
         loc_words = loc_norm.split()
-        if len(loc_words) > 1:  # multi-word only
+        if len(loc_words) > 1:
             for i in range(len(words) - len(loc_words) + 1):
                 if words[i:i+len(loc_words)] == loc_words:
                     return loc_data["original"], loc_data["coordinates"]
 
-    # --- Step 2: Single-word location matches (only if no multi-word matched)
+    # Step 2: Single-word location matches
     for loc_norm, loc_data in ALL_LOCATIONS.items():
         loc_words = loc_norm.split()
         if len(loc_words) == 1 and loc_words[0] in words:
             return loc_data["original"], loc_data["coordinates"]
 
-    # --- Optional fallback: keyword-based detection
+    # Step 3: Keyword fallback (optional)
     for kw in LOCATION_KEYWORDS:
         if kw in text_norm:
             for loc_norm, loc_data in ALL_LOCATIONS.items():
@@ -215,15 +211,13 @@ def robust_json_extract(text):
     start = text.find('{')
     end = text.rfind('}')
     if start == -1 or end == -1 or end <= start:
-        print("Could not find JSON object in:", text)
         return None
     json_str = text[start:end+1]
-    # remove comments or trailing commas
     json_str = re.sub(r'//.*', '', json_str)
-    json_str = re.sub(r',\s*([}\]])', r'\1', json_str)  # Remove trailing commas
+    json_str = re.sub(r',\s*([}\]])', r'\1', json_str)
     try:
         data = json.loads(json_str)
-        # Always make incident_type a list
+        # Force incident_type as list
         itype = data.get("incident_type")
         if itype:
             if not isinstance(itype, list):
@@ -233,8 +227,7 @@ def robust_json_extract(text):
         if "threat_level" in data and data["threat_level"] not in ["yes", "no"]:
             data["threat_level"] = "yes"
         return data
-    except Exception as e:
-        print(f"Phi3 returned invalid JSON after cleanup: {json_str}, error: {e}")
+    except Exception:
         return None
 
 # -----------------------------
@@ -332,87 +325,57 @@ async def phi3_worker(matches, existing_ids):
         try:
             event = await message_queue.get()
             text = event.raw_text or ""
-            channel_name = (
-                event.chat.username if event.chat and getattr(event.chat, 'username', None)
-                else str(event.chat_id)
-            )
+            channel_name = event.chat.username if event.chat and getattr(event.chat, 'username', None) else str(event.chat_id)
             msg_id = event.id
 
             if (channel_name, msg_id) in existing_ids:
                 message_queue.task_done()
-                continue  # skip already processed messages
+                continue
 
-            # --- Location detection using your map first
+            # Map-first location
             location, coordinates = detect_location(text)
-
-            # --- Incident type detection (keywords first)
+            # Keyword-first incident types
             incident_types = find_incident_types(text, IK.incident_keywords)
 
-            # --- Fallback to Phi3 if keywords fail or location not found
-            phi3_res = None
+            # Phi3 fallback
             if not incident_types or not location:
                 phi3_res = query_phi3_json(text)
-
                 if phi3_res:
-                    # --- Incident type from Phi3
                     if not incident_types:
                         itype = phi3_res.get("incident_type")
-                        if itype and itype != "other":
-                            if isinstance(itype, list):
-                                incident_types = [i for i in itype if i != "other"]
-                            elif isinstance(itype, str):
-                                incident_types = [itype]
-
-                    # --- Location from Phi3 but strictly filter against map
+                        if itype:
+                            incident_types = [i for i in itype if i != "other"] if isinstance(itype, list) else [itype]
                     if not location:
                         phi3_loc = phi3_res.get("location")
                         loc_candidates = []
-
-                        # String
-                        if isinstance(phi3_loc, str):
-                            loc_candidates.append(phi3_loc)
-                        # List
-                        elif isinstance(phi3_loc, list):
-                            loc_candidates.extend([l for l in phi3_loc if isinstance(l, str)])
-                        # Dict
+                        if isinstance(phi3_loc, str): loc_candidates.append(phi3_loc)
+                        elif isinstance(phi3_loc, list): loc_candidates.extend([l for l in phi3_loc if isinstance(l, str)])
                         elif isinstance(phi3_loc, dict):
                             for key in ["city", "town", "location", "name"]:
                                 loc_val = phi3_loc.get(key)
-                                if isinstance(loc_val, str):
-                                    loc_candidates.append(loc_val)
-
-                        # Strict Phi3 location validation: only accept if text mentions it
+                                if isinstance(loc_val, str): loc_candidates.append(loc_val)
                         for loc in loc_candidates:
                             loc_norm = normalize_arabic(loc)
                             if loc_norm in ALL_LOCATIONS:
-                                # Check if the normalized location words actually appear in the normalized text
                                 text_norm = normalize_arabic(text)
                                 loc_words = loc_norm.split()
                                 text_words = text_norm.split()
-                                for i in range(len(text_words) - len(loc_words) + 1):
+                                for i in range(len(text_words)-len(loc_words)+1):
                                     if text_words[i:i+len(loc_words)] == loc_words:
                                         location = ALL_LOCATIONS[loc_norm]["original"]
                                         coordinates = ALL_LOCATIONS[loc_norm]["coordinates"]
                                         break
-                                if location:  # stop if a valid match found
-                                    break
+                                if location: break
 
-            # --- Skip if no incident type or valid map location
+            # Skip invalid messages
             if not incident_types or not location or not coordinates:
-                print(f"[SKIP] {text[:50]}... (no valid incident/location)")
                 message_queue.task_done()
                 continue
 
-            # --- Extract numbers and casualties
             numbers = IK.extract_numbers(text)
             casualties = IK.extract_casualties(text)
+            summary = clean_summary(text)[:300]
 
-            # --- Clean summary
-            summary = clean_summary(text)
-            if len(summary) > 300:
-                summary = summary[:300] + "..."
-
-            # --- Create records for each incident type
             for incident_type in incident_types:
                 record = {
                     "incident_type": incident_type,
@@ -421,24 +384,14 @@ async def phi3_worker(matches, existing_ids):
                     "channel": channel_name,
                     "message_id": msg_id,
                     "date": str(event.date),
-                    "threat_level": "yes",  # default, can override with Phi3 if needed
-                    "details": {
-                        "numbers_found": numbers,
-                        "casualties": casualties,
-                        "summary": summary
-                    }
+                    "threat_level": "yes",
+                    "details": {"numbers_found": numbers, "casualties": casualties, "summary": summary}
                 }
-
-                # --- Only skip duplicates by message_id
                 if not any(m.get("message_id") == msg_id for m in matches):
                     matches.append(record)
-                    print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
-                    save_matches(matches)  # save immediately
+                    save_matches(matches)
 
             existing_ids.add((channel_name, msg_id))
-
-        except Exception as e:
-            print(f"Error processing message: {e}")
         finally:
             message_queue.task_done()
 
