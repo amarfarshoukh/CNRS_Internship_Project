@@ -3533,23 +3533,6 @@
     }
   },
   {
-    "incident_type": "pollution",
-    "location": "الهرمل",
-    "coordinates": [
-      36.3889577,
-      34.3973279
-    ],
-    "channel": "testingammoura",
-    "message_id": 78,
-    "date": "2025-08-25 06:19:59+00:00",
-    "threat_level": "yes",
-    "details": {
-      "numbers_found": [],
-      "casualties": [],
-      "summary": "اعتداء بيئي في الهرمل ... ووزارة الزراعة تتحرك"
-    }
-  },
-  {
     "incident_type": "vehicle_accident",
     "location": "جديدة",
     "coordinates": [
@@ -3571,6 +3554,23 @@
       ],
       "casualties": [],
       "summary": "جولة جديدة من المحادثات الإيرانية - الأوروبية في جنيف August 25, 2025 at 09:18AM"
+    }
+  },
+  {
+    "incident_type": "pollution",
+    "location": "الهرمل",
+    "coordinates": [
+      36.3889577,
+      34.3973279
+    ],
+    "channel": "testingammoura",
+    "message_id": 79,
+    "date": "2025-08-25 06:23:18+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "اعتداء بيئي في الهرمل... ووزارة الزراعة تتحرك"
     }
   }
 ]
