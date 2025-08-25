@@ -3393,5 +3393,22 @@
       "casualties": [],
       "summary": "حادث في البترون"
     }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "حاصبيا",
+    "coordinates": [
+      35.6811724,
+      33.3964734
+    ],
+    "channel": "testingammoura",
+    "message_id": 70,
+    "date": "2025-08-25 05:40:05+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "‌‏تمشيط بالأسلحة الرشاشة من موقع الجيش الاسرائيلي في رويسات العلم بإتجاه أطراف بلدة كفرشوبا في قضاء حاصبيا"
+    }
   }
 ]
