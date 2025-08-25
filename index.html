@@ -42,7 +42,7 @@
       display: none !important;
     }
 
-    /* --- Bot styling --- */
+    /* --- Bot styling (updated) --- */
     #ask-btn {
       position: fixed;
       bottom: 20px;
@@ -56,22 +56,22 @@
       z-index: 9999;
       box-shadow: 0 3px 8px rgba(0,0,0,0.3);
     }
-    #ask-btn:hover {
-      background: #333;
-    }
+    #ask-btn:hover { background: #333; }
 
     #bot-modal {
       display: none;
       position: fixed;
       bottom: 70px;
       right: 20px;
-      width: 280px;
+      width: 320px;
       background: #fff;
       border: 2px solid #000;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       z-index: 9999;
       font-family: sans-serif;
+      max-height: 420px;
+      overflow: hidden; /* header fixed, content scrolls */
     }
     #bot-modal-header {
       padding: 10px;
@@ -79,34 +79,71 @@
       border-bottom: 1px solid #000;
       background: #f8f8f8;
       border-radius: 12px 12px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    #bot-close {
+      background: transparent;
+      border: none;
+      font-size: 16px;
+      font-weight: 700;
+      color: #c00;
+      cursor: pointer;
+      padding: 4px 6px;
+      line-height: 1;
     }
     #bot-modal-content {
       padding: 10px;
+      overflow-y: auto;           /* internal scroller */
+      max-height: 360px;          /* right-side scrollbar inside modal */
     }
-    #bot-modal-content button {
+    .bot-q {
       width: 100%;
       padding: 8px;
-      margin-top: 6px;
+      margin: 8px 0 4px 0;
       border-radius: 8px;
       border: 1px solid #ccc;
-      background: #f5f5f5;
+      background: #fafafa;
       cursor: pointer;
+      text-align: left;
       font-size: 14px;
     }
-    #bot-modal-content button:hover {
-      background: #eaeaea;
+    .bot-q:hover { background: #f0f0f0; }
+
+    .inline-form {
+      border: 1px dashed #ddd;
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 8px;
+      background: #fff;
     }
-    #bot-modal-content input {
+    .inline-form .row { display: grid; grid-template-columns: 1fr; gap: 6px; }
+    .inline-form input, .inline-form select {
       width: 100%;
       padding: 6px;
-      margin-top: 6px;
       border: 1px solid #ccc;
       border-radius: 6px;
     }
+    .inline-form button {
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #000;
+      background: #000;
+      color: #fff;
+      cursor: pointer;
+    }
+    .inline-form button:hover { background: #333; }
+
     #bot-answer {
       margin-top: 10px;
       font-size: 14px;
       color: #000;
+      padding: 8px;
+      border-top: 1px solid #eee;
+    }
+    .hint {
+      font-size: 12px; color: #666; margin-top: 4px;
     }
   </style>
 </head>
@@ -140,22 +177,55 @@
     <div id="map"></div>
   </div>
 
-  <!-- Bot -->
+  <!-- Ask Me Bot -->
   <button id="ask-btn">Ask me!</button>
-  <div id="bot-modal">
-    <div id="bot-modal-header">Incident Bot</div>
-    <div id="bot-modal-content">
-      <button class="bot-btn" data-q="vehicle_today">Vehicle incidents today</button>
-      
-      <input id="bot-city" type="text" placeholder="City name">
-      <button class="bot-btn" data-q="city">Check incidents in city</button>
 
-      <input id="bot-type" type="text" placeholder="Incident type (e.g., fire)">
-      <button class="bot-btn" data-q="type_total">Check incidents of type</button>
+  <div id="bot-modal">
+    <div id="bot-modal-header">
+      Incident Bot
+      <button id="bot-close" aria-label="Close">×</button>
+    </div>
+    <div id="bot-modal-content">
+      <!-- Static quick questions -->
+      <button class="bot-q" data-q="vehicle_today">How many vehicle accidents today?</button>
+      <button class="bot-q" data-q="total_today">How many total incidents today?</button>
+
+      <!-- Questions that reveal inline forms with X placeholders -->
+      <button class="bot-q" data-q="city_all">How many incidents in <b>X</b> (city)?</button>
+      <div class="inline-form hidden" data-form="city_all"></div>
+
+      <button class="bot-q" data-q="city_today">How many incidents in <b>X</b> (city) today?</button>
+      <div class="inline-form hidden" data-form="city_today"></div>
+
+      <button class="bot-q" data-q="type_all">How many <b>X</b> (type) incidents overall?</button>
+      <div class="inline-form hidden" data-form="type_all"></div>
+
+      <button class="bot-q" data-q="type_today">How many <b>X</b> (type) incidents today?</button>
+      <div class="inline-form hidden" data-form="type_today"></div>
+
+      <button class="bot-q" data-q="type_city">How many <b>X</b> (type) incidents in <b>Y</b> (city)?</button>
+      <div class="inline-form hidden" data-form="type_city"></div>
+
+      <button class="bot-q" data-q="range_any">How many incidents between <b>A</b> and <b>B</b> (dates)?</button>
+      <div class="inline-form hidden" data-form="range_any"></div>
+
+      <button class="bot-q" data-q="range_type">How many <b>X</b> (type) incidents between <b>A</b> and <b>B</b>?</button>
+      <div class="inline-form hidden" data-form="range_type"></div>
+
+      <button class="bot-q" data-q="range_city">How many incidents in <b>X</b> (city) between <b>A</b> and <b>B</b>?</button>
+      <div class="inline-form hidden" data-form="range_city"></div>
+
+      <div class="hint">Tip: types include
+        <code>vehicle_accident</code>, <code>shooting</code>, <code>fire</code>, <code>protest</code>, etc.
+      </div>
 
       <div id="bot-answer"></div>
     </div>
   </div>
+
+  <!-- Datalists (filled in JS) -->
+  <datalist id="type-options"></datalist>
+  <datalist id="city-options"></datalist>
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -205,31 +275,12 @@
     const legendDiv = document.getElementById('legend');
     let allItems = [];
 
-    // Populate dropdown
+    // Populate dropdown (filter)
     ALL_TYPES.forEach(t => {
       const opt = document.createElement('option');
       opt.value = t;
       opt.textContent = t;
       filterSelect.appendChild(opt);
-    });
-
-    // Filter events
-    filterSelect.addEventListener('change', () => {
-      const selected = filterSelect.value;
-      if (selected) activeTypes = new Set([selected]);
-      render();
-    });
-
-    showAllBtn.addEventListener('click', () => {
-      activeTypes = new Set([...ALL_TYPES]);
-      filterSelect.value = "";
-      render();
-    });
-
-    noneBtn.addEventListener('click', () => {
-      activeTypes.clear();
-      filterSelect.value = "";
-      render();
     });
 
     // Legend
@@ -251,7 +302,7 @@
         iconAnchor: [15,30],
         popupAnchor: [0,-30]
       });
-      const marker = L.marker([lat, lon], { icon: icon });
+      const marker = L.marker([lat, lon], { icon });
       const popupHtml = `<div style="min-width:220px">
           <strong>${item.incident_type}</strong><br>
           <b>City:</b> ${item.city}<br>
@@ -300,12 +351,14 @@
           date: i.date,
           channel: i.channel
         }));
+        updateCityDatalist();
         render();
       } catch(e) {
         console.error('Failed to load incidents:', e);
       }
     }
 
+    // Search + zoom to incidents
     document.getElementById('search').addEventListener('keydown', e => {
       if (e.key === 'Enter') {
         const query = e.target.value.trim().toLowerCase();
@@ -333,52 +386,257 @@
       }
     });
 
+    // Filter events
+    filterSelect.addEventListener('change', () => {
+      const selected = filterSelect.value;
+      if (selected) activeTypes = new Set([selected]);
+      render();
+    });
+
+    showAllBtn.addEventListener('click', () => {
+      activeTypes = new Set([...ALL_TYPES]);
+      filterSelect.value = "";
+      render();
+    });
+
+    noneBtn.addEventListener('click', () => {
+      activeTypes.clear();
+      filterSelect.value = "";
+      render();
+    });
+
     // Default: show all
     activeTypes = new Set([...ALL_TYPES]);
     document.getElementById('refresh').onclick = () => refresh();
     refresh();
     setInterval(refresh, 30000);
 
-    // --- Bot logic ---
+    // --- Bot logic (enhanced) ---
     const askBtn = document.getElementById('ask-btn');
     const modal = document.getElementById('bot-modal');
     const answerDiv = document.getElementById('bot-answer');
+    const closeBtn = document.getElementById('bot-close');
 
-    askBtn.addEventListener('click', () => {
-      modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
+    // Fill type datalist from constants
+    const typeOptions = document.getElementById('type-options');
+    ALL_TYPES.forEach(t => {
+      const o = document.createElement('option');
+      o.value = t;
+      typeOptions.appendChild(o);
     });
 
-    document.querySelectorAll('.bot-btn').forEach(btn => {
+    function updateCityDatalist() {
+      const cityOptions = document.getElementById('city-options');
+      cityOptions.innerHTML = '';
+      const uniq = [...new Set(allItems.map(i => i.city).filter(Boolean))].sort();
+      uniq.forEach(c => {
+        const o = document.createElement('option');
+        o.value = c;
+        cityOptions.appendChild(o);
+      });
+    }
+
+    function todayISO() {
+      // Keep same behavior as your original code (UTC ISO yyyy-mm-dd)
+      return new Date().toISOString().slice(0,10);
+    }
+
+    askBtn.addEventListener('click', () => {
+      modal.style.display = (modal.style.display === 'block') ? 'none' : 'block';
+    });
+    closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+
+    // Helper: safely count with predicate
+    const countWhere = (pred) => allItems.reduce((acc, it) => acc + (pred(it) ? 1 : 0), 0);
+
+    // Toggle + render inline form for a specific question key
+    function renderInlineForm(key, container) {
+      const h = (html) => { container.innerHTML = html; container.classList.remove('hidden'); };
+
+      if (key === 'city_all') {
+        h(`
+          <div class="row">
+            <input list="city-options" id="if-city-all" placeholder="City (X)">
+            <button id="run-city-all">Run</button>
+          </div>
+        `);
+        document.getElementById('run-city-all').onclick = () => {
+          const city = (document.getElementById('if-city-all').value || '').trim();
+          if (!city) return answerDiv.textContent = 'Please enter a city.';
+          const n = countWhere(i => (i.city||'').toLowerCase() === city.toLowerCase());
+          answerDiv.textContent = `${n} incidents in ${city} (all time)`;
+        };
+      }
+
+      if (key === 'city_today') {
+        h(`
+          <div class="row">
+            <input list="city-options" id="if-city-today" placeholder="City (X)">
+            <button id="run-city-today">Run</button>
+          </div>
+        `);
+        document.getElementById('run-city-today').onclick = () => {
+          const city = (document.getElementById('if-city-today').value || '').trim();
+          if (!city) return answerDiv.textContent = 'Please enter a city.';
+          const t = todayISO();
+          const n = countWhere(i => (i.city||'').toLowerCase() === city.toLowerCase() && (i.date||'').startsWith(t));
+          answerDiv.textContent = `${n} incidents in ${city} today`;
+        };
+      }
+
+      if (key === 'type_all') {
+        h(`
+          <div class="row">
+            <input list="type-options" id="if-type-all" placeholder="Type (X), e.g. fire">
+            <button id="run-type-all">Run</button>
+          </div>
+        `);
+        document.getElementById('run-type-all').onclick = () => {
+          const type = (document.getElementById('if-type-all').value || '').trim();
+          if (!type) return answerDiv.textContent = 'Please enter a type.';
+          const n = countWhere(i => (i.incident_type||'').toLowerCase() === type.toLowerCase());
+          answerDiv.textContent = `${n} "${type}" incidents (all time)`;
+        };
+      }
+
+      if (key === 'type_today') {
+        h(`
+          <div class="row">
+            <input list="type-options" id="if-type-today" placeholder="Type (X), e.g. fire">
+            <button id="run-type-today">Run</button>
+          </div>
+        `);
+        document.getElementById('run-type-today').onclick = () => {
+          const type = (document.getElementById('if-type-today').value || '').trim();
+          if (!type) return answerDiv.textContent = 'Please enter a type.';
+          const t = todayISO();
+          const n = countWhere(i => (i.incident_type||'').toLowerCase() === type.toLowerCase() && (i.date||'').startsWith(t));
+          answerDiv.textContent = `${n} "${type}" incidents today`;
+        };
+      }
+
+      if (key === 'type_city') {
+        h(`
+          <div class="row">
+            <input list="type-options" id="if-type-city" placeholder="Type (X)">
+            <input list="city-options" id="if-city-type" placeholder="City (Y)">
+            <button id="run-type-city">Run</button>
+          </div>
+        `);
+        document.getElementById('run-type-city').onclick = () => {
+          const type = (document.getElementById('if-type-city').value || '').trim();
+          const city = (document.getElementById('if-city-type').value || '').trim();
+          if (!type || !city) return answerDiv.textContent = 'Please enter type and city.';
+          const n = countWhere(i =>
+            (i.incident_type||'').toLowerCase() === type.toLowerCase() &&
+            (i.city||'').toLowerCase() === city.toLowerCase()
+          );
+          answerDiv.textContent = `${n} "${type}" incidents in ${city} (all time)`;
+        };
+      }
+
+      if (key === 'range_any') {
+        h(`
+          <div class="row">
+            <input type="date" id="if-start">
+            <input type="date" id="if-end">
+            <button id="run-range-any">Run</button>
+          </div>
+        `);
+        document.getElementById('run-range-any').onclick = () => {
+          const s = document.getElementById('if-start').value;
+          const e = document.getElementById('if-end').value;
+          if (!s || !e) return answerDiv.textContent = 'Please pick start and end dates.';
+          const n = countWhere(i => (i.date||'') >= s && (i.date||'') <= e);
+          answerDiv.textContent = `${n} incidents between ${s} and ${e}`;
+        };
+      }
+
+      if (key === 'range_type') {
+        h(`
+          <div class="row">
+            <input list="type-options" id="if-type-range" placeholder="Type (X)">
+            <input type="date" id="if-start-t">
+            <input type="date" id="if-end-t">
+            <button id="run-range-type">Run</button>
+          </div>
+        `);
+        document.getElementById('run-range-type').onclick = () => {
+          const type = (document.getElementById('if-type-range').value || '').trim();
+          const s = document.getElementById('if-start-t').value;
+          const e = document.getElementById('if-end-t').value;
+          if (!type || !s || !e) return answerDiv.textContent = 'Please enter type and dates.';
+          const n = countWhere(i =>
+            (i.incident_type||'').toLowerCase() === type.toLowerCase() &&
+            (i.date||'') >= s && (i.date||'') <= e
+          );
+          answerDiv.textContent = `${n} "${type}" incidents between ${s} and ${e}`;
+        };
+      }
+
+      if (key === 'range_city') {
+        h(`
+          <div class="row">
+            <input list="city-options" id="if-city-range" placeholder="City (X)">
+            <input type="date" id="if-start-c">
+            <input type="date" id="if-end-c">
+            <button id="run-range-city">Run</button>
+          </div>
+        `);
+        document.getElementById('run-range-city').onclick = () => {
+          const city = (document.getElementById('if-city-range').value || '').trim();
+          const s = document.getElementById('if-start-c').value;
+          const e = document.getElementById('if-end-c').value;
+          if (!city || !s || !e) return answerDiv.textContent = 'Please enter city and dates.';
+          const n = countWhere(i =>
+            (i.city||'').toLowerCase() === city.toLowerCase() &&
+            (i.date||'') >= s && (i.date||'') <= e
+          );
+          answerDiv.textContent = `${n} incidents in ${city} between ${s} and ${e}`;
+        };
+      }
+    }
+
+    // Wire up static questions + togglers
+    document.querySelectorAll('.bot-q').forEach(btn => {
       btn.addEventListener('click', () => {
-        const q = btn.dataset.q;
+        const key = btn.dataset.q;
+        answerDiv.textContent = ''; // reset
+        const form = document.querySelector(`.inline-form[data-form="${key}"]`);
 
-        if (q === 'vehicle_today') {
-          const today = new Date().toISOString().slice(0,10);
-          const count = allItems.filter(i => i.incident_type==='vehicle_accident' && i.date && i.date.startsWith(today)).length;
-          answerDiv.textContent = `${count} vehicle incidents today`;
+        if (!key) return;
+
+        // Instant answers
+        if (key === 'vehicle_today') {
+          const t = todayISO();
+          const n = countWhere(i => (i.incident_type||'') === 'vehicle_accident' && (i.date||'').startsWith(t));
+          answerDiv.textContent = `${n} vehicle incidents today`;
+          return;
+        }
+        if (key === 'total_today') {
+          const t = todayISO();
+          const n = countWhere(i => (i.date||'').startsWith(t));
+          answerDiv.textContent = `${n} total incidents today`;
+          return;
         }
 
-        if (q === 'city') {
-          const city = document.getElementById('bot-city').value.trim();
-          if (city) {
-            const count = allItems.filter(i => i.city && i.city.toLowerCase() === city.toLowerCase()).length;
-            answerDiv.textContent = `${count} incidents in ${city}`;
-          } else {
-            answerDiv.textContent = "Please enter a city name";
-          }
-        }
+        // Toggle form display for input-based questions
+        document.querySelectorAll('.inline-form').forEach(div => {
+          if (div !== form) { div.classList.add('hidden'); div.innerHTML = ''; }
+        });
 
-        if (q === 'type_total') {
-          const type = document.getElementById('bot-type').value.trim();
-          if (type) {
-            const count = allItems.filter(i => i.incident_type === type).length;
-            answerDiv.textContent = `${count} incidents of type "${type}"`;
-          } else {
-            answerDiv.textContent = "Please enter an incident type";
-          }
+        if (form.classList.contains('hidden')) {
+          renderInlineForm(key, form);
+        } else {
+          form.classList.add('hidden');
+          form.innerHTML = '';
         }
       });
     });
+
+    // Small helper to hide elements via class
+    CSS.registerProperty && (()=>{})(); // no-op, keep CSS simple
+    document.querySelectorAll('.inline-form').forEach(el => el.classList.add('hidden'));
   </script>
 </body>
 </html>

@@ -4206,5 +4206,78 @@
       "casualties": [],
       "summary": "سكاي نيوز عن مصادر سورية: الجيش الإسرائيلي اعتقل 6 سوريين خلال عملية التوغل منطقة بيت جن جنوب غربي ريف دمشق"
     }
+  },
+  {
+    "incident_type": "medical",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "MTVLebanoNews",
+    "message_id": 38791,
+    "date": "2025-08-25 10:45:25+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "الجيش الإسرائيلي يقر بشن هجوم على مستشفى ناصر بخان يونس ويوجه بفتح تحقيق"
+    }
+  },
+  {
+    "incident_type": "medical",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "lebanonNewsNow",
+    "message_id": 207967,
+    "date": "2025-08-25 10:45:25+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "ورد الآن الجيش الإسرائيلي يقر بشن هجوم على مستشفى ناصر في خان يونس ويوجه بفتح تحقيق lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "medical",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143865,
+    "date": "2025-08-25 10:45:39+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "الجيش الإسرائيلي يقر بشن هجوم على مستشفى ناصر بخان يونس ويوجه بفتح تحقيق"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "LBCI_NEWS",
+    "message_id": 252046,
+    "date": "2025-08-25 10:48:24+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "25",
+        "2025",
+        "01",
+        "44"
+      ],
+      "casualties": [],
+      "summary": "رويترز: الجيش الإسرائيلي يؤكد شن غارة في منطقة مجمع ناصر الطبي بخان يونس بغزة August 25, 2025 at 01:44PM"
+    }
   }
 ]
