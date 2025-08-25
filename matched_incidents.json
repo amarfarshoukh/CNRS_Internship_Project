@@ -3719,15 +3719,15 @@
     }
   },
   {
-    "incident_type": "تسوع الإقتحام",
+    "incident_type": "medical",
     "location": "جونيه",
     "coordinates": [
       35.6200633,
       33.9741506
     ],
-    "channel": "LBCI_NEWS",
-    "message_id": 252016,
-    "date": "2025-08-25 08:33:28+00:00",
+    "channel": "testingammoura",
+    "message_id": 88,
+    "date": "2025-08-25 08:35:27+00:00",
     "threat_level": "yes",
     "details": {
       "numbers_found": [
