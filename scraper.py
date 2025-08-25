@@ -270,12 +270,38 @@ def select_best_message(records):
 # Phi3 worker queue (multi-incident) - updated
 # -----------------------------
 message_queue = asyncio.Queue()
+# --- Add this helper at the top of your file ---
+def clean_summary(text: str) -> str:
+    if not text:
+        return ""
+    # 1. Remove URLs
+    text = re.sub(r'http\S+', '', text)
+
+    # 2. Remove Unicode control characters
+    text = re.sub(r'[\u200B-\u200F\u202A-\u202E\u2066-\u2069]', '', text)
+
+    # 3. Remove escaped newlines/quotes
+    text = text.replace("\\n", " ").replace("\n", " ").replace("\"", " ")
+
+    # 4. Keep only Arabic, English, digits, punctuation
+    text = re.sub(r'[^ء-يa-zA-Z0-9\s\.,،؛:!؟-]', '', text)
+
+    # 5. Normalize spaces
+    text = re.sub(r'\s+', ' ', text).strip()
+
+    return text
+
+
+# --- Updated phi3_worker ---
 async def phi3_worker(matches, existing_ids):
     while True:
         event = await message_queue.get()
         try:
             text = event.raw_text or ""
-            channel_name = event.chat.username if event.chat and getattr(event.chat, 'username', None) else str(event.chat_id)
+            channel_name = (
+                event.chat.username if event.chat and getattr(event.chat, 'username', None)
+                else str(event.chat_id)
+            )
             msg_id = event.id
 
             if (channel_name, msg_id) in existing_ids:
@@ -308,7 +334,11 @@ async def phi3_worker(matches, existing_ids):
             # --- Extract numbers and casualties
             numbers = IK.extract_numbers(text)
             casualties = IK.extract_casualties(text)
-            summary = text[:300] + ("..." if len(text) > 300 else "")
+
+            # --- Clean summary here ---
+            summary = clean_summary(text)
+            if len(summary) > 300:
+                summary = summary[:300] + "..."
 
             for incident_type in incident_types:
                 record = {
@@ -338,6 +368,7 @@ async def phi3_worker(matches, existing_ids):
             # Ensure task_done is called exactly once per queue item
             if not message_queue.empty():
                 message_queue.task_done()
+
 
 
 
