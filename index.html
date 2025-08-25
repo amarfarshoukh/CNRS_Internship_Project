@@ -41,6 +41,73 @@
     .leaflet-marker-spider-line {
       display: none !important;
     }
+
+    /* --- Bot styling --- */
+    #ask-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 14px;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 9999;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    }
+    #ask-btn:hover {
+      background: #333;
+    }
+
+    #bot-modal {
+      display: none;
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      width: 280px;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 9999;
+      font-family: sans-serif;
+    }
+    #bot-modal-header {
+      padding: 10px;
+      font-weight: bold;
+      border-bottom: 1px solid #000;
+      background: #f8f8f8;
+      border-radius: 12px 12px 0 0;
+    }
+    #bot-modal-content {
+      padding: 10px;
+    }
+    #bot-modal-content button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: #f5f5f5;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    #bot-modal-content button:hover {
+      background: #eaeaea;
+    }
+    #bot-modal-content input {
+      width: 100%;
+      padding: 6px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    #bot-answer {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #000;
+    }
   </style>
 </head>
 <body>
@@ -73,191 +140,245 @@
     <div id="map"></div>
   </div>
 
+  <!-- Bot -->
+  <button id="ask-btn">Ask me!</button>
+  <div id="bot-modal">
+    <div id="bot-modal-header">Incident Bot</div>
+    <div id="bot-modal-content">
+      <button class="bot-btn" data-q="vehicle_today">Vehicle incidents today</button>
+      
+      <input id="bot-city" type="text" placeholder="City name">
+      <button class="bot-btn" data-q="city">Check incidents in city</button>
+
+      <input id="bot-type" type="text" placeholder="Incident type (e.g., fire)">
+      <button class="bot-btn" data-q="type_total">Check incidents of type</button>
+
+      <div id="bot-answer"></div>
+    </div>
+  </div>
+
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
   <script>
-const map = L.map('map', { minZoom: 7, maxZoom: 18 }).setView([33.9, 35.86], 8);
-const lebanonBounds = L.latLngBounds([[32.8, 34.9], [34.9, 36.9]]);
-map.setMaxBounds(lebanonBounds);
+    // --- Map and cluster setup ---
+    const map = L.map('map', { minZoom: 7, maxZoom: 18 }).setView([33.9, 35.86], 8);
+    const lebanonBounds = L.latLngBounds([[32.8, 34.9], [34.9, 36.9]]);
+    map.setMaxBounds(lebanonBounds);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
 
-const TYPE_ICONS = {
-  vehicle_accident: "icons/caraccident.png",
-  shooting: "icons/shooting.png",
-  protest: "icons/protest.png",
-  fire: "icons/fire.png",
-  earthquake: "icons/earthquake.png",
-  flood: "icons/flood.png",
-  tree_down: "icons/treedown.png",
-  airstrike: "icons/war.png",
-  collapse: "icons/collapse.png",
-  pollution: "icons/pollution.png",
-  epidemic: "icons/epidemic.png",
-  medical: "icons/hospital-building.png",
-  explosion: "icons/bomb.png",
-  other: "icons/other.png"
-};
+    const TYPE_ICONS = {
+      vehicle_accident: "icons/caraccident.png",
+      shooting: "icons/shooting.png",
+      protest: "icons/protest.png",
+      fire: "icons/fire.png",
+      earthquake: "icons/earthquake.png",
+      flood: "icons/flood.png",
+      tree_down: "icons/treedown.png",
+      airstrike: "icons/war.png",
+      collapse: "icons/collapse.png",
+      pollution: "icons/pollution.png",
+      epidemic: "icons/epidemic.png",
+      medical: "icons/hospital-building.png",
+      explosion: "icons/bomb.png",
+      other: "icons/other.png"
+    };
 
-const ALL_TYPES = Object.keys(TYPE_ICONS);
-let activeTypes = new Set([...ALL_TYPES]);
-let searchTerm = '';
+    const ALL_TYPES = Object.keys(TYPE_ICONS);
+    let activeTypes = new Set([...ALL_TYPES]);
+    let searchTerm = '';
 
-// Cluster with spiderfy enabled
-const cluster = L.markerClusterGroup({
-    spiderfyOnMaxZoom: true,   // spread overlapping markers on click
-    showCoverageOnHover: false, // hide coverage circle
-    zoomToBoundsOnClick: true
-});
-map.addLayer(cluster);
+    const cluster = L.markerClusterGroup({
+      spiderfyOnMaxZoom: true,
+      showCoverageOnHover: false,
+      zoomToBoundsOnClick: true
+    });
+    map.addLayer(cluster);
 
-const filterSelect = document.getElementById('filter-select');
-const showAllBtn = document.getElementById('show-all');
-const noneBtn = document.getElementById('none-btn');
-const legendDiv = document.getElementById('legend');
-let allItems = [];
+    const filterSelect = document.getElementById('filter-select');
+    const showAllBtn = document.getElementById('show-all');
+    const noneBtn = document.getElementById('none-btn');
+    const legendDiv = document.getElementById('legend');
+    let allItems = [];
 
-// Populate dropdown
-ALL_TYPES.forEach(t => {
-  const opt = document.createElement('option');
-  opt.value = t;
-  opt.textContent = t;
-  filterSelect.appendChild(opt);
-});
+    // Populate dropdown
+    ALL_TYPES.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t;
+      opt.textContent = t;
+      filterSelect.appendChild(opt);
+    });
 
-// Dropdown change
-filterSelect.addEventListener('change', () => {
-  const selected = filterSelect.value;
-  if (selected) activeTypes = new Set([selected]);
-  render();
-});
+    // Filter events
+    filterSelect.addEventListener('change', () => {
+      const selected = filterSelect.value;
+      if (selected) activeTypes = new Set([selected]);
+      render();
+    });
 
-// Show All button
-showAllBtn.addEventListener('click', () => {
-  activeTypes = new Set([...ALL_TYPES]);
-  filterSelect.value = "";
-  render();
-});
+    showAllBtn.addEventListener('click', () => {
+      activeTypes = new Set([...ALL_TYPES]);
+      filterSelect.value = "";
+      render();
+    });
 
-// None button
-noneBtn.addEventListener('click', () => {
-  activeTypes.clear();
-  filterSelect.value = "";
-  render();
-});
+    noneBtn.addEventListener('click', () => {
+      activeTypes.clear();
+      filterSelect.value = "";
+      render();
+    });
 
-// Legend
-ALL_TYPES.forEach(t => {
-  const row = document.createElement('div');
-  row.style.display = 'flex';
-  row.style.alignItems = 'center';
-  row.innerHTML = `<img src="${TYPE_ICONS[t]}" style="width:18px;height:18px;margin-right:6px;"><span>${t}</span>`;
-  legendDiv.appendChild(row);
-});
+    // Legend
+    ALL_TYPES.forEach(t => {
+      const row = document.createElement('div');
+      row.style.display = 'flex';
+      row.style.alignItems = 'center';
+      row.innerHTML = `<img src="${TYPE_ICONS[t]}" style="width:18px;height:18px;margin-right:6px;"><span>${t}</span>`;
+      legendDiv.appendChild(row);
+    });
 
-// Marker creation
-function markerFor(item) {
-  if (!item.coordinates || item.coordinates.length !== 2) return null;
-  const [lat, lon] = item.coordinates;
-
-  const icon = L.icon({
-    iconUrl: TYPE_ICONS[item.incident_type] || TYPE_ICONS['other'],
-    iconSize: [30, 30],
-    iconAnchor: [15, 30],
-    popupAnchor: [0, -30]
-  });
-
-  const marker = L.marker([lat, lon], { icon: icon });
-  const popupHtml = `<div style="min-width:220px">
-      <strong>${item.incident_type}</strong><br>
-      <b>City:</b> ${item.city}<br>
-      <b>Date:</b> ${item.date}<br>
-      <b>Channel:</b> ${item.channel}<br>
-      <b>Summary:</b> ${item.details?.summary || '' }
-    </div>`;
-  marker.bindPopup(popupHtml);
-  return marker;
-}
-
-function matchesFilters(item) {
-  if (!item.coordinates || item.coordinates.length !== 2) return false;
-  if (activeTypes.size === 0) return false;
-  if (!activeTypes.has(item.incident_type || 'other')) return false;
-  if (searchTerm) {
-    const hay = (item.details?.summary || '') + ' ' + (item.city || '') + ' ' + (item.incident_type || '');
-    return hay.toLowerCase().includes(searchTerm);
-  }
-  return true;
-}
-
-function render() {
-  cluster.clearLayers();
-  const shown = [];
-  allItems.forEach(it => {
-    if (matchesFilters(it)) {
-      const m = markerFor(it);
-      if (m) cluster.addLayer(m);
-      shown.push(it);
-    }
-  });
-  document.getElementById('last-updated').textContent =
-    `${shown.length} shown / ${allItems.length} total — ${new Date().toLocaleTimeString()}`;
-}
-
-// Refresh incidents
-async function refresh() {
-  try {
-    const res = await fetch('http://127.0.0.1:5000/incidents');
-    const data = await res.json();
-    allItems = data.incidents.map(i => ({
-      incident_type: i.incident_type,
-      city: i.location,
-      coordinates: i.coordinates,
-      details: i.details,
-      date: i.date,
-      channel: i.channel
-    }));
-    render();
-  } catch(e) {
-    console.error('Failed to load incidents:', e);
-  }
-}
-
-// Search + zoom to incidents
-document.getElementById('search').addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    const query = e.target.value.trim().toLowerCase();
-    if (!query) return;
-
-    const matched = allItems.filter(item =>
-      item.city && item.city.toLowerCase().includes(query) &&
-      item.coordinates && item.coordinates.length === 2
-    );
-
-    if (matched.length > 0) {
-      const latlngs = matched.map(i => [i.coordinates[0], i.coordinates[1]]);
-      const bounds = L.latLngBounds(latlngs);
-      map.fitBounds(bounds.pad(0.3));
-
-      matched.slice(0, 5).forEach(i => {
-        const m = markerFor(i);
-        if (m) m.addTo(map).openPopup();
+    // Marker creation
+    function markerFor(item) {
+      if (!item.coordinates || item.coordinates.length !== 2) return null;
+      const [lat, lon] = item.coordinates;
+      const icon = L.icon({
+        iconUrl: TYPE_ICONS[item.incident_type] || TYPE_ICONS['other'],
+        iconSize: [30,30],
+        iconAnchor: [15,30],
+        popupAnchor: [0,-30]
       });
-    } else {
-      alert("No incidents found for this city.");
+      const marker = L.marker([lat, lon], { icon: icon });
+      const popupHtml = `<div style="min-width:220px">
+          <strong>${item.incident_type}</strong><br>
+          <b>City:</b> ${item.city}<br>
+          <b>Date:</b> ${item.date}<br>
+          <b>Channel:</b> ${item.channel}<br>
+          <b>Summary:</b> ${item.details?.summary || '' }
+        </div>`;
+      marker.bindPopup(popupHtml);
+      return marker;
     }
 
-    render();
-  }
-});
+    function matchesFilters(item) {
+      if (!item.coordinates || item.coordinates.length !== 2) return false;
+      if (activeTypes.size === 0) return false;
+      if (!activeTypes.has(item.incident_type || 'other')) return false;
+      if (searchTerm) {
+        const hay = (item.details?.summary || '') + ' ' + (item.city || '') + ' ' + (item.incident_type || '');
+        return hay.toLowerCase().includes(searchTerm);
+      }
+      return true;
+    }
 
-// Default: show all
-activeTypes = new Set([...ALL_TYPES]);
-document.getElementById('refresh').onclick = () => refresh();
-refresh();
-setInterval(refresh, 30000);
+    function render() {
+      cluster.clearLayers();
+      const shown = [];
+      allItems.forEach(it => {
+        if (matchesFilters(it)) {
+          const m = markerFor(it);
+          if (m) cluster.addLayer(m);
+          shown.push(it);
+        }
+      });
+      document.getElementById('last-updated').textContent =
+        `${shown.length} shown / ${allItems.length} total — ${new Date().toLocaleTimeString()}`;
+    }
+
+    async function refresh() {
+      try {
+        const res = await fetch('http://127.0.0.1:5000/incidents');
+        const data = await res.json();
+        allItems = data.incidents.map(i => ({
+          incident_type: i.incident_type,
+          city: i.location,
+          coordinates: i.coordinates,
+          details: i.details,
+          date: i.date,
+          channel: i.channel
+        }));
+        render();
+      } catch(e) {
+        console.error('Failed to load incidents:', e);
+      }
+    }
+
+    document.getElementById('search').addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const query = e.target.value.trim().toLowerCase();
+        if (!query) return;
+
+        const matched = allItems.filter(item =>
+          item.city && item.city.toLowerCase().includes(query) &&
+          item.coordinates && item.coordinates.length === 2
+        );
+
+        if (matched.length > 0) {
+          const latlngs = matched.map(i => [i.coordinates[0], i.coordinates[1]]);
+          const bounds = L.latLngBounds(latlngs);
+          map.fitBounds(bounds.pad(0.3));
+
+          matched.slice(0,5).forEach(i => {
+            const m = markerFor(i);
+            if (m) m.addTo(map).openPopup();
+          });
+        } else {
+          alert("No incidents found for this city.");
+        }
+
+        render();
+      }
+    });
+
+    // Default: show all
+    activeTypes = new Set([...ALL_TYPES]);
+    document.getElementById('refresh').onclick = () => refresh();
+    refresh();
+    setInterval(refresh, 30000);
+
+    // --- Bot logic ---
+    const askBtn = document.getElementById('ask-btn');
+    const modal = document.getElementById('bot-modal');
+    const answerDiv = document.getElementById('bot-answer');
+
+    askBtn.addEventListener('click', () => {
+      modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.querySelectorAll('.bot-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const q = btn.dataset.q;
+
+        if (q === 'vehicle_today') {
+          const today = new Date().toISOString().slice(0,10);
+          const count = allItems.filter(i => i.incident_type==='vehicle_accident' && i.date && i.date.startsWith(today)).length;
+          answerDiv.textContent = `${count} vehicle incidents today`;
+        }
+
+        if (q === 'city') {
+          const city = document.getElementById('bot-city').value.trim();
+          if (city) {
+            const count = allItems.filter(i => i.city && i.city.toLowerCase() === city.toLowerCase()).length;
+            answerDiv.textContent = `${count} incidents in ${city}`;
+          } else {
+            answerDiv.textContent = "Please enter a city name";
+          }
+        }
+
+        if (q === 'type_total') {
+          const type = document.getElementById('bot-type').value.trim();
+          if (type) {
+            const count = allItems.filter(i => i.incident_type === type).length;
+            answerDiv.textContent = `${count} incidents of type "${type}"`;
+          } else {
+            answerDiv.textContent = "Please enter an incident type";
+          }
+        }
+      });
+    });
   </script>
 </body>
 </html>
