@@ -331,23 +331,20 @@ async def phi3_worker(matches, existing_ids):
             )
             msg_id = event.id
 
-            # Skip already processed messages
             if (channel_name, msg_id) in existing_ids:
-                continue
+                continue  # skip already processed messages
 
-            # --- Location detection using map
+            # --- Location detection using your map first
             location, coordinates = detect_location(text)
 
             # --- Incident type detection (keywords first)
             incident_types = find_incident_types(text, IK.incident_keywords)
 
-            # --- Fallback to Phi3 if keywords fail or location not found
-            phi3_res = None
-            if not incident_types or not location:
+            # --- Fallback to Phi3 if keywords fail or location coordinates not found
+            if not incident_types or not coordinates:
                 phi3_res = query_phi3_json(text)
-
                 if phi3_res:
-                    # --- Incident type from Phi3
+                    # Incident type from Phi3
                     if not incident_types:
                         itype = phi3_res.get("incident_type")
                         if itype and itype != "other":
@@ -356,8 +353,8 @@ async def phi3_worker(matches, existing_ids):
                             elif isinstance(itype, str):
                                 incident_types = [itype]
 
-                    # --- Location from Phi3 (strict map validation)
-                    if not location:
+                    # Location from Phi3 (strict map validation)
+                    if not coordinates:
                         phi3_loc = phi3_res.get("location")
                         loc_candidates = []
 
@@ -371,9 +368,11 @@ async def phi3_worker(matches, existing_ids):
                                 if isinstance(loc_val, str):
                                     loc_candidates.append(loc_val)
 
+                        # Strict validation: must exist in map and text
                         for loc in loc_candidates:
                             loc_norm = normalize_arabic(loc)
                             if loc_norm in ALL_LOCATIONS:
+                                # Ensure the normalized words appear in the text
                                 text_norm = normalize_arabic(text)
                                 loc_words = loc_norm.split()
                                 text_words = text_norm.split()
@@ -382,10 +381,10 @@ async def phi3_worker(matches, existing_ids):
                                         location = ALL_LOCATIONS[loc_norm]["original"]
                                         coordinates = ALL_LOCATIONS[loc_norm]["coordinates"]
                                         break
-                                if location:
+                                if coordinates:  # stop if valid match found
                                     break
 
-            # --- Skip if no incident type or valid location
+            # --- Skip messages without incident type or valid map location
             if not incident_types or not location or not coordinates:
                 print(f"[SKIP] {text[:50]}... (no valid incident/location)")
                 continue
@@ -408,7 +407,7 @@ async def phi3_worker(matches, existing_ids):
                     "channel": channel_name,
                     "message_id": msg_id,
                     "date": str(event.date),
-                    "threat_level": "yes",
+                    "threat_level": "yes",  # default, can override with Phi3 if needed
                     "details": {
                         "numbers_found": numbers,
                         "casualties": casualties,
@@ -416,20 +415,19 @@ async def phi3_worker(matches, existing_ids):
                     }
                 }
 
+                # --- Skip duplicates by message_id
                 if not any(m.get("message_id") == msg_id for m in matches):
                     matches.append(record)
                     print(f"[MATCH] {incident_type} @ {location} from {channel_name}")
-                    save_matches(matches)
+                    save_matches(matches)  # save immediately
 
             existing_ids.add((channel_name, msg_id))
 
         except Exception as e:
             print(f"Error processing message: {e}")
-
         finally:
+            # Only call task_done once per message
             message_queue.task_done()
-
-
 # -----------------------------
 # Telegram login
 # -----------------------------
