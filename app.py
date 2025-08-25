@@ -8,6 +8,22 @@ CORS(app)
 
 INCIDENTS_FILE = "matched_incidents.json"
 
+# Allowed incident categories
+ALLOWED_INCIDENTS = {
+    "fire",
+    "protest",
+    "vehicle_accident",
+    "shooting",
+    "natural_disaster",
+    "airstrike",
+    "collapse",
+    "pollution",
+    "epidemic",
+    "medical",
+    "explosion",
+    "other"
+}
+
 # Map incident types to colors
 INCIDENT_COLORS = {
     "fire": "red",
@@ -24,10 +40,20 @@ INCIDENT_COLORS = {
     "other": "white"
 }
 
+
+def normalize_incident_type(incident_type: str) -> str:
+    """
+    Force unknown or unexpected incident types into 'other'.
+    """
+    if incident_type in ALLOWED_INCIDENTS:
+        return incident_type
+    return "other"
+
+
 def load_incidents_once():
     """
     Loads incidents from JSON file fresh each time.
-    Adds color & ensures coordinates format is [lat, lon].
+    Adds color, normalizes types, ensures coordinates format is [lat, lon].
     """
     incidents = []
     if os.path.exists(INCIDENTS_FILE):
@@ -36,16 +62,26 @@ def load_incidents_once():
                 incidents = json.load(f)
 
             for inc in incidents:
-                inc["color"] = INCIDENT_COLORS.get(inc.get("incident_type", "other"), "white")
+                # Normalize type
+                inc_type = inc.get("incident_type", "other")
+                inc_type = normalize_incident_type(inc_type)
+                inc["incident_type"] = inc_type
+
+                # Add color
+                inc["color"] = INCIDENT_COLORS.get(inc_type, "white")
+
+                # Fix coordinates for Leaflet
                 coords = inc.get("coordinates")
                 if coords and isinstance(coords, list) and len(coords) == 2:
                     lon, lat = coords
                     inc["coordinates"] = [lat, lon]  # Leaflet expects [lat, lon]
                 else:
                     inc["coordinates"] = []
+
         except Exception as e:
             print(f"Error loading incidents: {e}")
     return incidents
+
 
 @app.route("/incidents", methods=["GET"])
 def get_incidents():
@@ -54,9 +90,11 @@ def get_incidents():
     """
     return jsonify({"incidents": load_incidents_once()})
 
+
 @app.route("/")
 def index():
     return "Incident Monitor Backend Running. Use /incidents to fetch data."
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
