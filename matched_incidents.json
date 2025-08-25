@@ -3683,5 +3683,61 @@
       "casualties": [],
       "summary": "احتجاجات قرب وزارة المالية"
     }
+  },
+  {
+    "incident_type": "protest",
+    "location": "وزارة المالية",
+    "coordinates": [
+      35.50367928,
+      33.89585272
+    ],
+    "channel": "testingammoura",
+    "message_id": 85,
+    "date": "2025-08-25 08:31:19+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "احتجاجات قرب وزارة المالية"
+    }
+  },
+  {
+    "incident_type": "fire",
+    "location": "البترون",
+    "coordinates": [
+      35.6588567,
+      34.2548879
+    ],
+    "channel": "testingammoura",
+    "message_id": 86,
+    "date": "2025-08-25 08:31:28+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "حريق في البترون"
+    }
+  },
+  {
+    "incident_type": "تسوع الإقتحام",
+    "location": "جونيه",
+    "coordinates": [
+      35.6200633,
+      33.9741506
+    ],
+    "channel": "LBCI_NEWS",
+    "message_id": 252016,
+    "date": "2025-08-25 08:33:28+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "25",
+        "2025",
+        "11",
+        "27"
+      ],
+      "casualties": [],
+      "summary": "مريض بحاجة لوحدتي دم فئة O للتبرع في مركز الصليب الاحمر- جونية للتواصل: 03716370LBCINews August 25, 2025 at 11:27AM"
+    }
   }
 ]
