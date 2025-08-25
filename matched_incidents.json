@@ -4279,5 +4279,103 @@
       "casualties": [],
       "summary": "رويترز: الجيش الإسرائيلي يؤكد شن غارة في منطقة مجمع ناصر الطبي بخان يونس بغزة August 25, 2025 at 01:44PM"
     }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "بيروت",
+    "coordinates": [
+      35.4995749,
+      33.8718663
+    ],
+    "channel": "AljadeedNewsTV",
+    "message_id": 33492,
+    "date": "2025-08-25 10:49:29+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "مراسلة الجديد: مسيرة إسرائيلية تحلق على علو منخفض فوق بيروت والضاحية"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "lebanonNewsNow",
+    "message_id": 207968,
+    "date": "2025-08-25 10:51:31+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "ورد الآن الجيش الإسرائيلي: رئيس الأركان وجه بإجراء تحقيق أولي في أقرب وقت ممكن بعد الغارة في منطقة مستشفى ناصر lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "بيروت",
+    "coordinates": [
+      35.4995749,
+      33.8718663
+    ],
+    "channel": "ALJADEED_NEWS",
+    "message_id": 215062,
+    "date": "2025-08-25 10:51:47+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "25",
+        "2025",
+        "01",
+        "49"
+      ],
+      "casualties": [],
+      "summary": "مراسلة الجديد: مسيرة إسرائيلية تحلق على علو منخفض فوق بيروت والضاحية August 25, 2025 at 01:49PM"
+    }
+  },
+  {
+    "incident_type": "protest",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "-1001418480303",
+    "message_id": 252049,
+    "date": "2025-08-25 10:53:08+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "25",
+        "2025",
+        "01",
+        "50"
+      ],
+      "casualties": [],
+      "summary": "الجيش الإسرائيلي يقول إنه يأسف لأي ضرر يلحق بغير المتورطين ويؤكد أنه لا يستهدف الصحفيين August 25, 2025 at 01:50PM"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "مجلس النواب",
+    "coordinates": [
+      35.50385237142857,
+      33.89690762857143
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143868,
+    "date": "2025-08-25 11:03:08+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "20",
+        "735800"
+      ],
+      "casualties": [],
+      "summary": "أسلحة وذخائر حربية ومخدرات... الجيش يقبض على 20 شخص"
+    }
   }
 ]

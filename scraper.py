@@ -11,7 +11,7 @@ import qrcode
 # -----------------------------
 # CONFIG
 # -----------------------------
-GEOJSON_FOLDER = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output"
+GEOJSON_FOLDER = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output_2"
 OUTPUT_FILE = "matched_incidents.json"
 OLLAMA_MODEL = "phi3:mini"
 MAX_NUMBER_LEN = 6

@@ -12,7 +12,7 @@ CORS(app)
 # CONFIG
 # -----------------------------
 INCIDENTS_FILE = "matched_incidents.json"
-GEOJSON_FOLDER = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output"
+GEOJSON_FOLDER = r"C:\Users\user\OneDrive - Lebanese University\Documents\GitHub\Incident_Project\geojson_output_2"
 
 ALLOWED_INCIDENTS = {
     "fire", "protest", "vehicle_accident", "shooting",
