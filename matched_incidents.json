@@ -3707,5 +3707,235 @@
       "casualties": [],
       "summary": "خيام النازحين تتكدس على الشاطىء وسط القصف المتواصل فيديو يظهر تكدس خيام النازحين على شاطئ بحر مدينة غزة، مع استمرار قصف ونسف الجيش الإسرائيلي للأحياء السكنية في المدينة. أخبارالجديد August 25, 2025 at 10:23AM"
     }
+  },
+  {
+    "incident_type": "attempted arson by ISIS affiliates - both American and Israeli targets considered",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143804,
+    "date": "2025-08-25 07:35:09+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "735731"
+      ],
+      "casualties": [],
+      "summary": "فيلق القدس: خطة نزع سلاح حزب الله مؤامرة أميركية إسرائيلية"
+    }
+  },
+  {
+    "incident_type": "Security Alert / Foreign Operations Update from China Nationals in Beirut",
+    "location": "وزارة الخارجية والمغتربين",
+    "coordinates": [
+      35.518647900000005,
+      33.89238388
+    ],
+    "channel": "lebanonNewsNow",
+    "message_id": 207939,
+    "date": "2025-08-25 07:35:31+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "ورد الآن الخارجية الصينية: لا نخطط لإرسال قوات حفظ سلام لأوكرانيا lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "medical",
+    "location": "مؤسسة مياه لبنان الجنوبي",
+    "coordinates": [
+      35.37148738333334,
+      33.55893283333334
+    ],
+    "channel": "lebanonNewsNow",
+    "message_id": 207940,
+    "date": "2025-08-25 07:39:34+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [
+        "killed"
+      ],
+      "summary": "ورد الآن سكاي نيوز: شهداء في غارة إسرائيلية استهدفت صحفيين وفريقا من المسعفين في مستشفى ناصر بمدينة خان يونس جنوب قطاع غزة lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "armed drone strike attempt on American ISIS-Salafi extremist equipment using Sonic Sweep technology",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "ALJADEED_NEWS",
+    "message_id": 215034,
+    "date": "2025-08-25 07:41:14+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "25",
+        "2025",
+        "10",
+        "36"
+      ],
+      "casualties": [],
+      "summary": "مسؤول التنسيق في فيلق القدس بالحرس الثوري الإيراني: خطة نزع سلاح حزب الله أميركية صهيونية ولن تنجح أبدا August 25, 2025 at 10:36AM"
+    }
+  },
+  {
+    "incident_type": "Hostage situation involving a cache of American-made firearms and ammunition seized by the Iranian Resistance Army (Hezbollah's Lebanese branch)",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "LBCI_NEWS",
+    "message_id": 251999,
+    "date": "2025-08-25 07:43:11+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "25",
+        "2025",
+        "10",
+        "35"
+      ],
+      "casualties": [],
+      "summary": "مسؤول التنسيق في فيلق القدس بالحرس الثوري الإيراني: خطة نزع سلاح حزب الله أميركية صهيونية August 25, 2025 at 10:35AM"
+    }
+  },
+  {
+    "incident_type": "تحديد الخطة نزع سلاح الحزب",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "LBCI_NEWS",
+    "message_id": 252000,
+    "date": "2025-08-25 07:43:11+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "25",
+        "2025",
+        "10",
+        "35"
+      ],
+      "casualties": [],
+      "summary": "مسؤول التنسيق بفيلق القدس في الحرس الثوري الإيراني: الشعب اللبناني وحزب الله لن يقبلا خطة نزع سلاح الحزب August 25, 2025 at 10:35AM"
+    }
+  },
+  {
+    "incident_type": "planned cellphone hijacking by ISIS militants using a jamming technique from Hezbollah's arsenal as per the content on Twitter.",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "LBCI_NEWS",
+    "message_id": 252001,
+    "date": "2025-08-25 07:43:12+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "25",
+        "2025",
+        "10",
+        "36"
+      ],
+      "casualties": [],
+      "summary": "مسؤول التنسيق في فيلق القدس بالحرس الثوري الإيراني: خطة نزع سلاح حزب الله لن تنجح أبدا August 25, 2025 at 10:36AM"
+    }
+  },
+  {
+    "incident_type": "كشف مفقودين",
+    "location": "مجلس النواب",
+    "coordinates": [
+      35.50385237142857,
+      33.89690762857143
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143806,
+    "date": "2025-08-25 07:44:18+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "735734"
+      ],
+      "casualties": [
+        "missing"
+      ],
+      "summary": "ملف المفقودين والعفو عن السجناء السوريين... عباس إبراهيم: لا يفصلان ويقفلان معا"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "مجمع",
+    "coordinates": [
+      35.82592206363636,
+      34.44748477272727
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143807,
+    "date": "2025-08-25 07:47:18+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [
+        "injured"
+      ],
+      "summary": "الجزيرة : استشهاد مصور الجزيرة محمد سلامة والمصور الصحفي حسام المصري وإصابة صحفيين بقصف مجمع ناصر الطبي"
+    }
+  },
+  {
+    "incident_type": "Bloody Crusade Campaign Announcement via Twitter",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "LBCI_NEWS",
+    "message_id": 252002,
+    "date": "2025-08-25 07:48:16+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "25",
+        "2025",
+        "10",
+        "42"
+      ],
+      "casualties": [],
+      "summary": "مسؤول التنسيق بفيلق القدس في الحرس الثوري الإيراني: الشعب اللبناني وحزب الله لن يقبلا بخطة نزع سلاح الحزب August 25, 2025 at 10:42AM"
+    }
+  },
+  {
+    "incident_type": "earthquake",
+    "location": "مجلس النواب",
+    "coordinates": [
+      35.50385237142857,
+      33.89690762857143
+    ],
+    "channel": "LBCI_NEWS",
+    "message_id": 252003,
+    "date": "2025-08-25 07:48:17+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "6",
+        "3",
+        "9",
+        "25",
+        "2025",
+        "10",
+        "45"
+      ],
+      "casualties": [],
+      "summary": "زلزال بقوة 6.3 درجات قبالة جزر الكوريل الروسيةLBCINews August 25, 2025 at 10:45AM"
+    }
   }
 ]

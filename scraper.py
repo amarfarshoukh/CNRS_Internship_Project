@@ -371,13 +371,22 @@ async def phi3_worker(matches, existing_ids):
                                 if isinstance(loc_val, str):
                                     loc_candidates.append(loc_val)
 
-                        # Check candidates against map
+                        # Strict Phi3 location validation: only accept if text mentions it
+                       
                         for loc in loc_candidates:
                             loc_norm = normalize_arabic(loc)
                             if loc_norm in ALL_LOCATIONS:
-                                location = ALL_LOCATIONS[loc_norm]["original"]
-                                coordinates = ALL_LOCATIONS[loc_norm]["coordinates"]
-                                break  # first valid match
+                                # Check if the normalized location words actually appear in the normalized text
+                                text_norm = normalize_arabic(text)
+                                loc_words = loc_norm.split()
+                                text_words = text_norm.split()
+                                for i in range(len(text_words) - len(loc_words) + 1):
+                                    if text_words[i:i+len(loc_words)] == loc_words:
+                                        location = ALL_LOCATIONS[loc_norm]["original"]
+                                        coordinates = ALL_LOCATIONS[loc_norm]["coordinates"]
+                                        break
+                                if location:  # stop if a valid match found
+                                    break
 
             # --- Skip if no incident type or valid map location
             if not incident_types or not location or not coordinates:
