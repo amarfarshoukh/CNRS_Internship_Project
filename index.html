@@ -36,6 +36,11 @@
     #filter-select { flex: 0 0 120px; padding: 6px; border-radius: 8px; border: 1px solid #ddd; background: #fff; }
     #show-all, #none-btn { flex: 0 0 80px; padding: 6px; border-radius: 8px; border: 1px solid #ddd; background: #fff; cursor: pointer; }
     .footer { font-size: 12px; color: #444; margin-top: 12px; }
+
+    /* Hide spider lines */
+    .leaflet-marker-spider-line {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
@@ -99,7 +104,15 @@ const TYPE_ICONS = {
 const ALL_TYPES = Object.keys(TYPE_ICONS);
 let activeTypes = new Set([...ALL_TYPES]);
 let searchTerm = '';
-const cluster = L.markerClusterGroup().addTo(map);
+
+// Cluster with spiderfy enabled
+const cluster = L.markerClusterGroup({
+    spiderfyOnMaxZoom: true,   // spread overlapping markers on click
+    showCoverageOnHover: false, // hide coverage circle
+    zoomToBoundsOnClick: true
+});
+map.addLayer(cluster);
+
 const filterSelect = document.getElementById('filter-select');
 const showAllBtn = document.getElementById('show-all');
 const noneBtn = document.getElementById('none-btn');
@@ -147,8 +160,7 @@ ALL_TYPES.forEach(t => {
 // Marker creation
 function markerFor(item) {
   if (!item.coordinates || item.coordinates.length !== 2) return null;
-  const lat = item.coordinates[0];
-  const lon = item.coordinates[1];
+  const [lat, lon] = item.coordinates;
 
   const icon = L.icon({
     iconUrl: TYPE_ICONS[item.incident_type] || TYPE_ICONS['other'],
@@ -158,8 +170,7 @@ function markerFor(item) {
   });
 
   const marker = L.marker([lat, lon], { icon: icon });
-  const popupHtml = `
-    <div style="min-width:220px">
+  const popupHtml = `<div style="min-width:220px">
       <strong>${item.incident_type}</strong><br>
       <b>City:</b> ${item.city}<br>
       <b>Date:</b> ${item.date}<br>

@@ -4002,5 +4002,152 @@
       "casualties": [],
       "summary": "مقررة الأمم المتحدة لحقوق الإنسان بالأراضي الفلسطينية المحتلة: يجب حماية الصحفيين والمستشفيات والأطباء"
     }
+  },
+  {
+    "incident_type": "explosion",
+    "location": "وزارة الداخلية والبدلديّات",
+    "coordinates": [
+      35.48989807777778,
+      33.89505342222222
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143839,
+    "date": "2025-08-25 09:39:43+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "735770"
+      ],
+      "casualties": [],
+      "summary": "الأمن الروسي يحبط هجوما إرهابيا بعبوة ناسفة مخفية داخل أيقونة"
+    }
+  },
+  {
+    "incident_type": "pollution",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143840,
+    "date": "2025-08-25 09:40:32+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "735771"
+      ],
+      "casualties": [],
+      "summary": "محافظ البقاع يتحرك بعد فيديو تسرب مياه آسنة في نهر البردوني"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "lebanondebate",
+    "message_id": 143844,
+    "date": "2025-08-25 09:58:59+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "حماس: نتنياهو يؤكد استهتاره بكل القوانين الدولية وتحديه للمجتمع الدولي بتعمده استهداف مستشفى ناصر"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "lebanonNewsNow",
+    "message_id": 207961,
+    "date": "2025-08-25 10:01:35+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "ورد الآن حماس: نتنياهو يؤكد استهتاره بكل القوانين الدولية وتحديه للمجتمع الدولي بتعمده استهداف مستشفى ناصر lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "vehicle_accident",
+    "location": "مجلس النواب",
+    "coordinates": [
+      35.50385237142857,
+      33.89690762857143
+    ],
+    "channel": "lebanonNewsNow",
+    "message_id": 207962,
+    "date": "2025-08-25 10:01:36+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [],
+      "casualties": [],
+      "summary": "ورد الآن دبلوماسي فرنسي للعربية: محادثات جنيف غدا آخر نافذة مفتوحة لإيران lebanonNewsNow"
+    }
+  },
+  {
+    "incident_type": "earthquake",
+    "location": "جفينور",
+    "coordinates": [
+      35.487057066666665,
+      33.898266299999996
+    ],
+    "channel": "lebanonnews2",
+    "message_id": 87417,
+    "date": "2025-08-25 10:07:17+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2",
+        "2"
+      ],
+      "casualties": [],
+      "summary": "مـصـدر عـسـكـري لـبـنـانـي لـلـحـدث: - الجيش سيعرض خطة نزع سلاح حزب الله على الحكومة في سبتمبر - الجيش لم يطلب تمديد مهلة نزع سلاح حزب الله - خطة الجيش بشأن تسليم السلاح الفلسطيني شبه جاهزة"
+    }
+  },
+  {
+    "incident_type": "medical",
+    "location": "الصرفند",
+    "coordinates": [
+      35.2976936,
+      33.4492215
+    ],
+    "channel": "lebanonnews2",
+    "message_id": 87418,
+    "date": "2025-08-25 10:08:37+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "2"
+      ],
+      "casualties": [],
+      "summary": "تحليق مـسير منخفض فوق اجواء الدمشقية المحمودية الجرمق مزرعة العرقوب ميذنة كفررمان منطقة الزهراني العاقبية الصرفند البيسارية جنوب لبنان"
+    }
+  },
+  {
+    "incident_type": "airstrike",
+    "location": "تول",
+    "coordinates": [
+      35.4445962,
+      33.3895063
+    ],
+    "channel": "lebanonNewsNow",
+    "message_id": 207963,
+    "date": "2025-08-25 10:16:53+00:00",
+    "threat_level": "yes",
+    "details": {
+      "numbers_found": [
+        "24"
+      ],
+      "casualties": [],
+      "summary": "ورد الآن لبنان24 : تفجير نفذه الجيش في بلدة تول لصاروخ من مخلفات العدوان lebanonNewsNow"
+    }
   }
 ]
